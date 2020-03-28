@@ -1,26 +1,25 @@
 import React from 'react';
-import { AppBar, Button, Toolbar, IconButton, Typography, withStyles } from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
+import { AppBar, Button, Toolbar, IconButton, Typography, makeStyles } from '@material-ui/core';
+import { Menu as MenuIcon } from '@material-ui/icons';
 
-export const NavigationBar = withStyles({
+const useStyles = makeStyles({
   grow: {
     flexGrow: 1,
   },
   nav: {
-    backgroundColor: "rgb(72, 34, 164)"
+    backgroundColor: 'rgb(72, 34, 164)',
   },
   title: {
-    // TODO: add DCTX font
+    // ! TODO: add DCTX font
   },
-  navButton: {
-    textTransform: 'uppercase'
-  }
-})((props) => {
-  const { classes } = props;
+});
+
+export function NavigationBar() {
+  const classes = useStyles();
+
   return (
     <AppBar position="static" className={classes.nav}>
       <Toolbar className={classes.toolbar}>
-
         <IconButton edge="start" color="inherit" aria-label="menu">
           {/*  TODO: replace MenuIcon with RP logo */}
           <MenuIcon />
@@ -28,12 +27,14 @@ export const NavigationBar = withStyles({
 
         <Typography variant="h6" className={classes.title}>
           RapidPass.PH Dashboard
-      </Typography>
+        </Typography>
 
         <div className={classes.grow} />
 
-        <Button edge="end" color="inherit" className={props.navButton}>Log Out</Button>
+        <Button edge="end" color="inherit">
+          Log Out
+        </Button>
       </Toolbar>
     </AppBar>
-  )
-});
+  );
+}
