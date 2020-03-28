@@ -1,3 +1,7 @@
+.container {
+  height: 440px;
+}
+
 .header {
   font-weight: 600;
   font-size: 24px;
@@ -5,11 +9,20 @@
   border-bottom: 1px solid #c4c4c4;
   display: flex;
   align-items: center;
-  padding: 16px;
+  padding: 16px 64px;
+}
+
+.fields {
+  height: 372px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 16px 64px 56px;
 }
 
 .field {
-  padding: 16px;
+  padding: 8px 0;
+  max-width: 288px;
 }
 
 .label {
@@ -20,4 +33,16 @@
 .attributeValue {
   color: #343434;
   padding: 8px 0;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 740px) {
+  .container {
+    height: auto;
+  }
+  .header,
+  .fields {
+    height: auto;
+    padding: 16px 24px;
+  }
 }

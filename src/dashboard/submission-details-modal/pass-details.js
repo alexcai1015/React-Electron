@@ -4,9 +4,9 @@ import styles from './pass-details.module.css';
 
 const PassDetails = ({ rapidPass }) => {
   return (
-    <div>
-      <div className={styles.header}>RapidPass Submission Details</div>
-      <div>
+    <div className={styles.container}>
+      <div className={styles.header}>RapidPass Submission</div>
+      <div className={styles.fields}>
         <div className={styles.field}>
           <div className={styles.label}>Name</div>
           <div className={styles.attributeValue}>{rapidPass.name}</div>
@@ -74,9 +74,9 @@ PassDetails.defaultProps = {
     contactNumber: '96771192',
     accessType: 'Medical',
     company: 'Rizal Medical Center',
-    address: 'Pasig Blvd, Pasig, 1600 Metro Manila',
+    address: 'Pasig Blvd, Pasig, 1600 Metro Manila, Pasig Blvd, Pasig, 1600 Metro Manila',
     checkpoint: 'R THADEUS ST., MRV, STA LUCIA',
-    remarks: 'Nurse on duty for COVID-19',
+    remarks: 'Nurse on duty for COVID-19. Please assist urgently.',
     dateOfEntry: '2020/03/25',
     plateNumber: 'AOZ 1531',
   },
