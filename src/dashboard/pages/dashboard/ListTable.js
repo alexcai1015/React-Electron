@@ -53,8 +53,10 @@ export function ListTable() {
         () => [
           { Header: 'Company', accessor: 'company' },
           { Header: 'Name', accessor: 'name' },
-          { Header: 'APOR type', accessor: 'type' },
-          { Header: 'Approval action', accessor: 'status' },
+          { Header: 'APOR type', accessor: 'aporType' },
+          { Header: 'ID Type', accessor: 'idType' },
+          { Header: 'ID Number', accessor: 'idNumber' },
+          { Header: 'Approval Action', accessor: 'status' },
         ],
         []
       ),
@@ -76,8 +78,8 @@ export function ListTable() {
   };
 
   const totalRecordsCount = rows.length;
+  const lastColumnIndex = 5;
 
-  const lastColumnIndex = 3;
   return (
     <TableContainer component={Paper}>
       <Table
@@ -90,7 +92,7 @@ export function ListTable() {
           <TableRow>
             {headerGroups.map((headerGroup) =>
               headerGroup.headers.map((column, index) => (
-                <ListHeaderCell align={index === lastColumnIndex ? 'center' : 'right'}
+                <ListHeaderCell align={index === lastColumnIndex ? 'center' : 'left'}
                   {...column.getHeaderProps(column.getSortByToggleProps())}>
                   <TableSortLabel
                     active={column.isSorted}

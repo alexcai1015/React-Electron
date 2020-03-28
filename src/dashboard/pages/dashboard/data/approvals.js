@@ -3,22 +3,137 @@ import { APPROVAL_STATUS } from '../listTable/ListRowActions';
 
 const approvalStatus = Object.values(APPROVAL_STATUS)
 
-function createData(company, name, type, status) {
-  return { company, name, type, status };
+function createData({ company, name, aporType, idType, idNumber, status }) {
+  return { company, name, aporType, idType, idNumber, status };
 }
 
 export const tableData = [
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Grocery', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Travel', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: `#${faker.random.number(100000)}`,
+    status: faker.random.arrayElement(approvalStatus)
+  }),
 ];
