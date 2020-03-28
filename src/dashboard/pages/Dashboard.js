@@ -39,7 +39,7 @@ export const Dashboard = () => {
           <Container>
             <Grid container>
               <Grid item lg={6}>
-                <TextField label="Search" type="search" />
+                <StyledSearchTextField label="Search" type="search" variant="outlined" />
               </Grid>
               <Grid container justify="flex-end" item lg={6}>
                 <StyledFilterSelectTextField
@@ -81,3 +81,7 @@ const StyledFilterSelectTextField = styled(TextField)(({ theme }) => ({
   marginLeft: theme.spacing(5),
   width: 180,
 }));
+
+const StyledSearchTextField = styled(TextField)({
+  width: 456,
+});
