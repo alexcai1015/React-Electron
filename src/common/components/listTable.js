@@ -5,7 +5,7 @@ import { Paper } from '@material-ui/core';
 
 import ListTablePaginationActions from './listTablePagination';
 import { ListHeaderCell } from './listHeaderCell';
-import DenyApplicationModal from '../../dashboard/denyModal';
+import { DenyApplicationModal } from '../../dashboard/denyModal/index';
 
 import { rows } from '../../_data/approvals'; // remove when API is ready
 
