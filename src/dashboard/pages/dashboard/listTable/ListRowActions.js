@@ -3,6 +3,14 @@ import PropTypes from 'prop-types';
 import { Button, withStyles } from '@material-ui/core';
 import { Colors } from '../../../../common/constants/Colors';
 
+// TODO match to APOR Type later
+export const APPROVAL_STATUS = {
+  Pending: 'pending',
+  Approved: 'approved',
+  Denied: 'denied',
+  Cancelled: 'cancelled',
+};
+
 export const ListRowActions = withStyles({
   container: {
     flex: 1,
