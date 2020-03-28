@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, withStyles } from '@material-ui/core';
+import { Typography, Button, withStyles } from '@material-ui/core';
 import { Colors } from '../../../../common/constants/Colors';
 
 // TODO match to APOR Type later
@@ -11,7 +11,7 @@ export const APPROVAL_STATUS = {
   Cancelled: 'cancelled',
 };
 
-export const ListRowActions = withStyles({
+const allStyles = {
   container: {
     flex: 1,
     flexDirection: 'row',
@@ -53,33 +53,59 @@ export const ListRowActions = withStyles({
     textDecoration: 'underline',
     fontSize: 16,
   },
-})((props) => {
-  const { classes, isLoading, onApproveClick, onDenyClick, onViewDetailsClick, type } = props;
+};
+
+const ActionsHOC = (props) => {
+  return {
+    [APPROVAL_STATUS.Pending]: (
+      <div className={props.classes.actions}>
+        <Button
+          variant="contained"
+          className={props.classes.approve}
+          disabled={props.isLoading}
+          onClick={(event) => props.onApproveClick(event)}
+        >
+          Approve
+        </Button>
+        <Button
+          variant="contained"
+          className={props.classes.deny}
+          disabled={props.isLoading}
+          onClick={(event) => props.onDenyClick(event)}
+        >
+          Deny
+        </Button>
+      </div>
+    ),
+    [APPROVAL_STATUS.Approved]: (
+      <div className={props.classes.labels}>
+        <Typography variant="body1" className={props.approvedLabel}>
+          Approved
+        </Typography>
+      </div>
+    ),
+    [APPROVAL_STATUS.Denied]: (
+      <div className={props.classes.labels}>
+        <Typography variant="body1" className={props.deniedLabel}>
+          Denied
+        </Typography>
+      </div>
+    ),
+    [APPROVAL_STATUS.Cancelled]: (
+      <div className={props.classes.labels}>
+        <Typography variant="body1" className={props.cancelledLabel}>
+          Cancelled
+        </Typography>
+      </div>
+    ),
+  }[props.status];
+};
+
+export const ListRowActions = withStyles(allStyles)((props) => {
+  const { classes, onViewDetailsClick, status } = props;
   return (
     <div className={classes.container}>
-      {type === APPROVAL_STATUS.Pending ? (
-        <div className={classes.actions}>
-          <Button
-            variant="contained"
-            className={classes.approve}
-            disabled={isLoading}
-            onClick={(event) => onApproveClick(event)}
-          >
-            Approve
-          </Button>
-          <Button
-            variant="contained"
-            className={classes.deny}
-            disabled={isLoading}
-            onClick={(event) => onDenyClick(event)}
-          >
-            Deny
-          </Button>
-        </div>
-      ) : (
-        <div>Somethign else</div>
-      )}
-
+      <ActionsHOC {...props} />
       <Button className={classes.view} onClick={(event) => onViewDetailsClick(event)}>
         View Details
       </Button>
