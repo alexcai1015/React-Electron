@@ -5,21 +5,6 @@ import { NavigationBar } from '../../common/components/NavigationBar';
 
 import { ListTable } from './dashboard/ListTable';
 
-const sortOptions = [
-  {
-    value: 'company',
-    label: 'Company',
-  },
-  {
-    value: 'name',
-    label: 'Name',
-  },
-  {
-    value: 'access_type',
-    label: 'Access Type',
-  },
-];
-
 const filterOptions = [
   {
     value: 'show_all',
@@ -39,13 +24,8 @@ const filterOptions = [
   },
 ];
 
-export const Dashboard = (props) => {
-  const [selectedSortOption, setSelectedSortOption] = useState('company');
+export const Dashboard = () => {
   const [selectedFilterOption, setSelectedFilterOption] = useState('show_all');
-
-  const handleSortSelectChange = (event) => {
-    setSelectedSortOption(event.target.value);
-  };
 
   const handleFilterSelectChange = (event) => {
     setSelectedFilterOption(event.target.value);
@@ -62,20 +42,6 @@ export const Dashboard = (props) => {
                 <TextField label="Search" type="search" />
               </Grid>
               <Grid container justify="flex-end" item lg={6}>
-                <StyledSelectTextField
-                  select
-                  label="Sort by"
-                  value={selectedSortOption}
-                  onChange={handleSortSelectChange}
-                  variant="outlined"
-                >
-                  {sortOptions.map(({ label, value }) => (
-                    <MenuItem key={value} value={value}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </StyledSelectTextField>
-
                 <StyledFilterSelectTextField
                   select
                   label="Filter by status:"
@@ -111,10 +77,7 @@ const StyledFiltersBlock = styled(Box)(({ theme }) => ({
   paddingTop: theme.spacing(4),
 }));
 
-const StyledSelectTextField = styled(TextField)({
-  width: 180,
-});
-
-const StyledFilterSelectTextField = styled(StyledSelectTextField)(({ theme }) => ({
+const StyledFilterSelectTextField = styled(TextField)(({ theme }) => ({
   marginLeft: theme.spacing(5),
+  width: 180,
 }));

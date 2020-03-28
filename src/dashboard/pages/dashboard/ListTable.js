@@ -10,8 +10,11 @@ import {
   TableFooter,
   TablePagination,
   makeStyles,
+  styled,
+  TableSortLabel,
+  Typography,
 } from '@material-ui/core';
-import { useTable, usePagination } from 'react-table';
+import { usePagination, useSortBy, useTable } from 'react-table';
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
@@ -55,6 +58,9 @@ export function ListTable() {
       ),
       data: useMemo(() => tableData, []),
     },
+    useSortBy,
+
+    // ! `usePagination()` must come after `useSortBy()`
     usePagination
   );
 
@@ -81,8 +87,18 @@ export function ListTable() {
           <TableRow>
             {headerGroups.map((headerGroup) =>
               headerGroup.headers.map((column) => (
-                <ListHeaderCell {...column.getHeaderProps()}>
-                  {column.render('Header')}
+                <ListHeaderCell {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  <TableSortLabel
+                    active={column.isSorted}
+                    direction={column.isSortedDesc ? 'desc' : 'asc'}
+                  >
+                    {column.render('Header')}
+                    {column.isSorted ? (
+                      <StyledSortAccessibilityLabel component="span">
+                        {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
+                      </StyledSortAccessibilityLabel>
+                    ) : null}
+                  </TableSortLabel>
                 </ListHeaderCell>
               ))
             )}
@@ -122,5 +138,17 @@ export function ListTable() {
     </TableContainer>
   );
 }
+
+const StyledSortAccessibilityLabel = styled(Typography)({
+  border: 0,
+  clip: 'rect(0 0 0 0)',
+  height: 1,
+  margin: -1,
+  overflow: 'hidden',
+  padding: 0,
+  position: 'absolute',
+  top: 20,
+  width: 1,
+});
 
 export default ListTable;
