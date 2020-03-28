@@ -51,7 +51,9 @@ export function ListTable() {
         () => [
           { Header: 'Company', accessor: 'company' },
           { Header: 'Name', accessor: 'name' },
-          { Header: 'APOR type', accessor: 'type' },
+          { Header: 'APOR type', accessor: 'aporType' },
+          { Header: 'ID Type', accessor: 'idType' },
+          { Header: 'ID Number', accessor: 'idNumber' },
           { Header: 'Approval action', accessor: 'action' },
         ],
         []

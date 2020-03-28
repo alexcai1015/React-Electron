@@ -1,21 +1,120 @@
 import * as faker from 'faker';
 
-function createData(company, name, type) {
-  return { company, name, type };
+function createData({ company, name, aporType, idType, idNumber }) {
+  return { company, name, aporType, idType, idNumber };
 }
 
 export const tableData = [
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Grocery'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Travel'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
-  createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
+  createData({
+    company: faker.company.companyName(),
+    name: faker.name.findName(),
+    aporType: 'Medical',
+    idType: 'PRC ID',
+    idNumber: '09081723',
+  }),
 ];
