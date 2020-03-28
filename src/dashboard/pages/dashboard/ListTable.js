@@ -95,91 +95,86 @@ export function ListTable() {
   const lastColumnIndex = 5;
 
   return (
-    <TableContainer component={Paper}>
-      <Table
-        {...getTableProps()}
-        className={classes.table}
-        stickyHeader
-        aria-label="sticky header pagination table"
-      >
-        <TableHead>
-          <TableRow>
-            {headerGroups.map((headerGroup) =>
-              headerGroup.headers.map((column, index) => (
-                <ListHeaderCell align={index === lastColumnIndex ? 'center' : 'left'}
-                  {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  <TableSortLabel
-                    active={column.isSorted}
-                    direction={column.isSortedDesc ? 'desc' : 'asc'}
-                  >
-                    {column.render('Header')}
-                    {column.isSorted ? (
-                      <StyledSortAccessibilityLabel component="span">
-                        {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
-                      </StyledSortAccessibilityLabel>
-                    ) : null}
-                  </TableSortLabel>
-                </ListHeaderCell>
-              ))
-            )}
-          </TableRow>
-        </TableHead>
-        <TableBody {...getTableBodyProps()}>
-          {page.map((row, index) => {
-            prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
+    <>
+      <TableContainer component={Paper}>
+        <Table
+          {...getTableProps()}
+          className={classes.table}
+          stickyHeader
+          aria-label="sticky header pagination table"
+        >
+          <TableHead>
+            <TableRow>
+              {headerGroups.map((headerGroup) =>
+                headerGroup.headers.map((column, index) => (
+                  <ListHeaderCell align={index === lastColumnIndex ? 'center' : 'left'}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    <TableSortLabel
+                      active={column.isSorted}
+                      direction={column.isSortedDesc ? 'desc' : 'asc'}
+                    >
+                      {column.render('Header')}
+                      {column.isSorted ? (
+                        <StyledSortAccessibilityLabel component="span">
+                          {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
+                        </StyledSortAccessibilityLabel>
+                      ) : null}
+                    </TableSortLabel>
+                  </ListHeaderCell>
+                ))
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody {...getTableBodyProps()}>
+            {page.map((row, index) => {
+              prepareRow(row);
+              return (
+                <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
 
-                {row.cells.map((cell, index) => {
-                  return index === lastColumnIndex ? (
-                    // Last cell is status with custom component
-                    <TableCell align="center" key={index}>
-                      <ListRowActions
-                        status={cell.row.values.status}
-                        onApproveClick={() => console.log('Trigger Approval')}
-                        onDenyClick={openDenyModal}
-                        onViewDetailsClick={() => console.log('Trigger View details popup')}>
-                      </ListRowActions>
+                  {row.cells.map((cell, index) => {
+                    return index === lastColumnIndex ? (
+                      // Last cell is status with custom component
+                      <TableCell align="center" key={index}>
+                        <ListRowActions
+                          status={cell.row.values.status}
+                          onApproveClick={() => console.log('Trigger Approval')}
+                          onDenyClick={openDenyModal}
+                          onViewDetailsClick={() => console.log('Trigger View details popup')}>
+                        </ListRowActions>
 
-                      <Dialog open={showDenyModal} onClose={closeDenyModal}>
-                        <DenyApplicationModal />
-                        <DialogActions>
-                          <Button variant="contained" color="secondary" onClick={closeDenyModal}>YES, DENY</Button>
-                          <Button variant="contained" onClick={closeDenyModal}>CANCEL</Button>
-                        </DialogActions>
-                      </Dialog>
-
-                    </TableCell>
-                  ) : <TableCell {...cell.getCellProps()}>
-                      {cell.render('Cell')}
-                    </TableCell>;
-                })}
+                      </TableCell>
+                    ) : <TableCell {...cell.getCellProps()}>
+                        {cell.render('Cell')}
+                      </TableCell>;
+                  })}
 
 
-              </TableRow>
-            );
-          })}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={4}
-              count={totalRecordsCount}
-              rowsPerPage={pageSize}
-              page={pageIndex}
-              SelectProps={{
-                inputProps: { 'aria-label': 'rows per page' },
-                native: true,
-              }}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-              ActionsComponent={ListTablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                colSpan={4}
+                count={totalRecordsCount}
+                rowsPerPage={pageSize}
+                page={pageIndex}
+                SelectProps={{
+                  inputProps: { 'aria-label': 'rows per page' },
+                  native: true,
+                }}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                ActionsComponent={ListTablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+      <DenyApplicationModal show={showDenyModal} closeModal={closeDenyModal} />
+    </>
   );
 }
 
