@@ -18,7 +18,6 @@ const allStyles = {
   container: {
     flex: 1,
     flexDirection: 'row',
-    flexWrap: 'wrap',
     display: 'inline-flex',
     alignItems: 'center',
     width: '100%',
@@ -65,7 +64,7 @@ const allStyles = {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    width: 157, // (157 + 4) * 2,
+    width: 157,
     fontSize: 19,
     fontWeight: 600,
     textTransform: 'uppercase',
