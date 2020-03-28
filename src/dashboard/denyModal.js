@@ -8,7 +8,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function DenyApplicationPopup() {
+export default function DenyApplicationModal() {
   const classes = useStyles();
   const [show, setShow] = React.useState(false);
 

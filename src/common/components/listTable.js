@@ -5,7 +5,7 @@ import { Paper } from '@material-ui/core';
 
 import ListTablePaginationActions from './listTablePagination';
 import { ListHeaderCell } from './listHeaderCell';
-import DenyApplicationPopup from './denyApplicationPopup';
+import DenyApplicationModal from '../../dashboard/denyModal';
 
 import { rows } from '../../_data/approvals'; // remove when API is ready
 
@@ -63,7 +63,7 @@ export default function ListTable() {
               <TableCell align="left">{row.type}</TableCell>
               <TableCell align="center">
                 {/* TODO: Approve, Deny, View Detail buttons */}
-                <DenyApplicationPopup />
+                <DenyApplicationModal />
               </TableCell>
             </TableRow>
           ))}
