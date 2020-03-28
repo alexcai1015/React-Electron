@@ -2,13 +2,13 @@ import React from 'react';
 import { Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
+import { theme } from './theme';
 import createHistory from './history';
 import createStore from './store';
 import { AppRoutes } from './AppRoutes';
 
-const theme = createMuiTheme({});
 
 export function App() {
   const history = createHistory();
