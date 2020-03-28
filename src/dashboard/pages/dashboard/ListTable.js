@@ -115,11 +115,11 @@ export function ListTable() {
               <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
 
                 {row.cells.map((cell, index) => {
-                  return index == lastColumnIndex ? (
+                  return index === lastColumnIndex ? (
                     // Last cell is status with custom component
                     <TableCell align="center" key={index}>
                       <ListRowActions
-                        status={'pending'}
+                        status={cell.row.values.status}
                         onApproveClick={() => console.log('Trigger Approval')}
                         onDenyClick={() => console.log('Trigger Deny Popover')}
                         onViewDetailsClick={() => console.log('Trigger View details popup')}>
