@@ -59,6 +59,7 @@ module.exports = {
     'no-console': 'warn',
     'object-curly-newline': ['error', { consistent: true }],
     'import/no-unresolved': ['error'],
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }]
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    'import/prefer-default-export': [0]
   },
 };
