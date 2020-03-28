@@ -7,7 +7,7 @@ function createData(company, name, type, status) {
   return { company, name, type, status };
 }
 
-export const rows = [
+export const tableData = [
   createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),
   createData(faker.company.companyName(), faker.name.findName(), 'Grocery', faker.random.arrayElement(approvalStatus)),
   createData(faker.company.companyName(), faker.name.findName(), 'Medical', faker.random.arrayElement(approvalStatus)),

@@ -1,7 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useMemo } from 'react';
 import {
-  Container,
   Paper,
   Table,
   TableHead,
@@ -11,13 +9,18 @@ import {
   TableContainer,
   TableFooter,
   TablePagination,
+  makeStyles,
+  styled,
+  TableSortLabel,
+  Typography,
 } from '@material-ui/core';
+import { usePagination, useSortBy, useTable } from 'react-table';
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
-import { rows } from './data/approvals'; // remove when API is ready
+import { tableData } from './data/approvals'; // TODO: remove when API is ready
 
 const listTableStyles = makeStyles({
   table: {
@@ -33,82 +36,138 @@ const listTableStyles = makeStyles({
 
 export function ListTable() {
   const classes = listTableStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const {
+    headerGroups,
+    prepareRow,
+    rows,
+    page,
+    state: { pageIndex, pageSize },
+    gotoPage,
+    setPageSize,
+    getTableProps,
+    getTableBodyProps,
+  } = useTable(
+    {
+      columns: useMemo(
+        () => [
+          { Header: 'Company', accessor: 'company' },
+          { Header: 'Name', accessor: 'name' },
+          { Header: 'APOR type', accessor: 'type' },
+          { Header: 'Approval action', accessor: 'status' },
+        ],
+        []
+      ),
+      data: useMemo(() => tableData, []),
+    },
+    useSortBy,
+
+    // ! `usePagination()` must come after `useSortBy()`
+    usePagination
+  );
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    gotoPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPageSize(+event.target.value);
+    gotoPage(0);
   };
 
-  return (
-    <Container>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} stickyHeader aria-label="sticky header pagination table">
-          <TableHead>
-            <TableRow>
-              <ListHeaderCell>Company</ListHeaderCell>
-              <ListHeaderCell align="left">Name</ListHeaderCell>
-              <ListHeaderCell align="left">APOR Type</ListHeaderCell>
-              <ListHeaderCell align="center">Approval Action</ListHeaderCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
-            ).map((row, index) => (
-              <TableRow key={index} className={classes[`striped${index % 2}`]}>
-                <TableCell component="th" scope="row">
-                  {row.company}
-                </TableCell>
-                <TableCell align="left">{row.name}</TableCell>
-                <TableCell align="left">{row.type}</TableCell>
-                <TableCell align="center">
-                  <ListRowActions
-                    status={row.status}
-                    onApproveClick={() => console.log('Trigger Approval')}
-                    onDenyClick={() => console.log('Trigger Deny Popover')}
-                    onViewDetailsClick={() => console.log('Trigger View details popup')}>
-                  </ListRowActions>
-                </TableCell>
-              </TableRow>
-            ))}
+  const totalRecordsCount = rows.length;
 
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={4} />
-              </TableRow>
+  const lastColumnIndex = 3;
+  return (
+    <TableContainer component={Paper}>
+      <Table
+        {...getTableProps()}
+        className={classes.table}
+        stickyHeader
+        aria-label="sticky header pagination table"
+      >
+        <TableHead>
+          <TableRow>
+            {headerGroups.map((headerGroup) =>
+              headerGroup.headers.map((column, index) => (
+                <ListHeaderCell align={index === lastColumnIndex ? 'center' : 'right'}
+                  {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  <TableSortLabel
+                    active={column.isSorted}
+                    direction={column.isSortedDesc ? 'desc' : 'asc'}
+                  >
+                    {column.render('Header')}
+                    {column.isSorted ? (
+                      <StyledSortAccessibilityLabel component="span">
+                        {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
+                      </StyledSortAccessibilityLabel>
+                    ) : null}
+                  </TableSortLabel>
+                </ListHeaderCell>
+              ))
             )}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                colSpan={4}
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  inputProps: { 'aria-label': 'rows per page' },
-                  native: true,
-                }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={ListTablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
-    </Container>
+          </TableRow>
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
+          {page.map((row, index) => {
+            prepareRow(row);
+            return (
+              <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
+
+                {row.cells.map((cell, index) => {
+                  return index == lastColumnIndex ? (
+                    // Last cell is status with custom component
+                    <TableCell align="center" key={index}>
+                      <ListRowActions
+                        status={'pending'}
+                        onApproveClick={() => console.log('Trigger Approval')}
+                        onDenyClick={() => console.log('Trigger Deny Popover')}
+                        onViewDetailsClick={() => console.log('Trigger View details popup')}>
+                      </ListRowActions>
+                    </TableCell>
+                  ) : <TableCell {...cell.getCellProps()}>
+                      {cell.render('Cell')}
+                    </TableCell>;
+                })}
+
+
+              </TableRow>
+            );
+          })}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              colSpan={4}
+              count={totalRecordsCount}
+              rowsPerPage={pageSize}
+              page={pageIndex}
+              SelectProps={{
+                inputProps: { 'aria-label': 'rows per page' },
+                native: true,
+              }}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+              ActionsComponent={ListTablePaginationActions}
+            />
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </TableContainer>
   );
 }
+
+const StyledSortAccessibilityLabel = styled(Typography)({
+  border: 0,
+  clip: 'rect(0 0 0 0)',
+  height: 1,
+  margin: -1,
+  overflow: 'hidden',
+  padding: 0,
+  position: 'absolute',
+  top: 20,
+  width: 1,
+});
 
 export default ListTable;
