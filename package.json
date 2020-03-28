@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
+    "formik": "^2.1.4",
     "history": "^4.10.1",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
@@ -21,7 +22,8 @@
     "react-scripts": "3.4.1",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "yup": "^0.28.3"
   },
   "scripts": {
     "lint": "eslint --cache --ext .js,.jsx src",

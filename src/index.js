@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import CreateApp from './CreateApp';
@@ -11,6 +12,7 @@ const theme = createMuiTheme({});
 ReactDOM.render(
   <React.StrictMode>
     <MuiThemeProvider theme={theme}>
+      <CssBaseline />
       <CreateApp />
     </MuiThemeProvider>
   </React.StrictMode>,
