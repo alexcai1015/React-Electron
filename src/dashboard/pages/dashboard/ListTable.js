@@ -54,7 +54,7 @@ export function ListTable() {
           { Header: 'APOR type', accessor: 'aporType' },
           { Header: 'ID Type', accessor: 'idType' },
           { Header: 'ID Number', accessor: 'idNumber' },
-          { Header: 'Approval action', accessor: 'action' },
+          { Header: 'Approval Action', accessor: 'action' },
         ],
         []
       ),
