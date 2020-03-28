@@ -16,6 +16,7 @@ import {
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
+import { Colors } from '../../../common/constants/Colors';
 import { rows } from './data/approvals'; // remove when API is ready
 
 const listTableStyles = makeStyles({
@@ -23,10 +24,10 @@ const listTableStyles = makeStyles({
     minWidth: 500,
   },
   striped0: {
-    backgroundColor: 'rgb(246,246,246)',
+    backgroundColor: Colors.RowStripeGray,
   },
   striped1: {
-    backgroundColor: 'rgb(255,255,255)',
+    backgroundColor: Colors.White,
   },
 });
 
