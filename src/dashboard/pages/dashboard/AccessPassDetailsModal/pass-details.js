@@ -2,53 +2,53 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './pass-details.module.css';
 
-const PassDetails = ({ rapidPass, renderCloseButton }) => {
+const PassDetails = ({ accessPass, renderCloseButton }) => {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div>RapidPass Submission</div>
+        <div>Access Pass Details</div>
         {renderCloseButton}
       </div>
       <div className={styles.fields}>
         <div className={styles.field}>
           <div className={styles.label}>Name</div>
-          <div className={styles.attributeValue}>{rapidPass.name}</div>
+          <div className={styles.attributeValue}>{accessPass.name}</div>
         </div>
         <div className={styles.field}>
           <div className={styles.label}>Email</div>
-          <div className={styles.attributeValue}>{rapidPass.email}</div>
+          <div className={styles.attributeValue}>{accessPass.email}</div>
         </div>
         <div className={styles.field}>
           <div className={styles.label}>Contact Number</div>
-          <div className={styles.attributeValue}>{rapidPass.contactNumber}</div>
+          <div className={styles.attributeValue}>{accessPass.contactNumber}</div>
         </div>
         <div className={styles.field}>
           <div className={styles.label}>Access Type</div>
-          <div className={styles.attributeValue}>{rapidPass.accessType}</div>
+          <div className={styles.attributeValue}>{accessPass.accessType}</div>
         </div>
         <div className={styles.field}>
           <div className={styles.label}>Company</div>
-          <div className={styles.attributeValue}>{rapidPass.company}</div>
+          <div className={styles.attributeValue}>{accessPass.company}</div>
         </div>
         <div className={styles.field}>
           <div className={styles.label}>Address or Destination</div>
-          <div className={styles.attributeValue}>{rapidPass.address}</div>
+          <div className={styles.attributeValue}>{accessPass.address}</div>
         </div>
         <div className={styles.field}>
           <div className={styles.label}>Checkpoint</div>
-          <div className={styles.attributeValue}>{rapidPass.checkpoint}</div>
+          <div className={styles.attributeValue}>{accessPass.checkpoint}</div>
         </div>
         <div className={styles.field}>
           <div className={styles.label}>Remarks</div>
-          <div className={styles.attributeValue}>{rapidPass.remarks}</div>
+          <div className={styles.attributeValue}>{accessPass.remarks}</div>
         </div>
         <div className={styles.field}>
           <div className={styles.label}>Date of Entry</div>
-          <div className={styles.attributeValue}>{rapidPass.dateOfEntry}</div>
+          <div className={styles.attributeValue}>{accessPass.dateOfEntry}</div>
         </div>
         <div className={styles.field}>
           <div className={styles.label}>Plate Number</div>
-          <div className={styles.attributeValue}>{rapidPass.plateNumber}</div>
+          <div className={styles.attributeValue}>{accessPass.plateNumber}</div>
         </div>
       </div>
     </div>
@@ -56,7 +56,7 @@ const PassDetails = ({ rapidPass, renderCloseButton }) => {
 };
 
 PassDetails.propTypes = {
-  rapidPass: PropTypes.shape({
+  accessPass: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     contactNumber: PropTypes.string.isRequired,
@@ -71,7 +71,7 @@ PassDetails.propTypes = {
 };
 
 PassDetails.defaultProps = {
-  rapidPass: {
+  accessPass: {
     name: 'Inigo Sarmiento',
     email: 'inigo.sarmiento@gmail.com',
     contactNumber: '96771192',
