@@ -9,6 +9,7 @@ export function AppRoutes() {
     <Switch>
       <Route exact path="/" component={Login} />
       <Route exact path="/dashboard" component={Dashboard} />
+      <Route exact path="/dashboard/lists/:accessPassId/deny" component={Dashboard} />
     </Switch>
   );
 }

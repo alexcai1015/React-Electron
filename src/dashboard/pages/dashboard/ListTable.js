@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 import {
-  Button,
-  Dialog,
-  DialogActions,
   Paper,
   Table,
   TableHead,
@@ -72,7 +70,8 @@ export function ListTable() {
     usePagination
   );
 
-  const [showDenyModal, setShowDenyModal] = React.useState(false);
+  const { accessPassId } = useParams();
+  const [showDenyModal, setShowDenyModal] = React.useState(!!accessPassId);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
