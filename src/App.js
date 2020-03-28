@@ -1,6 +1,7 @@
 import React from 'react';
 import { Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import createHistory from './history';
@@ -17,6 +18,7 @@ export function App() {
       <Router history={history}>
         <MuiThemeProvider theme={theme}>
           <AppRoutes history={history} />
+          <CssBaseline />
         </MuiThemeProvider>
       </Router>
     </Provider>
