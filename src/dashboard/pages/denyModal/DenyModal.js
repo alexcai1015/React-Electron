@@ -13,29 +13,27 @@ export const DenyApplicationModal = ({show, closeModal}) => {
   const fullWidth = true;
 
   return (
-    <>
-      <Dialog open={show} onClose={closeModal}>
-        <DialogTitle>Deny Application?</DialogTitle>
-        <DialogContent>
-          <div className={classes.center}>
-            Are you sure you want to DENY APPLICATION? <br /><br />
-            <div>
-              <TextField
-                label="Remarks"
-                placeholder="State reason"
-                multiline
-                variant="outlined"
-                rows="10"
-                fullWidth={fullWidth}
-              />
-            </div>
+    <Dialog open={show} onClose={closeModal}>
+      <DialogTitle>Deny Application?</DialogTitle>
+      <DialogContent>
+        <div className={classes.center}>
+          Are you sure you want to DENY APPLICATION?<br /><br />
+          <div>
+            <TextField
+              label="Remarks"
+              placeholder="State reason"
+              multiline
+              variant="outlined"
+              rows="10"
+              fullWidth={fullWidth}
+            />
           </div>
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" color="secondary" onClick={closeModal}>YES, DENY</Button>
-          <Button variant="contained" onClick={closeModal}>CANCEL</Button>
-        </DialogActions>
-      </Dialog>
-    </>
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button variant="contained" color="secondary" onClick={closeModal}>YES, DENY</Button>
+        <Button variant="contained" onClick={closeModal}>CANCEL</Button>
+      </DialogActions>
+    </Dialog>
   );
 }

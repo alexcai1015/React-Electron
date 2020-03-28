@@ -10,6 +10,7 @@ export const APPROVAL_STATUS = {
   Pending: 'pending',
   Approved: 'approved',
   Denied: 'denied',
+
   // Cancelled: 'cancelled',
 };
 
