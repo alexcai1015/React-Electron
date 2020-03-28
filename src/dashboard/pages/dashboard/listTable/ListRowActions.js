@@ -14,6 +14,8 @@ export const APPROVAL_STATUS = {
 export const ListRowActions = withStyles({
   container: {
     flex: 1,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     '& .MuiButtonBase-root': {
       textTransform: 'capitalize',
       borderRadius: 20,
@@ -21,7 +23,10 @@ export const ListRowActions = withStyles({
       fontFamily: 'Work Sans, sans-serif',
       margin: 4,
     },
-    '& .MuiButton-contained': {
+  },
+  actions: {
+    display: 'inline-block',
+    '& .MuiButton-root': {
       width: 157,
       fontSize: 14,
       color: Colors.White,
@@ -49,25 +54,32 @@ export const ListRowActions = withStyles({
     fontSize: 16,
   },
 })((props) => {
-  const { classes, actionPending, onApproveClick, onDenyClick, onViewDetailsClick } = props;
+  const { classes, isLoading, onApproveClick, onDenyClick, onViewDetailsClick, type } = props;
   return (
     <div className={classes.container}>
-      <Button
-        variant="contained"
-        className={classes.approve}
-        disabled={actionPending}
-        onClick={(event) => onApproveClick(event)}
-      >
-        Approve
-      </Button>
-      <Button
-        variant="contained"
-        className={classes.deny}
-        disabled={actionPending}
-        onClick={(event) => onDenyClick(event)}
-      >
-        Deny
-      </Button>
+      {type === APPROVAL_STATUS.Pending ? (
+        <div className={classes.actions}>
+          <Button
+            variant="contained"
+            className={classes.approve}
+            disabled={isLoading}
+            onClick={(event) => onApproveClick(event)}
+          >
+            Approve
+          </Button>
+          <Button
+            variant="contained"
+            className={classes.deny}
+            disabled={isLoading}
+            onClick={(event) => onDenyClick(event)}
+          >
+            Deny
+          </Button>
+        </div>
+      ) : (
+        <div>Somethign else</div>
+      )}
+
       <Button className={classes.view} onClick={(event) => onViewDetailsClick(event)}>
         View Details
       </Button>
@@ -75,8 +87,13 @@ export const ListRowActions = withStyles({
   );
 });
 
+ListRowActions.defaultProps = {
+  type: APPROVAL_STATUS.Pending,
+};
+
 ListRowActions.propTypes = {
-  actionPending: PropTypes.bool,
+  status: PropTypes.oneOf(Object.values(APPROVAL_STATUS)),
+  isLoading: PropTypes.bool,
   approvedStatusColor: PropTypes.string,
   deniedStatusColor: PropTypes.string,
   hiddenActions: PropTypes.bool,

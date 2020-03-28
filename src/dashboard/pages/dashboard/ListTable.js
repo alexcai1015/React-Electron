@@ -64,7 +64,7 @@ export function ListTable() {
               ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               : rows
             ).map((row, index) => (
-              <TableRow key={row.company} className={classes[`striped${index % 2}`]}>
+              <TableRow key={index} className={classes[`striped${index % 2}`]}>
                 <TableCell component="th" scope="row">
                   {row.company}
                 </TableCell>
@@ -72,6 +72,7 @@ export function ListTable() {
                 <TableCell align="left">{row.type}</TableCell>
                 <TableCell align="center">
                   <ListRowActions
+                    status={row.status}
                     onApproveClick={() => console.log('Trigger Approval')}
                     onDenyClick={() => console.log('Trigger Deny Popover')}
                     onViewDetailsClick={() => console.log('Trigger View details popup')}>
