@@ -9,7 +9,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { Menu as MenuIcon } from '@material-ui/icons';
-
+import logo from '../../assets/rapidpass.png';
 const useStyles = makeStyles({
   grow: {
     flexGrow: 1,
@@ -22,7 +22,8 @@ const useStyles = makeStyles({
   },
 });
 
-export function NavigationBar() {
+
+export function NavigationBar(props) {
   const classes = useStyles();
 
   return (
@@ -30,8 +31,7 @@ export function NavigationBar() {
       <Container>
         <Toolbar className={classes.toolbar}>
           <IconButton edge="start" color="inherit" aria-label="menu" href="/">
-            {/* ! TODO: replace MenuIcon with RP logo */}
-            <MenuIcon />
+            <img src={logo} width="48" height="48" alt="Logo" title="Logo" />
           </IconButton>
 
           <Typography variant="h6" className={classes.title}>
