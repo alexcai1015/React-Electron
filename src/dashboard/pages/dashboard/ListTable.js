@@ -15,6 +15,7 @@ import {
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
+import { ListRowActions } from './listTable/ListRowActions';
 import { rows } from './data/approvals'; // remove when API is ready
 
 const listTableStyles = makeStyles({
@@ -69,7 +70,11 @@ export function ListTable() {
                 <TableCell align="left">{row.name}</TableCell>
                 <TableCell align="left">{row.type}</TableCell>
                 <TableCell align="center">
-                  {/* TODO: Approve, Deny, View Detail buttons */}
+                  <ListRowActions
+                    onApproveClick={() => console.log('Trigger Approval')}
+                    onDenyClick={() => console.log('Trigger Deny Popover')}
+                    onViewDetailsClick={() => console.log('Trigger View details popup')}>
+                  </ListRowActions>
                 </TableCell>
               </TableRow>
             ))}
