@@ -20,7 +20,7 @@ export function NavigationBar() {
   return (
     <AppBar position="static" className={classes.nav}>
       <Toolbar className={classes.toolbar}>
-        <IconButton edge="start" color="inherit" aria-label="menu">
+        <IconButton edge="start" color="inherit" aria-label="menu" href="/">
           {/*  TODO: replace MenuIcon with RP logo */}
           <MenuIcon />
         </IconButton>
@@ -31,7 +31,7 @@ export function NavigationBar() {
 
         <div className={classes.grow} />
 
-        <Button edge="end" color="inherit">
+        <Button edge="end" color="inherit" href="/">
           Log Out
         </Button>
       </Toolbar>
