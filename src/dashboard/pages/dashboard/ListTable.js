@@ -1,5 +1,8 @@
 import React, { useMemo } from 'react';
 import {
+  Button,
+  Dialog,
+  DialogActions,
   Paper,
   Table,
   TableHead,
@@ -21,6 +24,7 @@ import { ListTablePaginationActions } from './listTable/ListTablePaginationActio
 import { ListRowActions } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
 import { tableData } from './data/approvals'; // TODO: remove when API is ready
+import { DenyApplicationModal } from '../denyModal/DenyModal';
 
 const listTableStyles = makeStyles({
   table: {
@@ -68,6 +72,8 @@ export function ListTable() {
     usePagination
   );
 
+  const [showDenyModal, setShowDenyModal] = React.useState(false);
+
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
   };
@@ -76,6 +82,14 @@ export function ListTable() {
     setPageSize(+event.target.value);
     gotoPage(0);
   };
+
+  const openDenyModal = () => {
+    setShowDenyModal(true);
+  }
+
+  const closeDenyModal = () => {
+    setShowDenyModal(false);
+  }
 
   const totalRecordsCount = rows.length;
   const lastColumnIndex = 5;
@@ -123,9 +137,18 @@ export function ListTable() {
                       <ListRowActions
                         status={cell.row.values.status}
                         onApproveClick={() => console.log('Trigger Approval')}
-                        onDenyClick={() => console.log('Trigger Deny Popover')}
+                        onDenyClick={openDenyModal}
                         onViewDetailsClick={() => console.log('Trigger View details popup')}>
                       </ListRowActions>
+
+                      <Dialog open={showDenyModal} onClose={closeDenyModal}>
+                        <DenyApplicationModal />
+                        <DialogActions>
+                          <Button variant="contained" color="secondary" onClick={closeDenyModal}>YES, DENY</Button>
+                          <Button variant="contained" onClick={closeDenyModal}>CANCEL</Button>
+                        </DialogActions>
+                      </Dialog>
+
                     </TableCell>
                   ) : <TableCell {...cell.getCellProps()}>
                       {cell.render('Cell')}
