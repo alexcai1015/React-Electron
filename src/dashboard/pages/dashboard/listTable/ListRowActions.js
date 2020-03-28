@@ -1,28 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, Button, withStyles } from '@material-ui/core';
-<<<<<<< HEAD
-import { Colors } from '../../../../common/constants/Colors';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
-import InfoIcon from '@material-ui/icons/Info';
-
-// TODO match to APOR Type later
-=======
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 
 import { Colors } from '../../../../common/constants/Colors';
 
 // ! TODO: match to APOR Type later
->>>>>>> e19d08349f7108c42a49bbacd0c3e4eac29f1fa1
 export const APPROVAL_STATUS = {
   Pending: 'pending',
   Approved: 'approved',
   Denied: 'denied',
-<<<<<<< HEAD
-=======
-
->>>>>>> e19d08349f7108c42a49bbacd0c3e4eac29f1fa1
   // Cancelled: 'cancelled',
 };
 
@@ -84,26 +71,6 @@ const allStyles = {
     marginLeft: 'auto',
     '& .MuiSvgIcon-root': {
       marginRight: 4,
-<<<<<<< HEAD
-      fontSize: 20
-    },
-    '& .MuiTypography-root': {
-      marginRight: 'auto'
-    }
-  },
-  approvedLabel: {
-    color: Colors.ApprovalGreen,
-
-  },
-  deniedLabel: {
-    color: Colors.DenialDarkRed,
-
-  },
-  cancelledLabel: {
-    color: Colors.CancelGray,
-
-  }
-=======
       fontSize: 20,
     },
     '& .MuiTypography-root': {
@@ -119,59 +86,10 @@ const allStyles = {
   cancelledLabel: {
     color: Colors.CancelGray,
   },
->>>>>>> e19d08349f7108c42a49bbacd0c3e4eac29f1fa1
 };
 
 const ActionsHOC = (props) => {
   const { classes } = props;
-<<<<<<< HEAD
-  return {
-    [APPROVAL_STATUS.Pending]: (
-      <div className={classes.actions}>
-        <Button
-          variant="contained"
-          className={classes.approve}
-          disabled={props.isLoading}
-          onClick={(event) => props.onApproveClick(event)}
-        >
-          Approve
-        </Button>
-        <Button
-          variant="contained"
-          className={classes.deny}
-          disabled={props.isLoading}
-          onClick={(event) => props.onDenyClick(event)}
-        >
-          Deny
-        </Button>
-      </div>
-    ),
-    [APPROVAL_STATUS.Approved]: (
-      <div className={`${classes.labels} ${classes.approvedLabel}`}>
-        <CheckCircleIcon color="inherit" />
-        <Typography variant="body1">
-          Approved
-        </Typography>
-      </div >
-    ),
-    [APPROVAL_STATUS.Denied]: (
-      <div className={`${classes.labels} ${classes.deniedLabel}`}>
-        <CancelIcon color="inherit" />
-        <Typography variant="body1">
-          Denied
-        </Typography>
-      </div>
-    ),
-    // [APPROVAL_STATUS.Cancelled]: (
-    //   <div className={`${classes.labels} ${classes.cancelledLabel}`}>
-    //     <InfoIcon color="inherit" />
-    //     <Typography variant="body1">
-    //       Cancelled
-    //     </Typography>
-    //   </div>
-    // ),
-  }[props.status] || null; // only View Detail will remain
-=======
   return (
     {
       [APPROVAL_STATUS.Pending]: (
@@ -217,7 +135,6 @@ const ActionsHOC = (props) => {
       // ),
     }[props.status] || null
   ); // only View Detail will remain
->>>>>>> e19d08349f7108c42a49bbacd0c3e4eac29f1fa1
 };
 
 export const ListRowActions = withStyles(allStyles)((props) => {
