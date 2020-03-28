@@ -1,7 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useMemo } from 'react';
 import {
-  Container,
   Paper,
   Table,
   TableHead,
@@ -11,11 +9,13 @@ import {
   TableContainer,
   TableFooter,
   TablePagination,
+  makeStyles,
 } from '@material-ui/core';
+import { useTable, usePagination } from 'react-table';
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
-import { rows } from './data/approvals'; // remove when API is ready
+import { tableData } from './data/approvals'; // remove when API is ready
 
 const listTableStyles = makeStyles({
   table: {
@@ -31,76 +31,95 @@ const listTableStyles = makeStyles({
 
 export function ListTable() {
   const classes = listTableStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const {
+    headerGroups,
+    prepareRow,
+    rows,
+    page,
+    state: { pageIndex, pageSize },
+    gotoPage,
+    setPageSize,
+    getTableProps,
+    getTableBodyProps,
+  } = useTable(
+    {
+      columns: useMemo(
+        () => [
+          { Header: 'Company', accessor: 'company' },
+          { Header: 'Name', accessor: 'name' },
+          { Header: 'APOR type', accessor: 'type' },
+          { Header: 'Approval action', accessor: 'action' },
+        ],
+        []
+      ),
+      data: useMemo(() => tableData, []),
+    },
+    usePagination
+  );
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    gotoPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPageSize(+event.target.value);
+    gotoPage(0);
   };
 
-  return (
-    <Container>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} stickyHeader aria-label="sticky header pagination table">
-          <TableHead>
-            <TableRow>
-              <ListHeaderCell>Company</ListHeaderCell>
-              <ListHeaderCell align="left">Name</ListHeaderCell>
-              <ListHeaderCell align="left">APOR Type</ListHeaderCell>
-              <ListHeaderCell align="center">Approval Action</ListHeaderCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
-            ).map((row, index) => (
-              <TableRow key={row.company} className={classes[`striped${index % 2}`]}>
-                <TableCell component="th" scope="row">
-                  {row.company}
-                </TableCell>
-                <TableCell align="left">{row.name}</TableCell>
-                <TableCell align="left">{row.type}</TableCell>
-                <TableCell align="center">
-                  {/* TODO: Approve, Deny, View Detail buttons */}
-                </TableCell>
-              </TableRow>
-            ))}
+  const totalRecordsCount = rows.length;
 
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={4} />
-              </TableRow>
+  return (
+    <TableContainer component={Paper}>
+      <Table
+        {...getTableProps()}
+        className={classes.table}
+        stickyHeader
+        aria-label="sticky header pagination table"
+      >
+        <TableHead>
+          <TableRow>
+            {headerGroups.map((headerGroup) =>
+              headerGroup.headers.map((column) => (
+                <ListHeaderCell {...column.getHeaderProps()}>
+                  {column.render('Header')}
+                </ListHeaderCell>
+              ))
             )}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                colSpan={4}
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  inputProps: { 'aria-label': 'rows per page' },
-                  native: true,
-                }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={ListTablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
-    </Container>
+          </TableRow>
+        </TableHead>
+        <TableBody {...getTableBodyProps()}>
+          {page.map((row, index) => {
+            prepareRow(row);
+            return (
+              <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
+                {row.cells.map((cell) => {
+                  return <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>;
+                })}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              colSpan={4}
+              count={totalRecordsCount}
+              rowsPerPage={pageSize}
+              page={pageIndex}
+              SelectProps={{
+                inputProps: { 'aria-label': 'rows per page' },
+                native: true,
+              }}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+              ActionsComponent={ListTablePaginationActions}
+            />
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </TableContainer>
   );
 }
 

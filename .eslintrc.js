@@ -60,6 +60,7 @@ module.exports = {
     'object-curly-newline': ['error', { consistent: true }],
     'import/no-unresolved': ['error'],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
-    'import/prefer-default-export': [0]
+    'import/prefer-default-export': [0],
+    'react/jsx-props-no-spreading': [0]
   },
 };

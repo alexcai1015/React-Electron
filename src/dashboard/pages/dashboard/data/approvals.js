@@ -4,7 +4,7 @@ function createData(company, name, type) {
   return { company, name, type };
 }
 
-export const rows = [
+export const tableData = [
   createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
   createData(faker.company.companyName(), faker.name.findName(), 'Grocery'),
   createData(faker.company.companyName(), faker.name.findName(), 'Medical'),
