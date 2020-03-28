@@ -41,7 +41,7 @@
   overflow-wrap: break-word;
 }
 
-@media (max-width: 740px) {
+@media (max-width: 800px) {
   .container {
     height: auto;
   }

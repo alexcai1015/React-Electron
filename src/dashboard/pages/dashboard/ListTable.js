@@ -18,6 +18,7 @@ import { ListTablePaginationActions } from './listTable/ListTablePaginationActio
 import { ListRowActions } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
 import { rows } from './data/approvals'; // remove when API is ready
+import SubmissionDetailsModal from '../../submission-details-modal';
 
 const listTableStyles = makeStyles({
   table: {
@@ -35,6 +36,8 @@ export function ListTable() {
   const classes = listTableStyles();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [isDetailsOpen, setIsDetailsOpen] = React.useState(false);
+  const [selectedRapidPassId, setSelectedRapidPassId] = React.useState(null);
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
 
@@ -45,6 +48,11 @@ export function ListTable() {
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const handleViewDetails = (rapidPassId) => {
+    setSelectedRapidPassId(rapidPassId);
+    setIsDetailsOpen(true);
   };
 
   return (
@@ -75,8 +83,8 @@ export function ListTable() {
                     status={row.status}
                     onApproveClick={() => console.log('Trigger Approval')}
                     onDenyClick={() => console.log('Trigger Deny Popover')}
-                    onViewDetailsClick={() => console.log('Trigger View details popup')}>
-                  </ListRowActions>
+                    onViewDetailsClick={() => handleViewDetails(1)} // TODO: pass rapidPassId
+                  ></ListRowActions>
                 </TableCell>
               </TableRow>
             ))}
@@ -107,6 +115,8 @@ export function ListTable() {
           </TableFooter>
         </Table>
       </TableContainer>
+
+      <SubmissionDetailsModal open={isDetailsOpen} handleClose={() => setIsDetailsOpen(false)} />
     </Container>
   );
 }
