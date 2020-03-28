@@ -60,7 +60,7 @@ export const Dashboard = () => {
           </Container>
         </StyledFiltersBlock>
 
-        <Box mt={3}>
+        <Box py={3}>
           <Container>
             <ListTable />
           </Container>

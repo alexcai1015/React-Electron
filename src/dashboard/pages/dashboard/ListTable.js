@@ -1,5 +1,8 @@
 import React, { useMemo } from 'react';
+<<<<<<< HEAD
 import { useParams } from 'react-router-dom';
+=======
+>>>>>>> e19d08349f7108c42a49bbacd0c3e4eac29f1fa1
 import {
   Paper,
   Table,
@@ -22,7 +25,10 @@ import { ListTablePaginationActions } from './listTable/ListTablePaginationActio
 import { ListRowActions } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
 import { tableData } from './data/approvals'; // TODO: remove when API is ready
+<<<<<<< HEAD
 import { DenyApplicationModal } from '../denyModal/DenyModal';
+=======
+>>>>>>> e19d08349f7108c42a49bbacd0c3e4eac29f1fa1
 
 const listTableStyles = makeStyles({
   table: {
