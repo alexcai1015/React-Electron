@@ -2,10 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styles from './pass-details.module.css';
 
-const PassDetails = ({ rapidPass }) => {
+const PassDetails = ({ rapidPass, renderCloseButton }) => {
   return (
     <div className={styles.container}>
-      <div className={styles.header}>RapidPass Submission</div>
+      <div className={styles.header}>
+        <div>RapidPass Submission</div>
+        {renderCloseButton}
+      </div>
       <div className={styles.fields}>
         <div className={styles.field}>
           <div className={styles.label}>Name</div>

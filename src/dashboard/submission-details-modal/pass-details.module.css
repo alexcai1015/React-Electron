@@ -9,7 +9,11 @@
   border-bottom: 1px solid #c4c4c4;
   display: flex;
   align-items: center;
-  padding: 16px 64px;
+  padding: 16px 40px 16px 64px;
+}
+
+.header div:first-of-type {
+  flex: 1;
 }
 
 .fields {
@@ -23,6 +27,7 @@
 .field {
   padding: 8px 0;
   max-width: 288px;
+  padding-right: 16px;
 }
 
 .label {
@@ -44,5 +49,9 @@
   .fields {
     height: auto;
     padding: 16px 24px;
+  }
+
+  .header {
+    font-size: 18px;
   }
 }
