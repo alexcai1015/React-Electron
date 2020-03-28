@@ -1,7 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import React, { useMemo } from 'react';
 import {
-  Container,
   Paper,
   Table,
   TableHead,
@@ -11,14 +9,19 @@ import {
   TableContainer,
   TableFooter,
   TablePagination,
+  makeStyles,
+  styled,
+  TableSortLabel,
+  Typography,
 } from '@material-ui/core';
+import { usePagination, useSortBy, useTable } from 'react-table';
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
-import { rows } from './data/approvals'; // remove when API is ready
-import SubmissionDetailsModal from '../../submission-details-modal';
+import { tableData } from './data/approvals'; // TODO: remove when API is ready
+import AccessPassDetailsModal from './AccessPassDetailsModal';
 
 const listTableStyles = makeStyles({
   table: {
@@ -34,75 +37,122 @@ const listTableStyles = makeStyles({
 
 export function ListTable() {
   const classes = listTableStyles();
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [isDetailsOpen, setIsDetailsOpen] = React.useState(false);
-  const [selectedRapidPassId, setSelectedRapidPassId] = React.useState(null);
 
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, rows.length - page * rowsPerPage);
+  const {
+    headerGroups,
+    prepareRow,
+    rows,
+    page,
+    state: { pageIndex, pageSize },
+    gotoPage,
+    setPageSize,
+    getTableProps,
+    getTableBodyProps,
+  } = useTable(
+    {
+      columns: useMemo(
+        () => [
+          { Header: 'Company', accessor: 'company' },
+          { Header: 'Name', accessor: 'name' },
+          { Header: 'APOR type', accessor: 'aporType' },
+          { Header: 'ID Type', accessor: 'idType' },
+          { Header: 'ID Number', accessor: 'idNumber' },
+          { Header: 'Approval Action', accessor: 'status' },
+        ],
+        []
+      ),
+      data: useMemo(() => tableData, []),
+    },
+    useSortBy,
+
+    // ! `usePagination()` must come after `useSortBy()`
+    usePagination
+  );
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage);
+    gotoPage(newPage);
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    setPageSize(+event.target.value);
+    gotoPage(0);
   };
 
-  const handleViewDetails = (rapidPassId) => {
-    setSelectedRapidPassId(rapidPassId);
-    setIsDetailsOpen(true);
+  const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
+  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState(false);
+  const handleViewDetailsClick = (referenceId) => {
+    setIsdDetailsOpen(true);
+    setAccessPassReferenceId(referenceId);
   };
+
+  const totalRecordsCount = rows.length;
+  const lastColumnIndex = 5;
 
   return (
-    <Container>
+    <React.Fragment>
       <TableContainer component={Paper}>
-        <Table className={classes.table} stickyHeader aria-label="sticky header pagination table">
+        <Table
+          {...getTableProps()}
+          className={classes.table}
+          stickyHeader
+          aria-label="sticky header pagination table"
+        >
           <TableHead>
             <TableRow>
-              <ListHeaderCell>Company</ListHeaderCell>
-              <ListHeaderCell align="left">Name</ListHeaderCell>
-              <ListHeaderCell align="left">APOR Type</ListHeaderCell>
-              <ListHeaderCell align="center">Approval Action</ListHeaderCell>
+              {headerGroups.map((headerGroup) =>
+                headerGroup.headers.map((column, index) => (
+                  <ListHeaderCell
+                    align={index === lastColumnIndex ? 'center' : 'left'}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                  >
+                    <TableSortLabel
+                      active={column.isSorted}
+                      direction={column.isSortedDesc ? 'desc' : 'asc'}
+                    >
+                      {column.render('Header')}
+                      {column.isSorted ? (
+                        <StyledSortAccessibilityLabel component="span">
+                          {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
+                        </StyledSortAccessibilityLabel>
+                      ) : null}
+                    </TableSortLabel>
+                  </ListHeaderCell>
+                ))
+              )}
             </TableRow>
           </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0
-              ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : rows
-            ).map((row, index) => (
-              <TableRow key={index} className={classes[`striped${index % 2}`]}>
-                <TableCell component="th" scope="row">
-                  {row.company}
-                </TableCell>
-                <TableCell align="left">{row.name}</TableCell>
-                <TableCell align="left">{row.type}</TableCell>
-                <TableCell align="center">
-                  <ListRowActions
-                    status={row.status}
-                    onApproveClick={() => console.log('Trigger Approval')}
-                    onDenyClick={() => console.log('Trigger Deny Popover')}
-                    onViewDetailsClick={() => handleViewDetails(1)} // TODO: pass rapidPassId
-                  ></ListRowActions>
-                </TableCell>
-              </TableRow>
-            ))}
-
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={4} />
-              </TableRow>
-            )}
+          <TableBody {...getTableBodyProps()}>
+            {page.map((row, index) => {
+              prepareRow(row);
+              return (
+                <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
+                  {row.cells.map((cell, index) => {
+                    return index === lastColumnIndex ? (
+                      // Last cell is status with custom component
+                      <TableCell align="center" key={index}>
+                        <ListRowActions
+                          status={cell.row.values.status}
+                          onApproveClick={() => console.log('Trigger Approval')}
+                          onDenyClick={() => console.log('Trigger Deny Popover')}
+                          onViewDetailsClick={() => handleViewDetailsClick()} // TODO: Pass Reference ID
+                        ></ListRowActions>
+                      </TableCell>
+                    ) : (
+                      <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
           </TableBody>
           <TableFooter>
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                 colSpan={4}
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
+                count={totalRecordsCount}
+                rowsPerPage={pageSize}
+                page={pageIndex}
                 SelectProps={{
                   inputProps: { 'aria-label': 'rows per page' },
                   native: true,
@@ -116,9 +166,25 @@ export function ListTable() {
         </Table>
       </TableContainer>
 
-      <SubmissionDetailsModal open={isDetailsOpen} handleClose={() => setIsDetailsOpen(false)} />
-    </Container>
+      <AccessPassDetailsModal
+        open={isDetailsOpen}
+        handleClose={() => setIsdDetailsOpen(false)}
+        accessPassReferenceId={accessPassReferenceId}
+      />
+    </React.Fragment>
   );
 }
+
+const StyledSortAccessibilityLabel = styled(Typography)({
+  border: 0,
+  clip: 'rect(0 0 0 0)',
+  height: 1,
+  margin: -1,
+  overflow: 'hidden',
+  padding: 0,
+  position: 'absolute',
+  top: 20,
+  width: 1,
+});
 
 export default ListTable;

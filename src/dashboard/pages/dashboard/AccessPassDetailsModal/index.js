@@ -5,7 +5,7 @@ import Dialog from '@material-ui/core/Dialog';
 import { Close } from '@material-ui/icons';
 import { withStyles } from '@material-ui/core/styles';
 
-import styles from './submission-details-modal.module.css';
+import styles from './access-pass-details-modal.module.css';
 
 // Sorry for using withStyles and CSS Modules in the same component
 // I started with CSS Modules, but I could not change the Dialog's border radius using CSS Modules
@@ -15,7 +15,7 @@ const materialStyles = {
   },
 };
 
-const SubmissionDetailsModal = ({ rapidPass, open, handleClose, classes }) => {
+const AccessPassDetailsModal = ({ open, handleClose, classes }) => {
   return (
     <Dialog
       open={open}
@@ -30,7 +30,6 @@ const SubmissionDetailsModal = ({ rapidPass, open, handleClose, classes }) => {
     >
       <div>
         <PassDetails
-          rapidPass={rapidPass}
           renderCloseButton={
             <div className={styles.closeButtonWrapper} onClick={handleClose}>
               <Close />
@@ -42,13 +41,14 @@ const SubmissionDetailsModal = ({ rapidPass, open, handleClose, classes }) => {
   );
 };
 
-SubmissionDetailsModal.propTypes = {
+AccessPassDetailsModal.propTypes = {
   handleClose: PropTypes.func,
   open: PropTypes.bool,
+  accessPassReferenceId: PropTypes.string,
 };
 
-SubmissionDetailsModal.defaultProps = {
+AccessPassDetailsModal.defaultProps = {
   open: true,
 };
 
-export default withStyles(materialStyles)(SubmissionDetailsModal);
+export default withStyles(materialStyles)(AccessPassDetailsModal);
