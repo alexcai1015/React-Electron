@@ -8,8 +8,9 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import { Menu as MenuIcon } from '@material-ui/icons';
+
 import logo from '../../assets/rapidpass.png';
+
 const useStyles = makeStyles({
   grow: {
     flexGrow: 1,
@@ -22,8 +23,7 @@ const useStyles = makeStyles({
   },
 });
 
-
-export function NavigationBar(props) {
+export function NavigationBar() {
   const classes = useStyles();
 
   return (
