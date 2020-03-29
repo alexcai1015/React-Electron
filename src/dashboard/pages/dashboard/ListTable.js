@@ -81,7 +81,7 @@ export function ListTable() {
   const { accessPassId } = useParams();
   const [showDenyModal, setShowDenyModal] = React.useState(!!accessPassId);
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
-  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState(false);
+  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
   const [openSuccess, setOpenSuccess] = React.useState({ open: false, user: '' });
 
   const handleChangePage = (event, newPage) => {
