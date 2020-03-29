@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Button,
@@ -6,15 +7,18 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  IconButton,
   Snackbar,
   TextField,
   InputLabel
 } from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import MuiAlert from '@material-ui/lab/Alert';
 import { Colors } from '../../../../common/constants/Colors';
 
-const useStyles = makeStyles(theme => ({
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+const useStyles = makeStyles(() => ({
   dialog: {
     fontSize: 16
   },
@@ -69,23 +73,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DenyApplicationModal = ({ open, handleClose, accessPassReferenceId }) => {  
+const DenyApplicationModal = ({ open, handleClose, accessPassReferenceId }) => {
   const classes = useStyles();
   const fullWidth = true;
 
   if (!accessPassReferenceId) {
     return (
-      <Snackbar
-        open={open}
-        autoHideDuration={2000}
-        onClose={handleClose}
-        message="Invalid Access Pass Reference ID"
-        action={
-          <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
-            <CloseIcon fontSize="small" />
-          </IconButton>
-        }
-      />
+      <Snackbar open={open} autoHideDuration={2500} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error">
+          Invalid Access Pass Reference ID
+        </Alert>
+      </Snackbar>
     );
   }
 
@@ -110,6 +108,18 @@ const DenyApplicationModal = ({ open, handleClose, accessPassReferenceId }) => {
       </DialogActions>
     </Dialog>
   );
-}
+};
+
+DenyApplicationModal.propTypes = {
+  handleClose: PropTypes.func,
+  open: PropTypes.bool,
+  accessPassReferenceId: PropTypes.string,
+};
+
+DenyApplicationModal.defaultProps = {
+  handleClose: () => {},
+  open: false,
+  accessPassReferenceId: ''
+};
 
 export default DenyApplicationModal;
