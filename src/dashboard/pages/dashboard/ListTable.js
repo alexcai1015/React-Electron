@@ -23,6 +23,7 @@ import { ListRowActions } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
 import { tableData } from './data/approvals'; // TODO: remove when API is ready
 import { DenyApplicationModal } from '../denyModal/DenyModal';
+import AccessPassDetailsModal from './AccessPassDetailsModal';
 
 const listTableStyles = makeStyles({
   table: {
@@ -72,6 +73,8 @@ export function ListTable() {
 
   const { accessPassId } = useParams();
   const [showDenyModal, setShowDenyModal] = React.useState(!!accessPassId);
+  const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
+  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState(false);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -90,11 +93,16 @@ export function ListTable() {
     setShowDenyModal(false);
   }
 
+  const handleViewDetailsClick = (referenceId) => {
+    setIsdDetailsOpen(true);
+    setAccessPassReferenceId(referenceId);
+  };
+
   const totalRecordsCount = rows.length;
   const lastColumnIndex = 5;
 
   return (
-    <>
+    <React.Fragment>
       <TableContainer component={Paper}>
         <Table
           {...getTableProps()}
@@ -138,16 +146,13 @@ export function ListTable() {
                           status={cell.row.values.status}
                           onApproveClick={() => console.log('Trigger Approval')}
                           onDenyClick={openDenyModal}
-                          onViewDetailsClick={() => console.log('Trigger View details popup')}>
-                        </ListRowActions>
-
+                          onViewDetailsClick={() => handleViewDetailsClick()} // TODO: Pass Reference ID
+                        ></ListRowActions>
                       </TableCell>
-                    ) : <TableCell {...cell.getCellProps()}>
-                        {cell.render('Cell')}
-                      </TableCell>;
+                    ) : (
+                        <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                      );
                   })}
-
-
                 </TableRow>
               );
             })}
@@ -173,7 +178,14 @@ export function ListTable() {
         </Table>
       </TableContainer>
       <DenyApplicationModal show={showDenyModal} closeModal={closeDenyModal} />
-    </>
+
+
+      <AccessPassDetailsModal
+        open={isDetailsOpen}
+        handleClose={() => setIsdDetailsOpen(false)}
+        accessPassReferenceId={accessPassReferenceId}
+      />
+    </React.Fragment>
   );
 }
 
