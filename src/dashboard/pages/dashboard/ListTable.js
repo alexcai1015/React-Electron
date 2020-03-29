@@ -14,8 +14,10 @@ import {
   styled,
   TableSortLabel,
   Typography,
+  Snackbar,
 } from '@material-ui/core';
 import { usePagination, useSortBy, useTable } from 'react-table';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
@@ -24,6 +26,11 @@ import { Colors } from '../../../common/constants/Colors';
 import { tableData } from './data/approvals'; // TODO: remove when API is ready
 import { DenyApplicationModal } from '../denyModal/DenyModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
+
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const listTableStyles = makeStyles({
   table: {
@@ -75,6 +82,7 @@ export function ListTable() {
   const [showDenyModal, setShowDenyModal] = React.useState(!!accessPassId);
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
   const [accessPassReferenceId, setAccessPassReferenceId] = React.useState(false);
+  const [openSuccess, setOpenSuccess] = React.useState({ open: false, user: '' });
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -144,9 +152,11 @@ export function ListTable() {
                       <TableCell align="center" key={index}>
                         <ListRowActions
                           status={cell.row.values.status}
-                          onApproveClick={() => console.log('Trigger Approval')}
+                          onApproveClick={() => {
+                            setOpenSuccess({ open: true, user: cell.row.values.name });
+                          }}
                           onDenyClick={openDenyModal}
-                          onViewDetailsClick={() => handleViewDetailsClick()} // TODO: Pass Reference ID
+                          onViewDetailsClick={() => handleViewDetailsClick(cell.row.values.id)} // TODO: Pass Reference ID
                         ></ListRowActions>
                       </TableCell>
                     ) : (
@@ -177,14 +187,24 @@ export function ListTable() {
           </TableFooter>
         </Table>
       </TableContainer>
-      <DenyApplicationModal show={showDenyModal} closeModal={closeDenyModal} />
 
+      {/* * Modals   */}
+      <DenyApplicationModal show={showDenyModal} closeModal={closeDenyModal} />
 
       <AccessPassDetailsModal
         open={isDetailsOpen}
         handleClose={() => setIsdDetailsOpen(false)}
         accessPassReferenceId={accessPassReferenceId}
       />
+
+      <Snackbar open={openSuccess.open} autoHideDuration={2500} onClose={(event, reason) => {
+        if (reason !== 'clickaway') setOpenSuccess({ open: false });
+      }}>
+        <Alert onClose={() => setOpenSuccess({ open: false })} severity="success">
+          Approved!
+           {/* TODO show user name */}
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
 }
