@@ -1,7 +1,18 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, InputLabel } from '@material-ui/core';
-import { Colors } from '../../../common/constants/Colors';
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
+  Snackbar,
+  TextField,
+  InputLabel
+} from '@material-ui/core';
+import CloseIcon from '@material-ui/icons/Close';
+import { Colors } from '../../../../common/constants/Colors';
 
 const useStyles = makeStyles(theme => ({
   dialog: {
@@ -58,12 +69,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const DenyApplicationModal = ({ show, closeModal }) => {
+const DenyApplicationModal = ({ open, handleClose, accessPassReferenceId }) => {  
   const classes = useStyles();
   const fullWidth = true;
 
+  if (!accessPassReferenceId) {
+    return (
+      <Snackbar
+        open={open}
+        autoHideDuration={2000}
+        onClose={handleClose}
+        message="Invalid Access Pass Reference ID"
+        action={
+          <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      />
+    );
+  }
+
   return (
-    <Dialog open={show} onClose={closeModal} className={classes.dialog} fullWidth={true}
+    <Dialog open={open} onClose={handleClose} className={classes.dialog} fullWidth={true}
       maxWidth={'xs'}>
       <DialogTitle className={classes.modalTitle}>Deny Application?</DialogTitle>
       <DialogContent>
@@ -78,9 +105,11 @@ export const DenyApplicationModal = ({ show, closeModal }) => {
         />
       </DialogContent>
       <DialogActions className={classes.actions}>
-        <Button variant="contained" className={classes.denyAction} onClick={closeModal}>YES, DENY</Button>
-        <Button variant="contained" className={classes.cancelAction} onClick={closeModal}>CANCEL</Button>
+        <Button variant="contained" className={classes.denyAction} onClick={handleClose}>YES, DENY</Button>
+        <Button variant="contained" className={classes.cancelAction} onClick={handleClose}>CANCEL</Button>
       </DialogActions>
     </Dialog>
   );
 }
+
+export default DenyApplicationModal;

@@ -22,7 +22,7 @@ import { ListTablePaginationActions } from './listTable/ListTablePaginationActio
 import { ListRowActions } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
 import { tableData } from './data/approvals'; // TODO: remove when API is ready
-import { DenyApplicationModal } from '../denyModal/DenyModal';
+import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
 
 const listTableStyles = makeStyles({
@@ -71,10 +71,9 @@ export function ListTable() {
     usePagination
   );
 
-  const { accessPassId } = useParams();
-  const [showDenyModal, setShowDenyModal] = React.useState(!!accessPassId);
+  const [isDenyModalOpen, setIsDenyModalOpen] = React.useState(false);
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
-  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState(false);
+  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState(null);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -85,12 +84,13 @@ export function ListTable() {
     gotoPage(0);
   };
 
-  const openDenyModal = () => {
-    setShowDenyModal(true);
+  const openDenyModal = (referenceId) => {
+    setIsDenyModalOpen(true);
+    setAccessPassReferenceId(referenceId ? referenceId.toString() : '');
   }
 
   const closeDenyModal = () => {
-    setShowDenyModal(false);
+    setIsDenyModalOpen(false);
   }
 
   const handleViewDetailsClick = (referenceId) => {
@@ -145,7 +145,7 @@ export function ListTable() {
                         <ListRowActions
                           status={cell.row.values.status}
                           onApproveClick={() => console.log('Trigger Approval')}
-                          onDenyClick={openDenyModal}
+                          onDenyClick={() => openDenyModal(index)}
                           onViewDetailsClick={() => handleViewDetailsClick()} // TODO: Pass Reference ID
                         ></ListRowActions>
                       </TableCell>
@@ -177,9 +177,11 @@ export function ListTable() {
           </TableFooter>
         </Table>
       </TableContainer>
-      <DenyApplicationModal show={showDenyModal} closeModal={closeDenyModal} />
-
-
+      <DenyApplicationModal
+        open={isDenyModalOpen}
+        handleClose={closeDenyModal}
+        accessPassReferenceId={accessPassReferenceId}
+      />
       <AccessPassDetailsModal
         open={isDetailsOpen}
         handleClose={() => setIsdDetailsOpen(false)}
