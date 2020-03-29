@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Container, Grid, TextField, MenuItem, styled } from '@material-ui/core';
 
 import { NavigationBar } from '../../common/components/NavigationBar';
+import { useGetAccessPasses } from '../../common/hooks';
 
 import { ListTable } from './dashboard/ListTable';
 
@@ -25,6 +26,7 @@ const filterOptions = [
 ];
 
 export const Dashboard = () => {
+  const { data } = useGetAccessPasses();
   const [selectedFilterOption, setSelectedFilterOption] = useState('show_all');
 
   const handleFilterSelectChange = (event) => {
@@ -62,7 +64,7 @@ export const Dashboard = () => {
 
         <Box py={3}>
           <Container>
-            <ListTable />
+            <ListTable value={data} />
           </Container>
         </Box>
       </Box>

@@ -16,11 +16,11 @@ import {
 } from '@material-ui/core';
 import { usePagination, useSortBy, useTable } from 'react-table';
 
+import { Colors } from '../../../common/constants/Colors';
+
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
-import { Colors } from '../../../common/constants/Colors';
-import { tableData } from './data/approvals'; // TODO: remove when API is ready
 
 const listTableStyles = makeStyles({
   table: {
@@ -34,7 +34,7 @@ const listTableStyles = makeStyles({
   },
 });
 
-export function ListTable() {
+export function ListTable({ value }) {
   const classes = listTableStyles();
 
   const {
@@ -60,7 +60,7 @@ export function ListTable() {
         ],
         []
       ),
-      data: useMemo(() => tableData, []),
+      data: useMemo(() => value, [value]),
     },
     useSortBy,
 
