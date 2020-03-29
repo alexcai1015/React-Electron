@@ -8,7 +8,6 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import { Menu as MenuIcon } from '@material-ui/icons';
 import logo from '../../assets/rapidpass.png';
 const useStyles = makeStyles({
   grow: {
@@ -16,9 +15,6 @@ const useStyles = makeStyles({
   },
   nav: {
     backgroundColor: 'rgb(72, 34, 164)',
-  },
-  title: {
-    // ! TODO: add DCTX font
   },
 });
 
@@ -34,7 +30,7 @@ export function NavigationBar(props) {
             <img src={logo} width="48" height="48" alt="Logo" title="Logo" />
           </IconButton>
 
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h6">
             RapidPass.PH Dashboard
           </Typography>
 
