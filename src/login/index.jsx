@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 
 import actions from './actions';
 import selectors from './selectors';
-import logo from './logo.png';
+import logo from '../assets/logo_purple_title.svg';
 import classes from './login.module.css';
 
 const loginFormik = withFormik({

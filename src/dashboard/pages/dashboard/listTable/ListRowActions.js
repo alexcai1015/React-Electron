@@ -5,11 +5,10 @@ import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-
 
 import { Colors } from '../../../../common/constants/Colors';
 
-// ! TODO: match to APOR Type later
 export const APPROVAL_STATUS = {
   Pending: 'pending',
   Approved: 'approved',
-  Denied: 'denied',
+  Declined: 'declined',
 
   // Cancelled: 'cancelled',
 };
@@ -119,7 +118,7 @@ const ActionsHOC = (props) => {
           <Typography variant="body1">Approved</Typography>
         </div>
       ),
-      [APPROVAL_STATUS.Denied]: (
+      [APPROVAL_STATUS.Declined]: (
         <div className={`${classes.labels} ${classes.deniedLabel}`}>
           <CancelIcon color="inherit" />
           <Typography variant="body1">Denied</Typography>
