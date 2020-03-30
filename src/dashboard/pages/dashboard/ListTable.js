@@ -19,10 +19,12 @@ import { usePagination, useSortBy, useTable } from 'react-table';
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
-import { ListRowActions } from './listTable/ListRowActions';
+import { ListRowActions, APPROVAL_STATUS } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
+import { SnackbarAlert } from '../../../common/components/SnackbarAlert';
 import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
+import { useUpdateAccessPass } from '../../../common/hooks';
 
 
 const listTableStyles = makeStyles({
@@ -71,10 +73,15 @@ export function ListTable({ value }) {
     usePagination
   );
 
+  /** API Hooks */
+  const { execute: executeUpdate, dataUpdate, isLoadingUpdate, errorUpdate } = useUpdateAccessPass();
+
+  /** Modals' States  */
   const [isDenyModalOpen, setIsDenyModalOpen] = React.useState(false);
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
   const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
-  const [openSuccess, setOpenSuccess] = React.useState({ open: false, user: '' });
+  const [openApproval, setOpenApproval] = React.useState(false);
+  const [rowUser, setRowUser] = React.useState(''); // for displaying success
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -84,6 +91,16 @@ export function ListTable({ value }) {
     setPageSize(+event.target.value);
     gotoPage(0);
   };
+
+  const handleApproveActionClick = (cellValues) => {
+    const { referenceId, status, name } = cellValues;
+    if (status !== APPROVAL_STATUS.Pending) {
+      return;
+    }
+    setOpenApproval({ open: true, user: name });
+    executeUpdate(referenceId, { status: APPROVAL_STATUS.Approved })
+    setOpenApproval({ open: !isLoadingUpdate })
+  }
 
   const handleDenyActionClick = (referenceId) => {
     setIsDenyModalOpen(true);
@@ -141,9 +158,7 @@ export function ListTable({ value }) {
                       <TableCell align="center" key={index}>
                         <ListRowActions
                           status={cell.row.values.status}
-                          onApproveClick={() => {
-                            setOpenSuccess({ open: true, user: cell.row.values.name });
-                          }}
+                          onApproveClick={() => handleApproveActionClick(cell.row.values)}
                           onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
                           onViewDetailsClick={() => handleViewDetailsClick(cell.row.values.idNumber)} // TODO: Pass Reference ID
                         ></ListRowActions>
@@ -187,9 +202,9 @@ export function ListTable({ value }) {
         accessPassReferenceId={accessPassReferenceId}
       />
 
-      <SnackbarAlert open={openSuccess.open} autoHideDuration={2500} onClose={(event, reason) => {
-        if (reason !== 'clickaway') setOpenSuccess({ open: false });
-      }} message={`Approved ${openSuccess.user}`}></SnackbarAlert>
+      <SnackbarAlert open={openApproval.open} autoHideDuration={2500} onClose={(event, reason) => {
+        if (reason !== 'clickaway') setOpenApproval({ open: false });
+      }} message={`Approved ${openApproval.user}`}></SnackbarAlert>
     </React.Fragment>
   );
 }
