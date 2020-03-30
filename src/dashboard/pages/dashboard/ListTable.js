@@ -63,7 +63,7 @@ export function ListTable({ value }) {
           { Header: 'Name', accessor: 'name' },
           { Header: 'APOR type', accessor: 'aporType' },
           { Header: 'ID Type', accessor: 'idType' },
-          { Header: 'ID Number', accessor: 'idNumber' },
+          { Header: 'ID Number', accessor: 'id' },
           { Header: 'Approval Action', accessor: 'status' },
         ],
         []
