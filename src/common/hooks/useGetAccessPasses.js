@@ -6,7 +6,7 @@ const mapToAccessPass = (data) => ({
 });
 
 export const useGetAccessPasses = () => {
-  const { data: accessPasses, ...others } = useQuery('/registry/access-passes', {
+  const { data: accessPasses, ...others } = useQuery('/v1/registry/access-passes', {
     swrConfig: {
       initialData: [],
     },
