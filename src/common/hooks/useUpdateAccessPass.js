@@ -1,6 +1,6 @@
 import { useMutation, HttpMethod } from './useApi';
 
-export const useUpdateAccessPasses = () => {
+export const useUpdateAccessPass = () => {
   const { data: accessPass, mutate, ...others } = useMutation(
     '/v1/registry/access-passes',
     HttpMethod.PUT,
