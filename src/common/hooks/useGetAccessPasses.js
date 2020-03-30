@@ -1,13 +1,16 @@
 import { useQuery } from './useApi';
 
+const mapToAccessPass = (data) => ({
+  ...data,
+  status: String(data.status).toLowerCase(),
+});
+
 export const useGetAccessPasses = () => {
   const { data: accessPasses, ...others } = useQuery('/registry/access-passes', {
     swrConfig: {
       initialData: [],
     },
-
-    // Transform when the API is ready
-    transformer: (data) => data,
+    transformer: (data) => data.map(mapToAccessPass),
   });
 
   // TODO - check why swrConfig's initial data not working
