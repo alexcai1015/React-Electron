@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Container, Grid, TextField, MenuItem, styled } from '@material-ui/core';
 
 import { NavigationBar } from '../../common/components/NavigationBar';
+import { useGetAccessPasses } from '../../common/hooks';
 
 import { ListTable } from './dashboard/ListTable';
 
@@ -25,6 +26,7 @@ const filterOptions = [
 ];
 
 export const Dashboard = () => {
+  const { data } = useGetAccessPasses();
   const [selectedFilterOption, setSelectedFilterOption] = useState('show_all');
 
   const handleFilterSelectChange = (event) => {
@@ -39,7 +41,7 @@ export const Dashboard = () => {
           <Container>
             <Grid container>
               <Grid item lg={6}>
-                <TextField label="Search" type="search" />
+                <StyledSearchTextField label="Search" type="search" variant="outlined" />
               </Grid>
               <Grid container justify="flex-end" item lg={6}>
                 <StyledFilterSelectTextField
@@ -62,7 +64,7 @@ export const Dashboard = () => {
 
         <Box py={3}>
           <Container>
-            <ListTable />
+            <ListTable value={data} />
           </Container>
         </Box>
       </Box>
@@ -81,3 +83,7 @@ const StyledFilterSelectTextField = styled(TextField)(({ theme }) => ({
   marginLeft: theme.spacing(5),
   width: 180,
 }));
+
+const StyledSearchTextField = styled(TextField)({
+  width: 456,
+});

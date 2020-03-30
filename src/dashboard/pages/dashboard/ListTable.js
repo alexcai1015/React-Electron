@@ -22,7 +22,6 @@ import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
-import { tableData } from './data/approvals'; // TODO: remove when API is ready
 import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
 
@@ -43,7 +42,7 @@ const listTableStyles = makeStyles({
   },
 });
 
-export function ListTable() {
+export function ListTable({ value }) {
   const classes = listTableStyles();
 
   const {
@@ -69,7 +68,7 @@ export function ListTable() {
         ],
         []
       ),
-      data: useMemo(() => tableData, []),
+      data: useMemo(() => value, [value]),
     },
     useSortBy,
 

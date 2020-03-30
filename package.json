@@ -14,6 +14,7 @@
     "formik": "^2.1.4",
     "history": "^4.10.1",
     "prop-types": "^15.7.2",
+    "query-string": "^6.11.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
@@ -23,12 +24,13 @@
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
+    "swr": "^0.1.18",
     "yup": "^0.28.3"
   },
   "scripts": {
     "lint": "eslint --cache --ext .js,.jsx src",
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "INLINE_RUNTIME_CHUNK=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:mock-server": "json-server --watch mock-server.js -p 3110"
