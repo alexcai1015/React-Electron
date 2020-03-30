@@ -33,6 +33,7 @@ export const useQuery = (
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [queryParams, setQueryParams] = useState(null);
+  const [urlResolver, setUrlResolver] = useState(null);
   const fetcher = axiosFetcher({
     ...axiosConfig,
     method: HttpMethod.GET,
@@ -45,6 +46,10 @@ export const useQuery = (
           url,
           query: queryParams,
         });
+      }
+
+      if (urlResolver && typeof urlResolver === 'function') {
+        return urlResolver(url);
       }
 
       return url;
@@ -63,8 +68,14 @@ export const useQuery = (
     }
   );
 
-  const execute = (newQueryParams) => {
+  const execute = (
+    { queryParams: newQueryParams, urlResolver: newUrlResolver } = {
+      queryParams: {},
+      newUrlResolver: null,
+    }
+  ) => {
     setQueryParams(newQueryParams);
+    setUrlResolver(newUrlResolver);
   };
 
   return {
@@ -87,6 +98,7 @@ export const useMutation = (
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [queryParams, setQueryParams] = useState(null);
+  const [urlResolver, setUrlResolver] = useState(null);
   const fetcher = axiosFetcher({
     ...axiosConfig,
     method,
@@ -99,6 +111,10 @@ export const useMutation = (
           url,
           query: queryParams,
         });
+      }
+
+      if (urlResolver && typeof urlResolver === 'function') {
+        return urlResolver(url);
       }
 
       return url;
@@ -120,9 +136,14 @@ export const useMutation = (
   );
 
   const execute = (
-    { queryParams: newQueryParams, data: newData } = { queryParams: {}, data: {} }
+    { queryParams: newQueryParams, urlResolver: newUrlResolver, data: newData } = {
+      queryParams: {},
+      data: {},
+      urlResolver: null,
+    }
   ) => {
     setQueryParams(newQueryParams);
+    setUrlResolver(newUrlResolver);
     mutate(newData);
   };
 

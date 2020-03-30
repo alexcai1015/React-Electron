@@ -16,6 +16,9 @@ export const useDeleteAccessPass = () => {
         queryParams: {
           id,
         },
+        urlResolver: (baseUrl) => {
+          return [baseUrl, id].join('/');
+        },
       });
     }
   };

@@ -1,7 +1,7 @@
 import { useMutation, HttpMethod } from './useApi';
 
 export const useUpdateAccessPasses = () => {
-  const { data: accessPass, mutate, ...others } = useMutation(
+  const { data: accessPass, execute: mutate, ...others } = useMutation(
     '/v1/registry/access-passes',
     HttpMethod.PUT,
     {
@@ -14,6 +14,9 @@ export const useUpdateAccessPasses = () => {
     mutate({
       queryParams: {
         id,
+      },
+      urlResolver: (baseUrl) => {
+        return [baseUrl, id].join('/');
       },
       data,
     });
