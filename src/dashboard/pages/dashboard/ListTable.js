@@ -13,10 +13,9 @@ import {
   styled,
   TableSortLabel,
   Typography,
-  Snackbar,
 } from '@material-ui/core';
 import { usePagination, useSortBy, useTable } from 'react-table';
-import MuiAlert from '@material-ui/lab/Alert';
+
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
@@ -25,10 +24,6 @@ import { Colors } from '../../../common/constants/Colors';
 import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
 
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
 
 const listTableStyles = makeStyles({
   table: {
@@ -192,14 +187,9 @@ export function ListTable({ value }) {
         accessPassReferenceId={accessPassReferenceId}
       />
 
-      <Snackbar open={openSuccess.open} autoHideDuration={2500} onClose={(event, reason) => {
+      <SnackbarAlert open={openSuccess.open} autoHideDuration={2500} onClose={(event, reason) => {
         if (reason !== 'clickaway') setOpenSuccess({ open: false });
-      }}>
-        <Alert onClose={() => setOpenSuccess({ open: false })} severity="success">
-          Approved!
-           {/* TODO show user name */}
-        </Alert>
-      </Snackbar>
+      }} message={`Approved ${openSuccess.user}`}></SnackbarAlert>
     </React.Fragment>
   );
 }
