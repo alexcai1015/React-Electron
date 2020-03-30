@@ -2,6 +2,7 @@ import { useQuery } from './useApi';
 
 const mapToAccessPass = (data) => ({
   ...data,
+  id: data.identifierNumber,
   status: String(data.status).toLowerCase(),
 });
 
