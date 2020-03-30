@@ -2,7 +2,7 @@ import { useMutation, HttpMethod } from './useApi';
 
 export const useDeleteAccessPass = () => {
   const { data: accessPass, execute: mutate, ...others } = useMutation(
-    '/registry/access-passes',
+    '/v1/registry/access-passes',
     HttpMethod.DELETE,
     {
       // Transform when the API is ready

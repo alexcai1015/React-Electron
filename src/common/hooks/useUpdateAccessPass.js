@@ -2,7 +2,7 @@ import { useMutation, HttpMethod } from './useApi';
 
 export const useUpdateAccessPasses = () => {
   const { data: accessPass, mutate, ...others } = useMutation(
-    '/registry/access-passes',
+    '/v1/registry/access-passes',
     HttpMethod.PUT,
     {
       // Transform when the API is ready
