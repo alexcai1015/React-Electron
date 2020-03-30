@@ -1,0 +1,57 @@
+.container {
+  height: 440px;
+}
+
+.header {
+  font-weight: 600;
+  font-size: 24px;
+  color: #2e2e2e;
+  border-bottom: 1px solid #c4c4c4;
+  display: flex;
+  align-items: center;
+  padding: 16px 40px 16px 64px;
+}
+
+.header div:first-of-type {
+  flex: 1;
+}
+
+.fields {
+  height: 372px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 16px 64px 56px;
+}
+
+.field {
+  padding: 8px 0;
+  max-width: 288px;
+  padding-right: 16px;
+}
+
+.label {
+  color: #989898;
+  text-transform: uppercase;
+}
+
+.attributeValue {
+  color: #343434;
+  padding: 8px 0;
+  overflow-wrap: break-word;
+}
+
+@media (max-width: 800px) {
+  .container {
+    height: auto;
+  }
+  .header,
+  .fields {
+    height: auto;
+    padding: 16px 24px;
+  }
+
+  .header {
+    font-size: 18px;
+  }
+}

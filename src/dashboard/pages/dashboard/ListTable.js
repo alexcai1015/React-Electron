@@ -13,14 +13,22 @@ import {
   styled,
   TableSortLabel,
   Typography,
+  Snackbar,
 } from '@material-ui/core';
 import { usePagination, useSortBy, useTable } from 'react-table';
-
-import { Colors } from '../../../common/constants/Colors';
+import MuiAlert from '@material-ui/lab/Alert';
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
+import { Colors } from '../../../common/constants/Colors';
+import DenyApplicationModal from './DenyApplicationModal';
+import AccessPassDetailsModal from './AccessPassDetailsModal';
+
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const listTableStyles = makeStyles({
   table: {
@@ -68,6 +76,11 @@ export function ListTable({ value }) {
     usePagination
   );
 
+  const [isDenyModalOpen, setIsDenyModalOpen] = React.useState(false);
+  const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
+  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
+  const [openSuccess, setOpenSuccess] = React.useState({ open: false, user: '' });
+
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
   };
@@ -77,86 +90,117 @@ export function ListTable({ value }) {
     gotoPage(0);
   };
 
+  const handleDenyActionClick = (referenceId) => {
+    setIsDenyModalOpen(true);
+    setAccessPassReferenceId(referenceId);
+  }
+
+  const handleViewDetailsClick = (referenceId) => {
+    setIsdDetailsOpen(true);
+    setAccessPassReferenceId(referenceId);
+  };
+
   const totalRecordsCount = rows.length;
   const lastColumnIndex = 5;
 
   return (
-    <TableContainer component={Paper}>
-      <Table
-        {...getTableProps()}
-        className={classes.table}
-        stickyHeader
-        aria-label="sticky header pagination table"
-      >
-        <TableHead>
-          <TableRow>
-            {headerGroups.map((headerGroup) =>
-              headerGroup.headers.map((column, index) => (
-                <ListHeaderCell align={index === lastColumnIndex ? 'center' : 'left'}
-                  {...column.getHeaderProps(column.getSortByToggleProps())}>
-                  <TableSortLabel
-                    active={column.isSorted}
-                    direction={column.isSortedDesc ? 'desc' : 'asc'}
-                  >
-                    {column.render('Header')}
-                    {column.isSorted ? (
-                      <StyledSortAccessibilityLabel component="span">
-                        {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
-                      </StyledSortAccessibilityLabel>
-                    ) : null}
-                  </TableSortLabel>
-                </ListHeaderCell>
-              ))
-            )}
-          </TableRow>
-        </TableHead>
-        <TableBody {...getTableBodyProps()}>
-          {page.map((row, index) => {
-            prepareRow(row);
-            return (
-              <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
+    <React.Fragment>
+      <TableContainer component={Paper}>
+        <Table
+          {...getTableProps()}
+          className={classes.table}
+          stickyHeader
+          aria-label="sticky header pagination table"
+        >
+          <TableHead>
+            <TableRow>
+              {headerGroups.map((headerGroup) =>
+                headerGroup.headers.map((column, index) => (
+                  <ListHeaderCell align={index === lastColumnIndex ? 'center' : 'left'}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}>
+                    <TableSortLabel
+                      active={column.isSorted}
+                      direction={column.isSortedDesc ? 'desc' : 'asc'}
+                    >
+                      {column.render('Header')}
+                      {column.isSorted ? (
+                        <StyledSortAccessibilityLabel component="span">
+                          {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
+                        </StyledSortAccessibilityLabel>
+                      ) : null}
+                    </TableSortLabel>
+                  </ListHeaderCell>
+                ))
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody {...getTableBodyProps()}>
+            {page.map((row, index) => {
+              prepareRow(row);
+              return (
+                <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
 
-                {row.cells.map((cell, index) => {
-                  return index === lastColumnIndex ? (
-                    // Last cell is status with custom component
-                    <TableCell align="center" key={index}>
-                      <ListRowActions
-                        status={cell.row.values.status}
-                        onApproveClick={() => console.log('Trigger Approval')}
-                        onDenyClick={() => console.log('Trigger Deny Popover')}
-                        onViewDetailsClick={() => console.log('Trigger View details popup')}>
-                      </ListRowActions>
-                    </TableCell>
-                  ) : <TableCell {...cell.getCellProps()}>
-                      {cell.render('Cell')}
-                    </TableCell>;
-                })}
+                  {row.cells.map((cell, index) => {
+                    return index === lastColumnIndex ? (
+                      // Last cell is status with custom component
+                      <TableCell align="center" key={index}>
+                        <ListRowActions
+                          status={cell.row.values.status}
+                          onApproveClick={() => {
+                            setOpenSuccess({ open: true, user: cell.row.values.name });
+                          }}
+                          onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
+                          onViewDetailsClick={() => handleViewDetailsClick(cell.row.values.idNumber)} // TODO: Pass Reference ID
+                        ></ListRowActions>
+                      </TableCell>
+                    ) : (
+                        <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                      );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                colSpan={4}
+                count={totalRecordsCount}
+                rowsPerPage={pageSize}
+                page={pageIndex}
+                SelectProps={{
+                  inputProps: { 'aria-label': 'rows per page' },
+                  native: true,
+                }}
+                onChangePage={handleChangePage}
+                onChangeRowsPerPage={handleChangeRowsPerPage}
+                ActionsComponent={ListTablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </TableContainer>
+      <DenyApplicationModal
+        open={isDenyModalOpen}
+        handleClose={() => setIsDenyModalOpen(false)}
+        accessPassReferenceId={accessPassReferenceId}
+      />
+      <AccessPassDetailsModal
+        open={isDetailsOpen}
+        handleClose={() => setIsdDetailsOpen(false)}
+        accessPassReferenceId={accessPassReferenceId}
+      />
 
-
-              </TableRow>
-            );
-          })}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-              colSpan={4}
-              count={totalRecordsCount}
-              rowsPerPage={pageSize}
-              page={pageIndex}
-              SelectProps={{
-                inputProps: { 'aria-label': 'rows per page' },
-                native: true,
-              }}
-              onChangePage={handleChangePage}
-              onChangeRowsPerPage={handleChangeRowsPerPage}
-              ActionsComponent={ListTablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+      <Snackbar open={openSuccess.open} autoHideDuration={2500} onClose={(event, reason) => {
+        if (reason !== 'clickaway') setOpenSuccess({ open: false });
+      }}>
+        <Alert onClose={() => setOpenSuccess({ open: false })} severity="success">
+          Approved!
+           {/* TODO show user name */}
+        </Alert>
+      </Snackbar>
+    </React.Fragment>
   );
 }
 

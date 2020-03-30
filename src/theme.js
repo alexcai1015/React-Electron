@@ -1,4 +1,5 @@
 import { createMuiTheme } from '@material-ui/core';
+import { Colors } from './common/constants/Colors'
 
 const DCTX_THEME_FONT = 'Work Sans';
 export const theme = createMuiTheme({
@@ -17,6 +18,11 @@ export const theme = createMuiTheme({
       '"Segoe UI Symbol"',
     ].join(','),
   },
+  palette: {
+    info: {
+      main: Colors.BodyTextBlack
+    }
+  }
 });
 
 // TODO: add responsive font sizes (rem)?

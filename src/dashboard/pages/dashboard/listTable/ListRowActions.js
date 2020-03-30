@@ -33,7 +33,7 @@ const allStyles = {
     display: 'inline-flex',
     marginLeft: 'auto',
     '& .MuiButton-root': {
-      width: 157,
+      width: 130,
       fontSize: 14,
       color: Colors.White,
       '&:hover': {
@@ -64,12 +64,12 @@ const allStyles = {
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    width: 157,
+    width: 130,
     fontSize: 19,
     fontWeight: 600,
     textTransform: 'uppercase',
     letterSpacing: 2,
-    marginLeft: 'auto',
+    marginLeft: 130,
     '& .MuiSvgIcon-root': {
       marginRight: 4,
       fontSize: 20,
