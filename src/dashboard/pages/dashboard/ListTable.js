@@ -74,13 +74,15 @@ export function ListTable({ value }) {
   );
 
   /** API Hooks */
-  const { execute: executeUpdate, dataUpdate, isLoadingUpdate, errorUpdate } = useUpdateAccessPass();
+  const { execute: executeUpdate, isLoadingUpdate, errorUpdate } = useUpdateAccessPass();
 
   /** Modals' States  */
   const [isDenyModalOpen, setIsDenyModalOpen] = React.useState(false);
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
   const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
-  const [approvedSnackbarConfig, setApprovedSnackbarConfig] = React.useState({ open: false, pass: {} });
+  const [approvedSnackbarConfig, setApprovedSnackbarConfig] = React.useState({
+    open: false, accessPass: {}, success: false
+  });
 
 
   const handleChangePage = (event, newPage) => {
@@ -92,15 +94,15 @@ export function ListTable({ value }) {
     gotoPage(0);
   };
 
-  const handleApproveActionClick = (cellValues) => {
-    const { referenceId, status, name } = cellValues;
+  const handleApproveActionClick = (accessPass) => {
+    const { referenceId, status } = accessPass;
     if (status !== APPROVAL_STATUS.Pending) {
       return;
     }
-    // TODO how to handle isLoading and error?
     executeUpdate(referenceId, { status: APPROVAL_STATUS.Approved });
     if (!isLoadingUpdate) {
-      setApprovedSnackbarConfig({ open: true, pass: cellValues });
+      console.log('ERROR', errorUpdate);
+      setApprovedSnackbarConfig({ open: true, accessPass, success: !errorUpdate });
       // TODO how to refresh the current row's status? so that the ListRowActions will convert to status text
     }
   }
@@ -161,7 +163,7 @@ export function ListTable({ value }) {
                       <TableCell align="center" key={index}>
                         <ListRowActions
                           status={cell.row.values.status}
-                          onApproveClick={() => handleApproveActionClick(cell.row.values)}
+                          onApproveClick={() => handleApproveActionClick(cell.row.original)}
                           onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
                           onViewDetailsClick={() => handleViewDetailsClick(cell.row.values.idNumber)} // TODO: Pass Reference ID
                         ></ListRowActions>
@@ -206,13 +208,16 @@ export function ListTable({ value }) {
         accessPassReferenceId={accessPassReferenceId}
       />
 
-
-      <SnackbarAlert open={approvedSnackbarConfig.open}
-        onClose={(event, reason) => setApprovedSnackbarConfig({ open: false, pass: {} })}
-        message={approvedSnackbarConfig.pass && `Approved ${approvedSnackbarConfig.pass.id}!`}
-        severity="success"
-        autoHideDuration={2500}
-      />
+      {({ open, accessPass, success }) =>
+        (<SnackbarAlert open={open}
+          onClose={(event, reason) =>
+            setApprovedSnackbarConfig({ open: false, pass: {}, success: false })}
+          message={accessPass && (success ? 'Approved ' : 'Failed to approve ')
+            ` ${accessPass.id}!`}
+          severity={success ? 'success' : 'warn'}
+          autoHideDuration={2500}
+        />)(approvedSnackbarConfig)
+      }
 
 
     </React.Fragment>
