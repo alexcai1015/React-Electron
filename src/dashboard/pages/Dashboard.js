@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Container, Grid, TextField, MenuItem, styled } from '@material-ui/core';
 
 import { NavigationBar } from '../../common/components/NavigationBar';
@@ -26,12 +26,16 @@ const filterOptions = [
 ];
 
 export const Dashboard = () => {
-  const { data } = useGetAccessPasses();
+  const { data, query } = useGetAccessPasses();
   const [selectedFilterOption, setSelectedFilterOption] = useState('show_all');
 
   const handleFilterSelectChange = (event) => {
     setSelectedFilterOption(event.target.value);
   };
+
+  useEffect(() => {
+    query();
+  }, [query]);
 
   return (
     <Box>

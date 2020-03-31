@@ -1,8 +1,8 @@
 module.exports = {
   parser: 'babel-eslint',
-  plugins: ['jsx-a11y', 'prettier'],
+  plugins: ['jsx-a11y', 'prettier', 'react-hooks'],
   env: {
-    browser: true, // allows browser variables, e.g. "document.xxx"
+    browser: true, // allows browser variables, e.g. 'document.xxx'
     jest: true, // fixes no-def and other jest env errors in test files
   },
   extends: ['airbnb', 'plugin:prettier/recommended'],
@@ -59,8 +59,10 @@ module.exports = {
     'no-console': 'warn',
     'object-curly-newline': ['error', { consistent: true }],
     'import/no-unresolved': ['error'],
-    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+    'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx'] }],
     'import/prefer-default-export': [0],
-    'react/jsx-props-no-spreading': [0]
+    'react/jsx-props-no-spreading': [0],
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
   },
 };
