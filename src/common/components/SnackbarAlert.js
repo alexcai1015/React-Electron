@@ -15,8 +15,8 @@ export const SnackbarAlert = (props) => {
       onClose={(event, reason) => {
         if (reason !== 'clickaway') onClose(event, reason);
       }}>
-      <Alert severity={severity} onClose={(event, reason) => onClose(event, reason)} >
-        {{ message }}
+      <Alert severity={severity} onClose={(event, reason) => onClose(event, reason)}>
+        {message}
       </Alert>
     </Snackbar>)
 }
