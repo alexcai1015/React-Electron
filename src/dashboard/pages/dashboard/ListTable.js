@@ -80,8 +80,8 @@ export function ListTable({ value }) {
   const [isDenyModalOpen, setIsDenyModalOpen] = React.useState(false);
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
   const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
-  const [openApproval, setOpenApproval] = React.useState(false);
-  const [rowUser, setRowUser] = React.useState(''); // for displaying success
+  const [approvedSnackbarConfig, setApprovedSnackbarConfig] = React.useState({ open: false, pass: {} });
+
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -97,9 +97,12 @@ export function ListTable({ value }) {
     if (status !== APPROVAL_STATUS.Pending) {
       return;
     }
-    setOpenApproval({ open: true, user: name });
-    executeUpdate(referenceId, { status: APPROVAL_STATUS.Approved })
-    setOpenApproval({ open: !isLoadingUpdate })
+    // TODO how to handle isLoading and error?
+    executeUpdate(referenceId, { status: APPROVAL_STATUS.Approved });
+    if (!isLoadingUpdate) {
+      setApprovedSnackbarConfig({ open: true, pass: cellValues });
+      // TODO how to refresh the current row's status? so that the ListRowActions will convert to status text
+    }
   }
 
   const handleDenyActionClick = (referenceId) => {
@@ -191,6 +194,7 @@ export function ListTable({ value }) {
           </TableFooter>
         </Table>
       </TableContainer>
+
       <DenyApplicationModal
         open={isDenyModalOpen}
         handleClose={() => setIsDenyModalOpen(false)}
@@ -202,9 +206,15 @@ export function ListTable({ value }) {
         accessPassReferenceId={accessPassReferenceId}
       />
 
-      <SnackbarAlert open={openApproval.open} autoHideDuration={2500} onClose={(event, reason) => {
-        if (reason !== 'clickaway') setOpenApproval({ open: false });
-      }} message={`Approved ${openApproval.user}`}></SnackbarAlert>
+
+      <SnackbarAlert open={approvedSnackbarConfig.open}
+        onClose={(event, reason) => setApprovedSnackbarConfig({ open: false, pass: {} })}
+        message={approvedSnackbarConfig.pass && `Approved ${approvedSnackbarConfig.pass.id}!`}
+        severity="success"
+        autoHideDuration={2500}
+      />
+
+
     </React.Fragment>
   );
 }
