@@ -1,24 +1,25 @@
-import { useMutation, HttpMethod } from './useApi';
+import { useCallback } from 'react';
+
+import { useApiMutation, HttpMethod } from '../api';
 
 export const useDeleteAccessPass = () => {
-  const { data: accessPass, execute: mutate, ...others } = useMutation(
-    '/v1/registry/access-passes',
-    HttpMethod.DELETE,
-    {
-      // Transform when the API is ready
-      transformer: (data) => data,
-    }
+  const { data: accessPass, execute: mutate, ...others } = useApiMutation(
+    '/v1/registry/access-passes/{{referenceId}}',
+    HttpMethod.Delete
   );
 
-  const execute = (id) => {
-    if (id) {
-      mutate({
-        queryParams: {
-          id,
-        },
-      });
-    }
-  };
+  const execute = useCallback(
+    (referenceId) => {
+      if (referenceId) {
+        mutate({
+          urlPathParams: {
+            referenceId,
+          },
+        });
+      }
+    },
+    [mutate]
+  );
 
   return {
     data: accessPass || {},
