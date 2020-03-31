@@ -2,13 +2,9 @@ FROM node:12.16.1-alpine as builder
 
 WORKDIR /app
 
-COPY ./package.json ./
-
-COPY ./package-lock.json ./
+COPY . .
 
 RUN npm ci
-
-COPY . .
 
 RUN npm run build
 
