@@ -1,22 +1,20 @@
-import { useMutation, HttpMethod } from './useApi';
+import { useApiMutation, HttpMethod } from '../api';
 
 export const useUpdateAccessPasses = () => {
-  const { data: accessPass, mutate, ...others } = useMutation(
-    '/v1/registry/access-passes',
-    HttpMethod.PUT,
-    {
-      // Transform when the API is ready
-      transformer: (data) => data,
-    }
+  const { data: accessPass, execute: mutate, ...others } = useApiMutation(
+    '/v1/registry/access-passes/{{referenceId}}',
+    HttpMethod.Put
   );
 
-  const execute = (id, data) => {
-    mutate({
-      queryParams: {
-        id,
-      },
-      data,
-    });
+  const execute = (referenceId, data) => {
+    if (referenceId && data) {
+      mutate({
+        urlPathParams: {
+          referenceId,
+        },
+        requestData: data,
+      });
+    }
   };
 
   return {

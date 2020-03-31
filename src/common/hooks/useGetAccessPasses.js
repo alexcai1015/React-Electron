@@ -1,4 +1,4 @@
-import { useQuery } from './useApi';
+import { useApiQuery } from '../api';
 
 const mapToAccessPass = (data) => ({
   ...data,
@@ -7,17 +7,12 @@ const mapToAccessPass = (data) => ({
 });
 
 export const useGetAccessPasses = () => {
-  const { data: accessPasses, ...others } = useQuery('/v1/registry/access-passes', {
-    swrConfig: {
-      initialData: [],
-    },
-    transformer: (data) => data.map(mapToAccessPass),
-  });
+  const { data: accessPasses, ...others } = useApiQuery('/v1/registry/access-passes');
 
-  // TODO - check why swrConfig's initial data not working
-  // https://github.com/zeit/swr/issues/284
+  const data = Array.isArray(accessPasses) ? accessPasses.map(mapToAccessPass) : [];
+
   return {
-    data: accessPasses || [],
+    data,
     ...others,
   };
 };
