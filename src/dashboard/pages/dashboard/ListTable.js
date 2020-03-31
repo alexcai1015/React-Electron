@@ -16,7 +16,6 @@ import {
 } from '@material-ui/core';
 import { usePagination, useSortBy, useTable } from 'react-table';
 
-
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions, APPROVAL_STATUS } from './listTable/ListRowActions';
@@ -38,6 +37,8 @@ const listTableStyles = makeStyles({
     backgroundColor: Colors.White,
   },
 });
+
+
 
 export function ListTable({ value }) {
   const classes = listTableStyles();
@@ -74,14 +75,14 @@ export function ListTable({ value }) {
   );
 
   /** API Hooks */
-  const { execute: executeUpdate, isLoadingUpdate, errorUpdate } = useUpdateAccessPass();
+  const { execute: executeUpdate, isLoading: isLoadingUpdate, error: errorUpdate } = useUpdateAccessPass();
 
   /** Modals' States  */
   const [isDenyModalOpen, setIsDenyModalOpen] = React.useState(false);
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
   const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
   const [approvedSnackbarConfig, setApprovedSnackbarConfig] = React.useState({
-    open: false, accessPass: {}, success: false
+    open: false, accessPass: {}, errorFromUpdate: null
   });
 
 
@@ -101,12 +102,10 @@ export function ListTable({ value }) {
     }
     executeUpdate(referenceId, { status: APPROVAL_STATUS.Approved });
     if (!isLoadingUpdate) {
-      console.log('ERROR', errorUpdate);
-      setApprovedSnackbarConfig({ open: true, accessPass, success: !errorUpdate });
+      setApprovedSnackbarConfig({ open: true, accessPass, errorFromUpdate: errorUpdate });
       // TODO how to refresh the current row's status? so that the ListRowActions will convert to status text
     }
   }
-
   const handleDenyActionClick = (referenceId) => {
     setIsDenyModalOpen(true);
     setAccessPassReferenceId(referenceId);
@@ -119,6 +118,7 @@ export function ListTable({ value }) {
 
   const totalRecordsCount = rows.length;
   const lastColumnIndex = 5;
+
 
   return (
     <React.Fragment>
@@ -208,17 +208,16 @@ export function ListTable({ value }) {
         accessPassReferenceId={accessPassReferenceId}
       />
 
-      {({ open, accessPass, success }) =>
-        (<SnackbarAlert open={open}
+      {({ open, accessPass, errorFromUpdate }) => (
+        <SnackbarAlert open={open}
           onClose={(event, reason) =>
-            setApprovedSnackbarConfig({ open: false, pass: {}, success: false })}
-          message={accessPass && (success ? 'Approved ' : 'Failed to approve ')
+            setApprovedSnackbarConfig({ open: false, pass: {}, errorFromUpdate: null })}
+          message={accessPass && (!errorFromUpdate ? 'Approved ' : 'Failed to approve ')
             ` ${accessPass.id}!`}
-          severity={success ? 'success' : 'warn'}
+          severity={!errorFromUpdate ? 'success' : 'warn'}
           autoHideDuration={2500}
         />)(approvedSnackbarConfig)
       }
-
 
     </React.Fragment>
   );
