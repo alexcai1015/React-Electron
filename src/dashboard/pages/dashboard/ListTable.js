@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Paper,
   Table,
@@ -25,7 +25,6 @@ import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
 import { useUpdateAccessPass } from '../../../common/hooks';
 
-
 const listTableStyles = makeStyles({
   table: {
     minWidth: 500,
@@ -38,9 +37,7 @@ const listTableStyles = makeStyles({
   },
 });
 
-
-
-export function ListTable({ value }) {
+export function ListTable({ getAccessPassesQuery, value }) {
   const classes = listTableStyles();
 
   const {
@@ -75,16 +72,21 @@ export function ListTable({ value }) {
   );
 
   /** API Hooks */
-  const { execute: executeUpdate, isLoading: isLoadingUpdate, error: errorUpdate } = useUpdateAccessPass();
+  const {
+    execute: executeUpdate,
+    isLoading: isLoadingUpdate,
+    error: errorUpdate,
+  } = useUpdateAccessPass();
 
   /** Modals' States  */
   const [isDenyModalOpen, setIsDenyModalOpen] = React.useState(false);
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
-  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
-  const [approvedSnackbarConfig, setApprovedSnackbarConfig] = React.useState({
-    open: false, accessPass: {}, errorFromUpdate: null
-  });
 
+  // ! TODO: remove this `accessPassReferenceId` state
+  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
+
+  const [updatedAccessPass, setUpdatedAccessPass] = useState(null);
+  const [errorFromUpdate, setErrorFromUpdate] = useState('');
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -100,16 +102,21 @@ export function ListTable({ value }) {
     if (status !== APPROVAL_STATUS.Pending) {
       return;
     }
-    executeUpdate(referenceId, { status: APPROVAL_STATUS.Approved });
+    executeUpdate(referenceId, { status: 'APPROVED' });
+
+    getAccessPassesQuery();
+
     if (!isLoadingUpdate) {
-      setApprovedSnackbarConfig({ open: true, accessPass, errorFromUpdate: errorUpdate });
-      // TODO how to refresh the current row's status? so that the ListRowActions will convert to status text
+      setUpdatedAccessPass(accessPass);
+      setErrorFromUpdate(errorUpdate);
+
+      // ? TODO: how to refresh the current row's status? so that the ListRowActions will convert to status text
     }
-  }
+  };
   const handleDenyActionClick = (referenceId) => {
     setIsDenyModalOpen(true);
     setAccessPassReferenceId(referenceId);
-  }
+  };
 
   const handleViewDetailsClick = (referenceId) => {
     setIsdDetailsOpen(true);
@@ -119,9 +126,8 @@ export function ListTable({ value }) {
   const totalRecordsCount = rows.length;
   const lastColumnIndex = 5;
 
-
   return (
-    <React.Fragment>
+    <>
       <TableContainer component={Paper}>
         <Table
           {...getTableProps()}
@@ -133,8 +139,10 @@ export function ListTable({ value }) {
             <TableRow>
               {headerGroups.map((headerGroup) =>
                 headerGroup.headers.map((column, index) => (
-                  <ListHeaderCell align={index === lastColumnIndex ? 'center' : 'left'}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  <ListHeaderCell
+                    align={index === lastColumnIndex ? 'center' : 'left'}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                  >
                     <TableSortLabel
                       active={column.isSorted}
                       direction={column.isSortedDesc ? 'desc' : 'asc'}
@@ -156,7 +164,6 @@ export function ListTable({ value }) {
               prepareRow(row);
               return (
                 <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
-
                   {row.cells.map((cell, index) => {
                     return index === lastColumnIndex ? (
                       // Last cell is status with custom component
@@ -165,12 +172,14 @@ export function ListTable({ value }) {
                           status={cell.row.values.status}
                           onApproveClick={() => handleApproveActionClick(cell.row.original)}
                           onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
-                          onViewDetailsClick={() => handleViewDetailsClick(cell.row.values.idNumber)} // TODO: Pass Reference ID
+                          onViewDetailsClick={() =>
+                            handleViewDetailsClick(cell.row.values.idNumber)
+                          } // TODO: Pass Reference ID
                         ></ListRowActions>
                       </TableCell>
                     ) : (
-                        <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                      );
+                      <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                    );
                   })}
                 </TableRow>
               );
@@ -208,18 +217,20 @@ export function ListTable({ value }) {
         accessPassReferenceId={accessPassReferenceId}
       />
 
-      {({ open, accessPass, errorFromUpdate }) => (
-        <SnackbarAlert open={open}
-          onClose={(event, reason) =>
-            setApprovedSnackbarConfig({ open: false, pass: {}, errorFromUpdate: null })}
-          message={accessPass && (!errorFromUpdate ? 'Approved ' : 'Failed to approve ')
-            ` ${accessPass.id}!`}
-          severity={!errorFromUpdate ? 'success' : 'warn'}
-          autoHideDuration={2500}
-        />)(approvedSnackbarConfig)
-      }
-
-    </React.Fragment>
+      <SnackbarAlert
+        open={!!updatedAccessPass}
+        onClose={() => {
+          setUpdatedAccessPass(null);
+          setErrorFromUpdate('');
+        }}
+        message={
+          updatedAccessPass &&
+          `${errorFromUpdate ? 'Failed to approve' : 'Approved'} ${updatedAccessPass.id}`
+        }
+        severity={!errorFromUpdate ? 'success' : 'warn'}
+        autoHideDuration={2500}
+      />
+    </>
   );
 }
 
