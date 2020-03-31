@@ -1,0 +1,14 @@
+docker-build-deploy:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
+  script:
+    - docker build -t "$ACR_REGISTRY/dctx/rapidpass-approver:latest" .
+    - docker tag "$ACR_REGISTRY/dctx/rapidpass-approver:latest" "$ACR_REGISTRY/dctx/rapidpass-approver:$CI_BUILD_ID"
+    - docker push "$ACR_REGISTRY/dctx/rapidpass-approver:latest"
+    - docker push "$ACR_REGISTRY/dctx/rapidpass-approver:$CI_BUILD_ID"
+  only:
+    - master
