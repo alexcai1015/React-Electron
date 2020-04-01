@@ -2,13 +2,9 @@ FROM node:12.16.1-alpine as builder
 
 WORKDIR /app
 
-COPY ./package.json ./
-
-COPY ./package-lock.json ./
-
-RUN npm ci
-
 COPY . .
+
+RUN npm install
 
 RUN npm run build
 
@@ -29,4 +25,4 @@ RUN chmod +x env.sh
 EXPOSE 3030
 
 # Start Nginx server
-CMD ["/bin/sh", "-c", "/usr/share/nginx/html/env.sh > /usr/share/nginx/html/envConfig.js && nginx -g\"daemon off;\""]
+ENTRYPOINT ["/bin/sh", "-c", "/usr/share/nginx/html/env.sh > /usr/share/nginx/html/env.js && nginx -g\"daemon off;\""]
