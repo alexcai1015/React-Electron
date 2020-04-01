@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-import config from './config';
 import {
   get as coreGet,
   post as corePost,
@@ -11,7 +10,7 @@ import {
 } from './core';
 
 const httpClient = axios;
-httpClient.defaults.baseURL = config.API_URL;
+httpClient.defaults.baseURL = window.REACT_APP_API_URL;
 
 export const httpGet = coreGet(httpClient);
 export const httpPost = corePost(httpClient);
