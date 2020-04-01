@@ -73,7 +73,7 @@ const Passdetails = ({ handleClose, details }) => {
             <Field label="Email" value={details.email} />
             <Field label="Contact Number" value={details.referenceId} />
             <Field label="Id type" value={details.idType} />
-            <Field label="Id number" value={details.idNumber} />
+            <Field label="Id number" value={details.id} />
             <Field label="Company" value={details.company} />
           </Grid>
           <Grid item xs={8}>
@@ -92,16 +92,16 @@ Passdetails.defaultProps = {
   details: {
     aporType: '',
     company: '',
-    referenceId: '',
     destCity: '',
     destName: '',
     destProvince: '',
     destStreet: '',
     email: '',
-    idNumber: '',
+    id: '',
     idType: '',
     name: '',
     passType: '',
+    referenceId: '',
     remarks: '',
   },
 };
@@ -111,16 +111,16 @@ Passdetails.propTypes = {
   details: PropTypes.shape({
     aporType: PropTypes.string,
     company: PropTypes.string,
-    referenceId: PropTypes.string,
     destCity: PropTypes.string,
     destName: PropTypes.string,
     destProvince: PropTypes.string,
     destStreet: PropTypes.string,
     email: PropTypes.string,
-    idNumber: PropTypes.string,
+    id: PropTypes.string,
     idType: PropTypes.string,
     name: PropTypes.string,
     passType: PropTypes.string,
+    referenceId: PropTypes.string,
     remarks: PropTypes.string,
   }),
 };
