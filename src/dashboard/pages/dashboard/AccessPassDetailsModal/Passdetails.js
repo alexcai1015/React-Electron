@@ -28,27 +28,57 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Passdetails = ({ handleClose, details, aporType }) => {
-  const classes = useStyles();
+const formatAddress = ({ name, street, city, province }) => {
+  let address = null;
 
+  if (name) {
+    address = `${name}`;
+  }
+
+  if (street) {
+    address = address ? `${address}, ${street}` : `${street}`;
+  }
+
+  if (city) {
+    address = address ? `${address}, ${city}` : `${city}`;
+  }
+
+  if (province) {
+    address = address ? `${address}, ${province}` : `${province}`;
+  }
+
+  return address;
+};
+
+const Passdetails = ({ handleClose, details }) => {
+  const classes = useStyles();
+  const addressOfDestination = formatAddress({
+    name: details.destName,
+    street: details.destStreet,
+    city: details.destCity,
+    province: details.destProvince,
+  });
+
+  // There's no address of origin from the backend.
+  const addressOfOrigin = '';
   return (
     <Box className={classes.container}>
       <Header handleClose={handleClose} />
       <Box className={classes.body}>
-        <AporType aporType={aporType} />
+        <AporType aporType={details.aporType} />
         <SectionTitle title="Personal Details" />
         <Grid item xs={12} container>
           <Grid item xs={4}>
             <Field label="Name" value={details.name} />
             <Field label="Email" value={details.email} />
-            <Field label="Contact Number" value={details.contactNumber} />
+            <Field label="Contact Number" value={details.referenceId} />
             <Field label="Id type" value={details.idType} />
             <Field label="Id number" value={details.idNumber} />
             <Field label="Company" value={details.company} />
           </Grid>
           <Grid item xs={8}>
-            <Field label="Address of origin" value={details.addressOfOrigin} />
-            <Field label="Address of destination" value={details.addressOfDestination} />
+            <Field label="Address of origin" value={addressOfOrigin} />
+            <Field label="Address of destination" value={addressOfDestination} />
             <Field label="Remarks" value={details.remarks} />
             <Field label="Pass type" value={details.passType} />
           </Grid>
@@ -59,35 +89,39 @@ const Passdetails = ({ handleClose, details, aporType }) => {
 };
 
 Passdetails.defaultProps = {
-  aporType: 'Medical Services',
   details: {
-    name: 'Dela Cruz Jr., Juan',
-    email: 'jdlc@gmail.com',
-    contactNumber: '09178887000',
-    idType: 'PRC ID',
-    idNumber: '08097162',
-    company: 'Rizal Medical Center',
-    addressOfOrigin: '26th Street, Bonifacio Global City, Taguig, Metro Manila',
-    addressOfDestination: 'Polino Street, Quezon City, Metro Manila',
-    remarks: 'Nurse on duty for COVID-19',
-    passType: 'Individual',
+    aporType: '',
+    company: '',
+    referenceId: '',
+    destCity: '',
+    destName: '',
+    destProvince: '',
+    destStreet: '',
+    email: '',
+    idNumber: '',
+    idType: '',
+    name: '',
+    passType: '',
+    remarks: '',
   },
 };
 
 Passdetails.propTypes = {
-  aporType: PropTypes.string,
   handleClose: PropTypes.func.isRequired,
   details: PropTypes.shape({
-    name: PropTypes.string,
-    email: PropTypes.string,
-    contactNumber: PropTypes.string,
-    idType: PropTypes.string,
-    idNumber: PropTypes.string,
+    aporType: PropTypes.string,
     company: PropTypes.string,
-    addressOfOrigin: PropTypes.string,
-    addressOfDestination: PropTypes.string,
-    remarks: PropTypes.string,
+    referenceId: PropTypes.string,
+    destCity: PropTypes.string,
+    destName: PropTypes.string,
+    destProvince: PropTypes.string,
+    destStreet: PropTypes.string,
+    email: PropTypes.string,
+    idNumber: PropTypes.string,
+    idType: PropTypes.string,
+    name: PropTypes.string,
     passType: PropTypes.string,
+    remarks: PropTypes.string,
   }),
 };
 

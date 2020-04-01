@@ -25,7 +25,6 @@ import { Colors } from '../../../common/constants/Colors';
 import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
 
-
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -44,7 +43,6 @@ const listTableStyles = makeStyles({
 
 export function ListTable({ value }) {
   const classes = listTableStyles();
-
   const {
     headerGroups,
     prepareRow,
@@ -80,6 +78,7 @@ export function ListTable({ value }) {
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
   const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
   const [openSuccess, setOpenSuccess] = React.useState({ open: false, user: '' });
+  const [passDetails, setPassDetails] = React.useState(null);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -93,11 +92,17 @@ export function ListTable({ value }) {
   const handleDenyActionClick = (referenceId) => {
     setIsDenyModalOpen(true);
     setAccessPassReferenceId(referenceId);
-  }
+  };
 
-  const handleViewDetailsClick = (referenceId) => {
+  const handleViewDetailsClick = ({ referenceId, details }) => {
     setIsdDetailsOpen(true);
     setAccessPassReferenceId(referenceId);
+    setPassDetails(details);
+  };
+
+  const handleSetPassDetailsClose = () => {
+    setIsdDetailsOpen(false);
+    setPassDetails(null);
   };
 
   const totalRecordsCount = rows.length;
@@ -116,8 +121,10 @@ export function ListTable({ value }) {
             <TableRow>
               {headerGroups.map((headerGroup) =>
                 headerGroup.headers.map((column, index) => (
-                  <ListHeaderCell align={index === lastColumnIndex ? 'center' : 'left'}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}>
+                  <ListHeaderCell
+                    align={index === lastColumnIndex ? 'center' : 'left'}
+                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                  >
                     <TableSortLabel
                       active={column.isSorted}
                       direction={column.isSortedDesc ? 'desc' : 'asc'}
@@ -139,7 +146,6 @@ export function ListTable({ value }) {
               prepareRow(row);
               return (
                 <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
-
                   {row.cells.map((cell, index) => {
                     return index === lastColumnIndex ? (
                       // Last cell is status with custom component
@@ -150,12 +156,17 @@ export function ListTable({ value }) {
                             setOpenSuccess({ open: true, user: cell.row.values.name });
                           }}
                           onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
-                          onViewDetailsClick={() => handleViewDetailsClick(cell.row.values.idNumber)} // TODO: Pass Reference ID
+                          onViewDetailsClick={() =>
+                            handleViewDetailsClick({
+                              referenceId: cell.row.values.idNumber,
+                              details: row.original,
+                            })
+                          } // TODO: Pass Reference ID
                         ></ListRowActions>
                       </TableCell>
                     ) : (
-                        <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                      );
+                      <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                    );
                   })}
                 </TableRow>
               );
@@ -188,16 +199,20 @@ export function ListTable({ value }) {
       />
       <AccessPassDetailsModal
         open={isDetailsOpen}
-        handleClose={() => setIsdDetailsOpen(false)}
-        accessPassReferenceId={accessPassReferenceId}
+        handleClose={handleSetPassDetailsClose}
+        passDetails={passDetails}
       />
 
-      <Snackbar open={openSuccess.open} autoHideDuration={2500} onClose={(event, reason) => {
-        if (reason !== 'clickaway') setOpenSuccess({ open: false });
-      }}>
+      <Snackbar
+        open={openSuccess.open}
+        autoHideDuration={2500}
+        onClose={(event, reason) => {
+          if (reason !== 'clickaway') setOpenSuccess({ open: false });
+        }}
+      >
         <Alert onClose={() => setOpenSuccess({ open: false })} severity="success">
           Approved!
-           {/* TODO show user name */}
+          {/* TODO show user name */}
         </Alert>
       </Snackbar>
     </React.Fragment>

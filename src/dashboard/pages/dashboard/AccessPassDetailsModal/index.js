@@ -11,9 +11,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const AccessPassDetailsModal = ({ open, handleClose }) => {
+const AccessPassDetailsModal = ({ open, handleClose, passDetails }) => {
   const classes = useStyles();
-
   return (
     <Dialog
       open={open}
@@ -27,19 +26,49 @@ const AccessPassDetailsModal = ({ open, handleClose }) => {
       }}
     >
       <div>
-        <PassDetails handleClose={handleClose} />
+        <PassDetails handleClose={handleClose} details={passDetails || {}} />
       </div>
     </Dialog>
   );
 };
 
+AccessPassDetailsModal.defaultProps = {
+  open: true,
+  passDetails: {
+    aporType: '',
+    company: '',
+    referenceId: '',
+    destCity: '',
+    destName: '',
+    destProvince: '',
+    destStreet: '',
+    email: '',
+    idNumber: '',
+    idType: '',
+    name: '',
+    passType: '',
+    remarks: '',
+  },
+};
+
 AccessPassDetailsModal.propTypes = {
   handleClose: PropTypes.func.isRequired,
   open: PropTypes.bool,
-};
-
-AccessPassDetailsModal.defaultProps = {
-  open: true,
+  passDetails: PropTypes.shape({
+    aporType: PropTypes.string,
+    company: PropTypes.string,
+    destCity: PropTypes.string,
+    destName: PropTypes.string,
+    destProvince: PropTypes.string,
+    destStreet: PropTypes.string,
+    email: PropTypes.string,
+    idNumber: PropTypes.string,
+    idType: PropTypes.string,
+    name: PropTypes.string,
+    passType: PropTypes.string,
+    referenceId: PropTypes.string,
+    remarks: PropTypes.string,
+  }),
 };
 
 export default AccessPassDetailsModal;
