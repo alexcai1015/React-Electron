@@ -178,8 +178,8 @@ export function ListTable({ getAccessPassesQuery, value }) {
                         ></ListRowActions>
                       </TableCell>
                     ) : (
-                      <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                    );
+                        <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                      );
                   })}
                 </TableRow>
               );
@@ -227,7 +227,7 @@ export function ListTable({ getAccessPassesQuery, value }) {
           updatedAccessPass &&
           `${errorFromUpdate ? 'Failed to approve' : 'Approved'} ${updatedAccessPass.id}`
         }
-        severity={!errorFromUpdate ? 'success' : 'warn'}
+        severity={!errorFromUpdate ? 'success' : 'warning'}
         autoHideDuration={2500}
       />
     </>
