@@ -13,7 +13,7 @@ export const useApiQuery = (url, config) => {
   const [httpResponse, setHttpResponse] = useState(null);
 
   const query = useCallback(
-    async ({ urlQueryParams, urlPathParams }) => {
+    async ({ urlQueryParams, urlPathParams } = {}) => {
       setIsLoading(true);
       setError(null);
 

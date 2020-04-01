@@ -1,26 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import PassDetails from './pass-details';
 import Dialog from '@material-ui/core/Dialog';
-import { Close } from '@material-ui/icons';
-import { withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
-import styles from './access-pass-details-modal.module.css';
+import PassDetails from './Passdetails';
 
-// Sorry for using withStyles and CSS Modules in the same component
-// I started with CSS Modules, but I could not change the Dialog's border radius using CSS Modules
-const materialStyles = {
+const useStyles = makeStyles(() => ({
   rootStyle: {
     borderRadius: 8,
   },
-};
+}));
 
-const AccessPassDetailsModal = ({ open, handleClose, classes }) => {
+const AccessPassDetailsModal = ({ open, handleClose }) => {
+  const classes = useStyles();
+
   return (
     <Dialog
       open={open}
       onClose={handleClose}
-      fullWidth={true}
+      fullWidth
       maxWidth="md"
       aria-labelledby="RapidPass Submission Details"
       aria-describedby="Pass Detailed Information"
@@ -29,26 +27,19 @@ const AccessPassDetailsModal = ({ open, handleClose, classes }) => {
       }}
     >
       <div>
-        <PassDetails
-          renderCloseButton={
-            <div className={styles.closeButtonWrapper} onClick={handleClose}>
-              <Close />
-            </div>
-          }
-        />
+        <PassDetails handleClose={handleClose} />
       </div>
     </Dialog>
   );
 };
 
 AccessPassDetailsModal.propTypes = {
-  handleClose: PropTypes.func,
+  handleClose: PropTypes.func.isRequired,
   open: PropTypes.bool,
-  accessPassReferenceId: PropTypes.string,
 };
 
 AccessPassDetailsModal.defaultProps = {
   open: true,
 };
 
-export default withStyles(materialStyles)(AccessPassDetailsModal);
+export default AccessPassDetailsModal;
