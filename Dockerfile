@@ -25,4 +25,4 @@ RUN chmod +x env.sh
 EXPOSE 3030
 
 # Start Nginx server
-CMD ["/bin/sh", "-c", "/usr/share/nginx/html/env.sh > /usr/share/nginx/html/envConfig.js && nginx -g\"daemon off;\""]
+ENTRYPOINT ["/bin/sh", "-c", "/usr/share/nginx/html/env.sh > /usr/share/nginx/html/env.js && nginx -g\"daemon off;\""]

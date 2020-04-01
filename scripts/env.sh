@@ -1,5 +1,6 @@
 #!/bin/sh
-api_url="${REACT_APP_API_URL:-http://localhost:3030}"
+
+apiUrl="${REACT_APP_API_URL:-https://api.test.rapidpass.amihan.net/api}"
 cat <<EOF
-window.REACT_APP_API_URL='$api_url';
+window.REACT_APP_API_URL='$apiUrl';
 EOF
