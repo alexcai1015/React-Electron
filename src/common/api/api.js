@@ -10,7 +10,7 @@ import {
 } from './core';
 
 const httpClient = axios;
-httpClient.defaults.baseURL = process.env.REACT_APP_API_URL;
+httpClient.defaults.baseURL = process.env.REACT_APP_API_URL || window.REACT_APP_API_URL;
 
 export const httpGet = coreGet(httpClient);
 export const httpPost = corePost(httpClient);
