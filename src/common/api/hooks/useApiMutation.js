@@ -21,7 +21,7 @@ export const useApiMutation = (url, method, config) => {
   const [error, setError] = useState(null);
   const [httpResponse, setHttpResponse] = useState(null);
 
-  const execute = async ({ requestData, urlQueryParams, urlPathParams }) => {
+  const execute = async ({ requestData, urlQueryParams, urlPathParams } = {}) => {
     setIsLoading(true);
     setError(null);
 
