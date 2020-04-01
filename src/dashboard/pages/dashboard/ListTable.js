@@ -104,7 +104,7 @@ export function ListTable({ getAccessPassesQuery, value }) {
     }
     executeUpdate(referenceId, { status: 'APPROVED' });
 
-    getAccessPassesQuery();
+    // getAccessPassesQuery();
 
     if (!isLoadingUpdate) {
       setUpdatedAccessPass(accessPass);
