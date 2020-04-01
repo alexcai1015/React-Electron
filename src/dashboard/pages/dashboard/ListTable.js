@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Paper,
   Table,
@@ -13,21 +13,17 @@ import {
   styled,
   TableSortLabel,
   Typography,
-  Snackbar,
 } from '@material-ui/core';
 import { usePagination, useSortBy, useTable } from 'react-table';
-import MuiAlert from '@material-ui/lab/Alert';
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
-import { ListRowActions } from './listTable/ListRowActions';
+import { ListRowActions, APPROVAL_STATUS } from './listTable/ListRowActions';
 import { Colors } from '../../../common/constants/Colors';
+import { SnackbarAlert } from '../../../common/components/SnackbarAlert';
 import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import { useUpdateAccessPass } from '../../../common/hooks';
 
 const listTableStyles = makeStyles({
   table: {
@@ -41,7 +37,7 @@ const listTableStyles = makeStyles({
   },
 });
 
-export function ListTable({ value }) {
+export function ListTable({ getAccessPassesQuery, value }) {
   const classes = listTableStyles();
   const {
     headerGroups,
@@ -74,11 +70,22 @@ export function ListTable({ value }) {
     usePagination
   );
 
+  /** API Hooks */
+  const {
+    execute: executeUpdate,
+    isLoading: isLoadingUpdate,
+    error: errorUpdate,
+  } = useUpdateAccessPass();
+
+  /** Modals' States  */
   const [isDenyModalOpen, setIsDenyModalOpen] = React.useState(false);
   const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
+
+  // ! TODO: remove this `accessPassReferenceId` state
   const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
-  const [openSuccess, setOpenSuccess] = React.useState({ open: false, user: '' });
-  const [passDetails, setPassDetails] = React.useState(null);
+  const [updatedAccessPass, setUpdatedAccessPass] = useState(null);
+  const [errorFromUpdate, setErrorFromUpdate] = useState('');
+  const [passDetails, setPassDetails] = useState(null);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -89,6 +96,22 @@ export function ListTable({ value }) {
     gotoPage(0);
   };
 
+  const handleApproveActionClick = (accessPass) => {
+    const { referenceId, status } = accessPass;
+    if (status !== APPROVAL_STATUS.Pending) {
+      return;
+    }
+    executeUpdate(referenceId, { status: 'APPROVED' });
+
+    // getAccessPassesQuery();
+
+    if (!isLoadingUpdate) {
+      setUpdatedAccessPass(accessPass);
+      setErrorFromUpdate(errorUpdate);
+
+      // ? TODO: how to refresh the current row's status? so that the ListRowActions will convert to status text
+    }
+  };
   const handleDenyActionClick = (referenceId) => {
     setIsDenyModalOpen(true);
     setAccessPassReferenceId(referenceId);
@@ -109,7 +132,7 @@ export function ListTable({ value }) {
   const lastColumnIndex = 5;
 
   return (
-    <React.Fragment>
+    <>
       <TableContainer component={Paper}>
         <Table
           {...getTableProps()}
@@ -152,9 +175,7 @@ export function ListTable({ value }) {
                       <TableCell align="center" key={index}>
                         <ListRowActions
                           status={cell.row.values.status}
-                          onApproveClick={() => {
-                            setOpenSuccess({ open: true, user: cell.row.values.name });
-                          }}
+                          onApproveClick={() => handleApproveActionClick(cell.row.original)}
                           onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
                           onViewDetailsClick={() =>
                             handleViewDetailsClick({
@@ -192,6 +213,7 @@ export function ListTable({ value }) {
           </TableFooter>
         </Table>
       </TableContainer>
+
       <DenyApplicationModal
         open={isDenyModalOpen}
         handleClose={() => setIsDenyModalOpen(false)}
@@ -203,19 +225,20 @@ export function ListTable({ value }) {
         passDetails={passDetails}
       />
 
-      <Snackbar
-        open={openSuccess.open}
-        autoHideDuration={2500}
-        onClose={(event, reason) => {
-          if (reason !== 'clickaway') setOpenSuccess({ open: false });
+      <SnackbarAlert
+        open={!!updatedAccessPass}
+        onClose={() => {
+          setUpdatedAccessPass(null);
+          setErrorFromUpdate('');
         }}
-      >
-        <Alert onClose={() => setOpenSuccess({ open: false })} severity="success">
-          Approved!
-          {/* TODO show user name */}
-        </Alert>
-      </Snackbar>
-    </React.Fragment>
+        message={
+          updatedAccessPass &&
+          `${errorFromUpdate ? 'Failed to approve' : 'Approved'} ${updatedAccessPass.id}`
+        }
+        severity={!errorFromUpdate ? 'success' : 'warning'}
+        autoHideDuration={2500}
+      />
+    </>
   );
 }
 

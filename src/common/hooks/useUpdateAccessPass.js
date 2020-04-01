@@ -1,6 +1,6 @@
 import { useApiMutation, HttpMethod } from '../api';
 
-export const useUpdateAccessPasses = () => {
+export const useUpdateAccessPass = () => {
   const { data: accessPass, execute: mutate, ...others } = useApiMutation(
     '/v1/registry/access-passes/{{referenceId}}',
     HttpMethod.Put
