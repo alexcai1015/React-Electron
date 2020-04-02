@@ -12,8 +12,8 @@ import AporType from './AporType';
 // TODO: also added to hook to auto-lowercase like APPROVAL_STATUS?
 export const PASS_TYPE = {
   Vehicle: 'vehicle',
-  Individual: 'individual'
-}
+  Individual: 'individual',
+};
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -35,8 +35,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const formatAddress = ({ name, street, city, province }) => {
-  let address = ['', name, street, city, province].filter(a => (`${a}`).trim());
-  return !!address.join() ? address.join(', ') : 'N/A';
+  const address = ['', name, street, city, province].filter((a) => `${a}`.trim());
+  return address.join() ? address.join(', ') : 'N/A';
 };
 
 const getReferenceIdLabel = (details) => {
@@ -44,9 +44,9 @@ const getReferenceIdLabel = (details) => {
   const { passType = '' } = details;
   const labels = {
     [Vehicle]: 'Plate Number',
-    [Individual]: 'Contact Number'
-  }
-  return labels[passType] || '';
+    [Individual]: 'Contact Number',
+  };
+  return labels[passType.toLowerCase()] || '';
 };
 
 const PassDetails = ({ handleClose, details }) => {
@@ -111,4 +111,3 @@ PassDetails.propTypes = {
 };
 
 export default PassDetails;
-
