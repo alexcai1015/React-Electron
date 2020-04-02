@@ -9,6 +9,12 @@ import Field from './Field';
 import SectionTitle from './SectionTitle';
 import AporType from './AporType';
 
+// TODO: also added to hook to auto-lowercase like APPROVAL_STATUS?
+export const PASS_TYPE = {
+  Vehicle: 'vehicle',
+  Individual: 'individual'
+}
+
 const useStyles = makeStyles((theme) => ({
   container: {
     height: 550,
@@ -16,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
       height: 'auto',
     },
   },
-  body: {
+  content: {
     display: 'flex',
     flexDirection: 'column',
     flexWrap: 'wrap',
@@ -29,35 +35,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const formatAddress = ({ name, street, city, province }) => {
-  let address = null;
-
-  if (name) {
-    address = `${name}`;
-  }
-
-  if (street) {
-    address = address ? `${address}, ${street}` : `${street}`;
-  }
-
-  if (city) {
-    address = address ? `${address}, ${city}` : `${city}`;
-  }
-
-  if (province) {
-    address = address ? `${address}, ${province}` : `${province}`;
-  }
-
-  if (!address) return 'N/A';
-
-  return address;
+  let address = ['', name, street, city, province].filter(a => (`${a}`).trim());
+  return !!address.join() ? address.join(', ') : 'N/A';
 };
 
 const getReferenceIdLabel = (details) => {
-  const label =
-    details && details.passType && details.passType.toUpperCase() === 'VEHICLE'
-      ? 'Plate Number'
-      : 'Contact Number';
-  return label;
+  const { Vehicle, Individual } = PASS_TYPE;
+  const { passType = '' } = details;
+  const labels = {
+    [Vehicle]: 'Plate Number',
+    [Individual]: 'Contact Number'
+  }
+  return labels[passType] || '';
 };
 
 const PassDetails = ({ handleClose, details }) => {
@@ -74,7 +63,7 @@ const PassDetails = ({ handleClose, details }) => {
   return (
     <Box className={classes.container}>
       <Header handleClose={handleClose} />
-      <Box className={classes.body}>
+      <Box className={classes.content}>
         <AporType aporType={details.aporType || 'N/A'} />
         <SectionTitle title="Personal Details" />
         <Grid item xs={12} container>
@@ -122,3 +111,4 @@ PassDetails.propTypes = {
 };
 
 export default PassDetails;
+
