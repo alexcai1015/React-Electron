@@ -3,15 +3,7 @@ import PropTypes from 'prop-types';
 import { Typography, Button, withStyles } from '@material-ui/core';
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 
-import { Colors } from '../../../../common/constants/Colors';
-
-export const APPROVAL_STATUS = {
-  Pending: 'pending',
-  Approved: 'approved',
-  Declined: 'declined',
-
-  // Cancelled: 'cancelled',
-};
+import { Colors, ApprovalStatus } from '../../../../common/constants';
 
 const allStyles = {
   container: {
@@ -92,7 +84,7 @@ const ActionsHOC = (props) => {
   const { classes } = props;
   return (
     {
-      [APPROVAL_STATUS.Pending]: (
+      [ApprovalStatus.Pending]: (
         <div className={classes.actions}>
           <Button
             variant="contained"
@@ -112,13 +104,13 @@ const ActionsHOC = (props) => {
           </Button>
         </div>
       ),
-      [APPROVAL_STATUS.Approved]: (
+      [ApprovalStatus.Approved]: (
         <div className={`${classes.labels} ${classes.approvedLabel}`}>
           <CheckCircleIcon color="inherit" />
           <Typography variant="body1">Approved</Typography>
         </div>
       ),
-      [APPROVAL_STATUS.Declined]: (
+      [ApprovalStatus.Declined]: (
         <div className={`${classes.labels} ${classes.deniedLabel}`}>
           <CancelIcon color="inherit" />
           <Typography variant="body1">Denied</Typography>
@@ -150,11 +142,11 @@ export const ListRowActions = withStyles(allStyles)((props) => {
 });
 
 ListRowActions.defaultProps = {
-  type: APPROVAL_STATUS.Pending,
+  type: ApprovalStatus.Pending,
 };
 
 ListRowActions.propTypes = {
-  status: PropTypes.oneOf(Object.values(APPROVAL_STATUS)),
+  status: PropTypes.oneOf(Object.values(ApprovalStatus)),
   isLoading: PropTypes.bool,
   approvedStatusColor: PropTypes.string,
   deniedStatusColor: PropTypes.string,

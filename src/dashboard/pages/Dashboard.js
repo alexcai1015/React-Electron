@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Box, Container, Grid, TextField, MenuItem, styled } from '@material-ui/core';
 
 import { NavigationBar } from '../../common/components/NavigationBar';
 import { useGetAccessPasses } from '../../common/hooks';
+import { dictionaryToArray } from '../../common/utils/arrays';
+import { getAccessPassesSelector } from '../../store/slices';
 
 import { ListTable } from './dashboard/ListTable';
 
@@ -26,7 +29,12 @@ const filterOptions = [
 ];
 
 export const Dashboard = () => {
-  const { data, isLoading, query } = useGetAccessPasses();
+  const { isLoading, query } = useGetAccessPasses();
+
+  const data = useSelector(getAccessPassesSelector, (a, b) => {
+    // equality object
+    return JSON.stringify(a) === JSON.stringify(b);
+  });
   const [selectedFilterOption, setSelectedFilterOption] = useState('show_all');
 
   const handleFilterSelectChange = (event) => {
@@ -68,7 +76,7 @@ export const Dashboard = () => {
 
         <Box py={3}>
           <Container>
-            <ListTable value={data} isLoading={isLoading} />
+            <ListTable value={dictionaryToArray(data)} isLoading={isLoading} />
           </Container>
         </Box>
       </Box>
