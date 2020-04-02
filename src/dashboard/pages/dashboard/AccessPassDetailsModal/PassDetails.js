@@ -60,7 +60,7 @@ const getReferenceIdLabel = (details) => {
   return label;
 };
 
-const Passdetails = ({ handleClose, details }) => {
+const PassDetails = ({ handleClose, details }) => {
   const classes = useStyles();
   const addressOfDestination = formatAddress({
     name: details.destName,
@@ -98,11 +98,11 @@ const Passdetails = ({ handleClose, details }) => {
   );
 };
 
-Passdetails.defaultProps = {
+PassDetails.defaultProps = {
   details: {},
 };
 
-Passdetails.propTypes = {
+PassDetails.propTypes = {
   handleClose: PropTypes.func.isRequired,
   details: PropTypes.shape({
     aporType: PropTypes.string,
@@ -121,4 +121,4 @@ Passdetails.propTypes = {
   }),
 };
 
-export default Passdetails;
+export default PassDetails;

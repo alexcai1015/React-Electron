@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Dialog from '@material-ui/core/Dialog';
 import { makeStyles } from '@material-ui/core/styles';
 
-import PassDetails from './Passdetails';
+import PassDetails from './PassDetails';
 
 const useStyles = makeStyles(() => ({
   rootStyle: {
