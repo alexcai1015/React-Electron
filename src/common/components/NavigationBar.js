@@ -35,7 +35,10 @@ export function NavigationBar(props) {
             <img src={logo} width="48" height="48" alt="Logo" title="Logo" />
           </IconButton>
 
-          <Typography variant="h6">RapidPass.PH Dashboard</Typography>
+          <div>
+            <Typography variant="h6">RapidPass.PH Dashboard</Typography>
+            v{process.env.REACT_APP_VERSION}
+          </div>
 
           <div className={classes.grow} />
 
