@@ -47,6 +47,8 @@ const formatAddress = ({ name, street, city, province }) => {
     address = address ? `${address}, ${province}` : `${province}`;
   }
 
+  if (!address) return 'N/A';
+
   return address;
 };
 
@@ -60,27 +62,27 @@ const Passdetails = ({ handleClose, details }) => {
   });
 
   // There's no address of origin from the backend.
-  const addressOfOrigin = '';
+  const addressOfOrigin = 'N/A';
   return (
     <Box className={classes.container}>
       <Header handleClose={handleClose} />
       <Box className={classes.body}>
-        <AporType aporType={details.aporType} />
+        <AporType aporType={details.aporType || 'N/A'} />
         <SectionTitle title="Personal Details" />
         <Grid item xs={12} container>
           <Grid item xs={4}>
-            <Field label="Name" value={details.name} />
-            <Field label="Email" value={details.email} />
-            <Field label="Contact Number" value={details.referenceId} />
-            <Field label="Id type" value={details.idType} />
-            <Field label="Id number" value={details.id} />
-            <Field label="Company" value={details.company} />
+            <Field label="Name" value={details.name || 'N/A'} />
+            <Field label="Email" value={details.email || 'N/A'} />
+            <Field label="Contact Number" value={details.contactNumber || 'N/A'} />
+            <Field label="Id type" value={details.idType || 'N/A'} />
+            <Field label="Id number" value={details.id || 'N/A'} />
+            <Field label="Company" value={details.company || 'N/A'} />
           </Grid>
           <Grid item xs={8}>
-            <Field label="Address of origin" value={addressOfOrigin} />
-            <Field label="Address of destination" value={addressOfDestination} />
-            <Field label="Remarks" value={details.remarks} />
-            <Field label="Pass type" value={details.passType} />
+            <Field label="Address of origin" value={addressOfOrigin || 'N/A'} />
+            <Field label="Address of destination" value={addressOfDestination || 'N/A'} />
+            <Field label="Remarks" value={details.remarks || 'N/A'} />
+            <Field label="Pass type" value={details.passType || 'N/A'} />
           </Grid>
         </Grid>
       </Box>
@@ -89,21 +91,7 @@ const Passdetails = ({ handleClose, details }) => {
 };
 
 Passdetails.defaultProps = {
-  details: {
-    aporType: '',
-    company: '',
-    destCity: '',
-    destName: '',
-    destProvince: '',
-    destStreet: '',
-    email: '',
-    id: '',
-    idType: '',
-    name: '',
-    passType: '',
-    referenceId: '',
-    remarks: '',
-  },
+  details: {},
 };
 
 Passdetails.propTypes = {
@@ -111,6 +99,7 @@ Passdetails.propTypes = {
   details: PropTypes.shape({
     aporType: PropTypes.string,
     company: PropTypes.string,
+    contactNumber: PropTypes.string,
     destCity: PropTypes.string,
     destName: PropTypes.string,
     destProvince: PropTypes.string,

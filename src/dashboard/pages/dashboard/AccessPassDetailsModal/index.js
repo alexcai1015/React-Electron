@@ -34,21 +34,7 @@ const AccessPassDetailsModal = ({ open, handleClose, passDetails }) => {
 
 AccessPassDetailsModal.defaultProps = {
   open: true,
-  passDetails: {
-    aporType: '',
-    company: '',
-    destCity: '',
-    destName: '',
-    destProvince: '',
-    destStreet: '',
-    email: '',
-    id: '',
-    idType: '',
-    name: '',
-    passType: '',
-    referenceId: '',
-    remarks: '',
-  },
+  passDetails: {},
 };
 
 AccessPassDetailsModal.propTypes = {
@@ -57,6 +43,7 @@ AccessPassDetailsModal.propTypes = {
   passDetails: PropTypes.shape({
     aporType: PropTypes.string,
     company: PropTypes.string,
+    contactNumber: PropTypes.string,
     destCity: PropTypes.string,
     destName: PropTypes.string,
     destProvince: PropTypes.string,
