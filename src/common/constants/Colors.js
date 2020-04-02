@@ -8,5 +8,6 @@ export const Colors = {
   RowStripeGray: 'rgb(246,246,246)',
   CancelGray: '#A7A7A7',
   BorderGray: '#C4C4C4',
+  LabelGray: '#989898',
   BodyTextBlack: '#2E2E2E'
 }
