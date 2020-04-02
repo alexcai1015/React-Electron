@@ -24,6 +24,7 @@ import { SnackbarAlert } from '../../../common/components/SnackbarAlert';
 import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
 import { useUpdateAccessPass } from '../../../common/hooks';
+import { SkeletonTable } from './listTable/SkeletonTable';
 
 const listTableStyles = makeStyles({
   table: {
@@ -37,7 +38,7 @@ const listTableStyles = makeStyles({
   },
 });
 
-export function ListTable({ getAccessPassesQuery, value }) {
+export function ListTable({ getAccessPassesQuery, value, isLoading }) {
   const classes = listTableStyles();
 
   const {
@@ -79,11 +80,12 @@ export function ListTable({ getAccessPassesQuery, value }) {
   } = useUpdateAccessPass();
 
   /** Modals' States  */
-  const [isDenyModalOpen, setIsDenyModalOpen] = React.useState(false);
-  const [isDetailsOpen, setIsdDetailsOpen] = React.useState(false);
+
+  const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
+  const [isDetailsOpen, setIsdDetailsOpen] = useState(false);
 
   // ! TODO: remove this `accessPassReferenceId` state
-  const [accessPassReferenceId, setAccessPassReferenceId] = React.useState('');
+  const [accessPassReferenceId, setAccessPassReferenceId] = useState('');
 
   const [updatedAccessPass, setUpdatedAccessPass] = useState(null);
   const [errorFromUpdate, setErrorFromUpdate] = useState('');
@@ -159,32 +161,40 @@ export function ListTable({ getAccessPassesQuery, value }) {
               )}
             </TableRow>
           </TableHead>
-          <TableBody {...getTableBodyProps()}>
-            {page.map((row, index) => {
-              prepareRow(row);
-              return (
-                <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
-                  {row.cells.map((cell, index) => {
-                    return index === lastColumnIndex ? (
-                      // Last cell is status with custom component
-                      <TableCell align="center" key={index}>
-                        <ListRowActions
-                          status={cell.row.values.status}
-                          onApproveClick={() => handleApproveActionClick(cell.row.original)}
-                          onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
-                          onViewDetailsClick={() =>
-                            handleViewDetailsClick(cell.row.values.idNumber)
-                          } // TODO: Pass Reference ID
-                        ></ListRowActions>
-                      </TableCell>
-                    ) : (
-                        <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                      );
-                  })}
-                </TableRow>
-              );
-            })}
-          </TableBody>
+
+          {isLoading ? (
+            <SkeletonTable />
+          ) : (
+            <>
+              <TableBody {...getTableBodyProps()}>
+                {page.map((row, index) => {
+                  prepareRow(row);
+                  return (
+                    <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
+                      {row.cells.map((cell, index) => {
+                        return index === lastColumnIndex ? (
+                          // Last cell is status with custom component
+                          <TableCell align="center" key={index}>
+                            <ListRowActions
+                              status={cell.row.values.status}
+                              onApproveClick={() => handleApproveActionClick(cell.row.original)}
+                              onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
+                              onViewDetailsClick={() =>
+                                handleViewDetailsClick(cell.row.values.idNumber)
+                              } // TODO: Pass Reference ID
+                            ></ListRowActions>
+                          </TableCell>
+                        ) : (
+                          <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                        );
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </>
+          )}
+
           <TableFooter>
             <TableRow>
               <TablePagination
