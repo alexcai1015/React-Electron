@@ -15,15 +15,19 @@ import {
   Typography,
 } from '@material-ui/core';
 import { usePagination, useSortBy, useTable } from 'react-table';
+import { useDispatch } from 'react-redux';
+
+import { Colors } from '../../../common/constants/Colors';
+import { SnackbarAlert } from '../../../common/components/SnackbarAlert';
+import { useUpdateAccessPass } from '../../../common/hooks';
+import { approveAccessPassById } from '../../../store/slices';
+import { ApprovalStatus } from '../../../common/constants';
 
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
-import { ListRowActions, APPROVAL_STATUS } from './listTable/ListRowActions';
-import { Colors } from '../../../common/constants/Colors';
-import { SnackbarAlert } from '../../../common/components/SnackbarAlert';
+import { ListRowActions } from './listTable/ListRowActions';
 import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
-import { useUpdateAccessPass } from '../../../common/hooks';
 import { SkeletonTable } from './listTable/SkeletonTable';
 
 const listTableStyles = makeStyles({
@@ -39,6 +43,7 @@ const listTableStyles = makeStyles({
 });
 
 export function ListTable({ getAccessPassesQuery, value, isLoading }) {
+  const dispatch = useDispatch();
   const classes = listTableStyles();
   const {
     headerGroups,
@@ -72,11 +77,7 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
   );
 
   /** API Hooks */
-  const {
-    execute: executeUpdate,
-    isLoading: isLoadingUpdate,
-    error: errorUpdate,
-  } = useUpdateAccessPass();
+  const { execute: executeUpdate, error: errorUpdate } = useUpdateAccessPass();
 
   /** Modals' States  */
 
@@ -99,21 +100,19 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
   };
 
   const handleApproveActionClick = (accessPass) => {
-    const { referenceId, status } = accessPass;
-    if (status !== APPROVAL_STATUS.Pending) {
+    const { referenceId, id, status } = accessPass;
+
+    if (status !== ApprovalStatus.Pending) {
       return;
     }
+
     executeUpdate(referenceId, { status: 'APPROVED' });
+    dispatch(approveAccessPassById(id));
 
-    // getAccessPassesQuery();
-
-    if (!isLoadingUpdate) {
-      setUpdatedAccessPass(accessPass);
-      setErrorFromUpdate(errorUpdate);
-
-      // ? TODO: how to refresh the current row's status? so that the ListRowActions will convert to status text
-    }
+    setUpdatedAccessPass(accessPass);
+    setErrorFromUpdate(errorUpdate);
   };
+
   const handleDenyActionClick = (referenceId) => {
     setIsDenyModalOpen(true);
     setAccessPassReferenceId(referenceId);
@@ -170,37 +169,34 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
           {isLoading ? (
             <SkeletonTable />
           ) : (
-              <TableBody {...getTableBodyProps()}>
-                {page.map((row, index) => {
-                  prepareRow(row);
-                  return (
-                    <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
-                      {row.cells.map((cell, index) => {
-                        return index === lastColumnIndex ? (
-                          // Last cell is status with custom component
-                          <TableCell align="center" key={index}>
-                            <ListRowActions
-                              status={cell.row.values.status}
-                              onApproveClick={() => handleApproveActionClick(cell.row.original)}
-                              onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
-                              onViewDetailsClick={() =>
-                                handleViewDetailsClick({
-                                  referenceId: cell.row.values.idNumber,
-                                  details: row.original,
-                                })
-                              }
-
-                            ></ListRowActions>
-                          </TableCell>
-                        ) : (
-                            <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                          );
-                      })}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            )}
+            <TableBody {...getTableBodyProps()}>
+              {page.map((row, index) => {
+                prepareRow(row);
+                return (
+                  <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
+                    {row.cells.map((cell, index) => {
+                      return index === lastColumnIndex ? (
+                        <TableCell align="center" key={cell.row.values.id}>
+                          <ListRowActions
+                            status={cell.row.values.status}
+                            onApproveClick={() => handleApproveActionClick(cell.row.original)}
+                            onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
+                            onViewDetailsClick={() =>
+                              handleViewDetailsClick({
+                                referenceId: cell.row.values.idNumber,
+                                details: row.original,
+                              })}
+                          />
+                        </TableCell>
+                      ) : (
+                        <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                      );
+                    })}
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          )}
 
           <TableFooter>
             <TableRow>
