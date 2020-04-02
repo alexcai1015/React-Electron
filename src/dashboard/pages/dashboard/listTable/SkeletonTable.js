@@ -7,16 +7,14 @@ const range = (start, end) => [...Array(end - start + 1)].map((_, i) => start + 
 
 export function SkeletonTable() {
   return (
-    <>
-      <TableBody>
-        {range(0, defaultRowsPerPage).map((i) => (
-          <tr key={i}>
-            <td colSpan={6}>
-              <Skeleton animation="wave" height={80} />
-            </td>
-          </tr>
-        ))}
-      </TableBody>
-    </>
+    <TableBody>
+      {range(0, defaultRowsPerPage).map((i) => (
+        <tr key={i}>
+          <td colSpan={6}>
+            <Skeleton animation="wave" height={80} />
+          </td>
+        </tr>
+      ))}
+    </TableBody>
   );
 }

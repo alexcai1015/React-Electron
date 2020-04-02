@@ -170,38 +170,36 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
           {isLoading ? (
             <SkeletonTable />
           ) : (
-              <>
-                <TableBody {...getTableBodyProps()}>
-                  {page.map((row, index) => {
-                    prepareRow(row);
-                    return (
-                      <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
-                        {row.cells.map((cell, index) => {
-                          return index === lastColumnIndex ? (
-                            // Last cell is status with custom component
-                            <TableCell align="center" key={index}>
-                              <ListRowActions
-                                status={cell.row.values.status}
-                                onApproveClick={() => handleApproveActionClick(cell.row.original)}
-                                onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
-                                onViewDetailsClick={() =>
-                                  handleViewDetailsClick({
-                                    referenceId: cell.row.values.idNumber,
-                                    details: row.original,
-                                  })
-                                } // TODO: Pass Reference ID
+              <TableBody {...getTableBodyProps()}>
+                {page.map((row, index) => {
+                  prepareRow(row);
+                  return (
+                    <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
+                      {row.cells.map((cell, index) => {
+                        return index === lastColumnIndex ? (
+                          // Last cell is status with custom component
+                          <TableCell align="center" key={index}>
+                            <ListRowActions
+                              status={cell.row.values.status}
+                              onApproveClick={() => handleApproveActionClick(cell.row.original)}
+                              onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
+                              onViewDetailsClick={() =>
+                                handleViewDetailsClick({
+                                  referenceId: cell.row.values.idNumber,
+                                  details: row.original,
+                                })
+                              }
 
-                              ></ListRowActions>
-                            </TableCell>
-                          ) : (
-                              <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                            );
-                        })}
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </>
+                            ></ListRowActions>
+                          </TableCell>
+                        ) : (
+                            <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                          );
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
             )}
 
           <TableFooter>
