@@ -36,9 +36,7 @@ export function NavigationBar(props) {
           </IconButton>
 
           <div>
-            <Typography variant="h6">
-              RapidPass.PH Dashboar <br />
-            </Typography>
+            <Typography variant="h6">RapidPass.PH Dashboard</Typography>
             v{process.env.REACT_APP_VERSION}
           </div>
 
