@@ -40,7 +40,6 @@ const listTableStyles = makeStyles({
 
 export function ListTable({ getAccessPassesQuery, value, isLoading }) {
   const classes = listTableStyles();
-
   const {
     headerGroups,
     prepareRow,
@@ -86,9 +85,9 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
 
   // ! TODO: remove this `accessPassReferenceId` state
   const [accessPassReferenceId, setAccessPassReferenceId] = useState('');
-
   const [updatedAccessPass, setUpdatedAccessPass] = useState(null);
   const [errorFromUpdate, setErrorFromUpdate] = useState('');
+  const [passDetails, setPassDetails] = useState(null);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -120,9 +119,15 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
     setAccessPassReferenceId(referenceId);
   };
 
-  const handleViewDetailsClick = (referenceId) => {
+  const handleViewDetailsClick = ({ referenceId, details }) => {
     setIsdDetailsOpen(true);
     setAccessPassReferenceId(referenceId);
+    setPassDetails(details);
+  };
+
+  const handleSetPassDetailsClose = () => {
+    setIsdDetailsOpen(false);
+    setPassDetails(null);
   };
 
   const totalRecordsCount = rows.length;
@@ -165,7 +170,6 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
           {isLoading ? (
             <SkeletonTable />
           ) : (
-            <>
               <TableBody {...getTableBodyProps()}>
                 {page.map((row, index) => {
                   prepareRow(row);
@@ -180,20 +184,23 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
                               onApproveClick={() => handleApproveActionClick(cell.row.original)}
                               onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
                               onViewDetailsClick={() =>
-                                handleViewDetailsClick(cell.row.values.idNumber)
-                              } // TODO: Pass Reference ID
+                                handleViewDetailsClick({
+                                  referenceId: cell.row.values.idNumber,
+                                  details: row.original,
+                                })
+                              }
+
                             ></ListRowActions>
                           </TableCell>
                         ) : (
-                          <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                        );
+                            <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                          );
                       })}
                     </TableRow>
                   );
                 })}
               </TableBody>
-            </>
-          )}
+            )}
 
           <TableFooter>
             <TableRow>
@@ -223,8 +230,8 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
       />
       <AccessPassDetailsModal
         open={isDetailsOpen}
-        handleClose={() => setIsdDetailsOpen(false)}
-        accessPassReferenceId={accessPassReferenceId}
+        handleClose={handleSetPassDetailsClose}
+        passDetails={passDetails}
       />
 
       <SnackbarAlert
