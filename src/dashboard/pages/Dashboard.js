@@ -26,7 +26,7 @@ const filterOptions = [
 ];
 
 export const Dashboard = () => {
-  const { data, query } = useGetAccessPasses();
+  const { data, isLoading, query } = useGetAccessPasses();
   const [selectedFilterOption, setSelectedFilterOption] = useState('show_all');
 
   const handleFilterSelectChange = (event) => {
@@ -68,7 +68,7 @@ export const Dashboard = () => {
 
         <Box py={3}>
           <Container>
-            <ListTable value={data} />
+            <ListTable value={data} isLoading={isLoading} />
           </Container>
         </Box>
       </Box>
