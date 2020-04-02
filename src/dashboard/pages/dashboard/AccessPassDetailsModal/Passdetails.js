@@ -52,6 +52,14 @@ const formatAddress = ({ name, street, city, province }) => {
   return address;
 };
 
+const getReferenceIdLabel = (details) => {
+  const label =
+    details && details.passType && details.passType.toUpperCase() === 'VEHICLE'
+      ? 'Plate Number'
+      : 'Contact Number';
+  return label;
+};
+
 const Passdetails = ({ handleClose, details }) => {
   const classes = useStyles();
   const addressOfDestination = formatAddress({
@@ -73,7 +81,7 @@ const Passdetails = ({ handleClose, details }) => {
           <Grid item xs={4}>
             <Field label="Name" value={details.name || 'N/A'} />
             <Field label="Email" value={details.email || 'N/A'} />
-            <Field label="Contact Number" value={details.contactNumber || 'N/A'} />
+            <Field label={getReferenceIdLabel(details)} value={details.referenceId || 'N/A'} />
             <Field label="Id type" value={details.idType || 'N/A'} />
             <Field label="Id number" value={details.id || 'N/A'} />
             <Field label="Company" value={details.company || 'N/A'} />
@@ -99,7 +107,7 @@ Passdetails.propTypes = {
   details: PropTypes.shape({
     aporType: PropTypes.string,
     company: PropTypes.string,
-    contactNumber: PropTypes.string,
+    referenceId: PropTypes.string,
     destCity: PropTypes.string,
     destName: PropTypes.string,
     destProvince: PropTypes.string,
@@ -109,7 +117,6 @@ Passdetails.propTypes = {
     idType: PropTypes.string,
     name: PropTypes.string,
     passType: PropTypes.string,
-    referenceId: PropTypes.string,
     remarks: PropTypes.string,
   }),
 };

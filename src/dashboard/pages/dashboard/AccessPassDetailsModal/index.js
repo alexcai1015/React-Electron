@@ -43,7 +43,7 @@ AccessPassDetailsModal.propTypes = {
   passDetails: PropTypes.shape({
     aporType: PropTypes.string,
     company: PropTypes.string,
-    contactNumber: PropTypes.string,
+    referenceId: PropTypes.string,
     destCity: PropTypes.string,
     destName: PropTypes.string,
     destProvince: PropTypes.string,
@@ -53,7 +53,6 @@ AccessPassDetailsModal.propTypes = {
     idType: PropTypes.string,
     name: PropTypes.string,
     passType: PropTypes.string,
-    referenceId: PropTypes.string,
     remarks: PropTypes.string,
   }),
 };
