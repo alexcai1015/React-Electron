@@ -8,8 +8,10 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
 
 import logo from '../../assets/rapidpass.svg';
+import { removeUser } from '../../store/slices';
 
 const useStyles = makeStyles({
   grow: {
@@ -26,6 +28,11 @@ const useStyles = makeStyles({
 
 export function NavigationBar(props) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const handleLogout = () => {
+    dispatch(removeUser());
+  };
 
   return (
     <AppBar position="static" className={classes.nav}>
@@ -42,7 +49,7 @@ export function NavigationBar(props) {
 
           <div className={classes.grow} />
 
-          <Button edge="end" color="inherit" href="/">
+          <Button edge="end" color="inherit" href="/" onClick={handleLogout}>
             Log Out
           </Button>
         </Toolbar>

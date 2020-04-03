@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { httpPost, httpPut, httpPatch, httpDelete } from '../api';
 import { HttpMethod } from '../constants';
@@ -17,9 +17,15 @@ const maybeObject = maybe({});
 
 export const useApiMutation = (url, method, config) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({ httpResponse: null, data: null });
   const [error, setError] = useState(null);
-  const [httpResponse, setHttpResponse] = useState(null);
+  const unmounted = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      unmounted.current = true;
+    };
+  }, []);
 
   const execute = async ({ requestData, urlQueryParams, urlPathParams }) => {
     setIsLoading(true);
@@ -35,28 +41,39 @@ export const useApiMutation = (url, method, config) => {
           ? [urlWithPathParams, encodedURIParams].join('/')
           : urlWithPathParams;
         const httpMutationResponse = await mutationMethod(mutationUrl, config);
-        setHttpResponse(httpMutationResponse);
+
+        if (!unmounted.current) {
+          setData({ httpResponse: httpMutationResponse });
+        }
       } else {
         const httpMutationResponse = await mutationMethod(
           urlWithPathParams,
           maybeObject(requestData),
           config
         );
-        setHttpResponse(httpMutationResponse);
-        setData(httpResponse.data);
+
+        if (!unmounted.current) {
+          setData({
+            data: httpMutationResponse.data,
+            httpResponse: httpMutationResponse,
+          });
+        }
       }
     } catch (_error) {
-      setError(_error);
+      if (!unmounted.current) {
+        setError(_error);
+      }
     } finally {
-      setIsLoading(false);
+      if (!unmounted.current) {
+        setIsLoading(false);
+      }
     }
   };
 
   return {
-    data,
+    ...data,
     isLoading,
     error,
     execute,
-    httpResponse,
   };
 };

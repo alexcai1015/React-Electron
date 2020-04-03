@@ -1,8 +1,10 @@
 import React from 'react';
-import { Switch, Route, Redirect as ReactRouterRedirect, useLocation } from 'react-router-dom';
+import { Switch, Route, Redirect as ReactRouterRedirect } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import { Dashboard } from './dashboard/pages/Dashboard';
-import Login from './login';
+import { Login } from './login';
+import { getUserToken } from './store/slices';
 
 /** catch-all */
 const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
@@ -12,8 +14,6 @@ export function Redirect(props) {
 }
 
 function ProtectedRoute({ component: Component, accessCode, ...rest }) {
-  // TODO: grab this accessCode from login or some authservice #19
-  // TODO: toggle this to true to continue with dashboard component
   const authenticated = !!accessCode;
 
   return (
@@ -33,8 +33,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
               },
             }}
           />
-        )
-      }
+        )}
     />
   );
 }
@@ -48,20 +47,14 @@ export const PROTECTED_ROUTES = [
   },
 ];
 
-/* TODO: for testing only. Use the reduxsetup to get the accessCode. Fornow add some bogus string in
- addressbar like?accessCode=asdasdasdasdasd */
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
-
 export function AppRoutes() {
-  const query = useQuery();
+  const token = useSelector(getUserToken);
   return (
     <Switch>
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
       {PROTECTED_ROUTES.map(({ path, component, exact }) => (
         <ProtectedRoute
-          accessCode={query.get('accessCode')}
+          accessCode={token}
           key="path"
           path={path}
           component={component}
