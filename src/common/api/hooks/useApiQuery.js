@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 
 import { httpGet } from '../api';
 import { objToEncodedURI, applyPathParams } from '../utils';
@@ -8,9 +8,15 @@ const maybeObject = maybe({});
 
 export const useApiQuery = (url, config) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({ httpResponse: null, data: null });
   const [error, setError] = useState(null);
-  const [httpResponse, setHttpResponse] = useState(null);
+  const unmounted = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      unmounted.current = true;
+    };
+  }, []);
 
   const query = useCallback(
     async ({ urlQueryParams, urlPathParams } = {}) => {
@@ -24,22 +30,30 @@ export const useApiQuery = (url, config) => {
           ? [urlWithPathParams, encodedURIParams].join('?')
           : urlWithPathParams;
         const httpQueryResponse = await httpGet(queryUrl, config);
-        setHttpResponse(httpQueryResponse);
-        setData(httpQueryResponse.data);
+
+        if (!unmounted.current) {
+          setData({
+            data: httpQueryResponse.data,
+            httpResponse: httpQueryResponse,
+          });
+        }
       } catch (_error) {
-        setError(_error);
+        if (!unmounted.current) {
+          setError(_error);
+        }
       } finally {
-        setIsLoading(false);
+        if (!unmounted.current) {
+          setIsLoading(false);
+        }
       }
     },
-    [url, config, setData, setError, setHttpResponse]
+    [url, config, setData, setError]
   );
 
   return {
-    data,
+    ...data,
     isLoading,
     error,
     query,
-    httpResponse,
   };
 };
