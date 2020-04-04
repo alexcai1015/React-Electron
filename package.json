@@ -11,6 +11,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
+    "cross-env": "^7.0.2",
     "formik": "^2.1.4",
     "history": "^4.10.1",
     "prop-types": "^15.7.2",
@@ -30,8 +31,8 @@
   },
   "scripts": {
     "lint": "eslint --cache --ext .js,.jsx src",
-    "start": "REACT_APP_VERSION=$npm_package_version react-scripts start",
-    "build": "INLINE_RUNTIME_CHUNK=false REACT_APP_VERSION=$npm_package_version react-scripts build",
+    "start": "cross-env REACT_APP_VERSION=$npm_package_version react-scripts start",
+    "build": "cross-env INLINE_RUNTIME_CHUNK=false REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:mock-server": "json-server --watch mock-server.js -p 3110"
