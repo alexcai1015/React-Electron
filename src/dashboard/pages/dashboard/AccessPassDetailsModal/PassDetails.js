@@ -4,16 +4,12 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { PassTypeLabel } from '../../../../common/constants/PassType';
+
 import Header from './Header';
 import Field from './Field';
 import SectionTitle from './SectionTitle';
 import AporType from './AporType';
-
-// TODO: also added to hook to auto-lowercase like APPROVAL_STATUS?
-export const PASS_TYPE = {
-  Vehicle: 'vehicle',
-  Individual: 'individual',
-};
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -40,13 +36,9 @@ const formatAddress = ({ name, street, city, province }) => {
 };
 
 const getReferenceIdLabel = (details) => {
-  const { Vehicle, Individual } = PASS_TYPE;
   const { passType = '' } = details;
-  const labels = {
-    [Vehicle]: 'Plate Number',
-    [Individual]: 'Contact Number',
-  };
-  return labels[passType.toLowerCase()] || '';
+  const label = PassTypeLabel[passType.toLowerCase()];
+  return label ? label.display : '';
 };
 
 const PassDetails = ({ handleClose, details }) => {

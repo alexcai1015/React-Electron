@@ -5,6 +5,8 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Close } from '@material-ui/icons';
 
+import { Colors } from '../../../../common/constants/Colors';
+
 const useStyles = makeStyles((theme) => ({
   closeButtonWrapper: {
     display: 'flex',
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   headerText: {
     fontWeight: '600',
     fontSize: 24,
-    color: '#2e2e2e',
+    color: Colors.HeaderTextGray,
     alignItems: 'center',
     [theme.breakpoints.down('sm')]: {
       fontSize: 18,

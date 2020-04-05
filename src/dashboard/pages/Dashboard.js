@@ -9,23 +9,30 @@ import { getAccessPassesSelector } from '../../store/slices';
 
 import { ListTable } from './dashboard/ListTable';
 
-const filterOptions = [
-  {
+const StatusFilterOption = {
+  ShowAll: {
     value: 'show_all',
     label: 'Show All',
   },
-  {
+  Pending: {
     value: 'pending',
     label: 'Pending',
   },
-  {
+  Approved: {
     value: 'approved',
     label: 'Approved',
   },
-  {
+  Denied: {
     value: 'denied',
     label: 'Denied',
   },
+};
+
+const StatusFilterOptions = [
+  StatusFilterOption.ShowAll,
+  StatusFilterOption.Pending,
+  StatusFilterOption.Approved,
+  StatusFilterOption.Denied,
 ];
 
 export const Dashboard = () => {
@@ -35,7 +42,9 @@ export const Dashboard = () => {
     // equality object
     return JSON.stringify(a) === JSON.stringify(b);
   });
-  const [selectedFilterOption, setSelectedFilterOption] = useState('show_all');
+  const [selectedFilterOption, setSelectedFilterOption] = useState(
+    StatusFilterOption.ShowAll.value
+  );
 
   const handleFilterSelectChange = (event) => {
     setSelectedFilterOption(event.target.value);
@@ -63,7 +72,7 @@ export const Dashboard = () => {
                   onChange={handleFilterSelectChange}
                   variant="outlined"
                 >
-                  {filterOptions.map(({ label, value }) => (
+                  {StatusFilterOptions.map(({ label, value }) => (
                     <MenuItem key={value} value={value}>
                       {label}
                     </MenuItem>
