@@ -5,6 +5,8 @@ import { Tabs, Tab, Typography } from '@material-ui/core';
 import { People, LocalShipping } from '@material-ui/icons';
 import { DropzoneArea } from 'material-ui-dropzone';
 
+import { UploadSuccessModal } from './UploadSuccessModal';
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -22,7 +24,7 @@ function TabPanel(props) {
 }
 
 TabPanel.defaultProps = {
-  children: ''
+  children: '',
 };
 
 TabPanel.propTypes = {
@@ -35,26 +37,31 @@ const useStyles = makeStyles({
   root: {
     flexGrow: 1,
     paddingTop: 40,
-    paddingLeft: 70
+    paddingLeft: 70,
   },
   tabPanel: {
     paddingTop: 20,
     paddingLeft: 70,
-    paddingRight: 70
+    paddingRight: 70,
   },
   uploadBox: {
-    paddingTop: 20
+    paddingTop: 20,
   },
   uploadBoxText: {
-    marginTop: '5%'
-  }
+    marginTop: '5%',
+  },
 });
 
 export const PassUploadTab = () => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = React.useState('Click Here or Drag and Drop to Upload CSV/Excel file');
-  const [uploadBoxTextVehicle, setUploadBoxTextVehicle] = React.useState('Click Here or Drag and Drop to Upload CSV/Excel file');
+  const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = React.useState(
+    'Click Here or Drag and Drop to Upload CSV/Excel file'
+  );
+  const [uploadBoxTextVehicle, setUploadBoxTextVehicle] = React.useState(
+    'Click Here or Drag and Drop to Upload CSV/Excel file'
+  );
+  const [isUploadSuccessModalOpen, setIsUploadSuccessModalOpen] = React.useState(false);
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
@@ -62,16 +69,18 @@ export const PassUploadTab = () => {
 
   const handleFileChangeIndividual = (files) => {
     setUploadBoxTextIndividual(files[0].name);
+    setIsUploadSuccessModalOpen(true);
   };
 
   const handleFileChangeVehicle = (files) => {
     setUploadBoxTextVehicle(files[0].name);
+    setIsUploadSuccessModalOpen(true);
   };
 
   const acceptedFile = [
     'text/csv',
     'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   ];
 
   return (
@@ -89,7 +98,8 @@ export const PassUploadTab = () => {
 
       <TabPanel value={value} index={0} className={classes.tabPanel}>
         <h3>Bulk Upload File for Individuals</h3>
-        Please follow the fields format to avoid data error upon uploading.<br/>
+        Please follow the fields format to avoid data error upon uploading.
+        <br />
         Download the template here.
         <div className={classes.uploadBox}>
           <DropzoneArea
@@ -98,6 +108,7 @@ export const PassUploadTab = () => {
             filesLimit={1}
             dropzoneText={uploadBoxTextIndividual}
             showPreviewsInDropzone={false}
+            showAlerts={false}
             dropzoneParagraphClass={classes.uploadBoxText}
           />
         </div>
@@ -105,7 +116,8 @@ export const PassUploadTab = () => {
 
       <TabPanel value={value} index={1} className={classes.tabPanel}>
         <h3>Bulk Upload File for Vehicles</h3>
-        Please follow the fields format to avoid data error upon uploading.<br/>
+        Please follow the fields format to avoid data error upon uploading.
+        <br />
         Download the template here.
         <div className={classes.uploadBox}>
           <DropzoneArea
@@ -114,10 +126,18 @@ export const PassUploadTab = () => {
             filesLimit={1}
             dropzoneText={uploadBoxTextVehicle}
             showPreviewsInDropzone={false}
+            showAlerts={false}
             dropzoneParagraphClass={classes.uploadBoxText}
           />
         </div>
       </TabPanel>
+
+      <UploadSuccessModal
+        open={isUploadSuccessModalOpen}
+        handleClose={() => {
+          setIsUploadSuccessModalOpen(false);
+        }}
+      />
     </>
   );
 };

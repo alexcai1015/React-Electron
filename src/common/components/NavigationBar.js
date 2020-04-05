@@ -9,6 +9,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 import logo from '../../assets/rapidpass.svg';
 import { removeUser } from '../../store/slices';
@@ -40,6 +41,7 @@ const useStyles = makeStyles({
 export function NavigationBar(props) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleLogout = () => {
     dispatch(removeUser());
@@ -61,7 +63,7 @@ export function NavigationBar(props) {
           </div>
 
           {PROTECTED_ROUTES.map(({ path, title }) => (
-            <Button key={path} edge="start" color="inherit" href={path}
+            <Button key={path} edge="start" color="inherit" onClick={() => history.push(path)}
               className={`${isActive(path)} ${classes.navButtons}`}>
               {title}
             </Button>
