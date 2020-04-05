@@ -83,9 +83,7 @@ export const DenyApplicationModal = ({ accessPass, open, onClose }) => {
 
   const { referenceId: accessPassReferenceId, id } = accessPass || {};
 
-  const { execute: executeUpdate } = useUpdateAccessPass({
-    accessPassReferenceId,
-  });
+  const { execute: executeUpdate } = useUpdateAccessPass();
 
   const { showSnackbar } = useSnackbar();
 
@@ -98,7 +96,7 @@ export const DenyApplicationModal = ({ accessPass, open, onClose }) => {
     isInitialValid: false,
     validationSchema,
     onSubmit: async ({ remarks }) => {
-      const responseData = await executeUpdate({
+      const responseData = await executeUpdate(accessPassReferenceId, {
         status: 'DECLINED',
         remarks,
       });

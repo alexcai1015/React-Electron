@@ -96,9 +96,7 @@ export function ListTable() {
   );
 
   /** API Hooks */
-  const { execute: executeUpdate, error: errorUpdate } = useUpdateAccessPass({
-    accessPassReferenceId: accessPass && accessPass.referenceId,
-  });
+  const { execute: executeUpdate, error: errorUpdate } = useUpdateAccessPass();
 
   /** Modals' States  */
 
@@ -122,7 +120,10 @@ export function ListTable() {
       return;
     }
 
-    executeUpdate({ status: ApprovalStatus.Approved });
+    executeUpdate(accessPassTableRowData.referenceId, {
+      status: ApprovalStatus.Approved.toUpperCase(),
+    });
+
     dispatch(approveAccessPassById(id));
 
     setUpdatedAccessPass(accessPass);
