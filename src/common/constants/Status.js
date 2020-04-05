@@ -3,4 +3,5 @@ export const ApprovalStatus = {
   Approved: 'approved',
   Declined: 'declined',
   Expired: 'expired',
+  Suspended: 'suspended',
 };
