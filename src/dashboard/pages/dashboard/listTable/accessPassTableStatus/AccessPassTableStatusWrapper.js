@@ -21,7 +21,7 @@ export const AccessPassTableStatusWrapper = ({ status, children }) => {
 };
 
 AccessPassTableStatusWrapper.propTypes = {
-  children: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
   status: PropTypes.string.isRequired,
 };
 
