@@ -47,7 +47,7 @@ export const PROTECTED_ROUTES = [
     component: Dashboard,
   },
   {
-    path: '/bulkUpload',
+    path: '/bulk-upload',
     exact: true,
     title: 'Bulk Upload',
     component: BulkUpload,
