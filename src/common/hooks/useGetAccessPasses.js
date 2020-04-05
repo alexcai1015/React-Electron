@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 
 import { useApiQuery } from '../api';
 import { saveAccessPasses } from '../../store/slices';
+import { maybe } from '../utils/monads';
 
 const mapToAccessPass = (data) => ({
   ...data,
@@ -12,18 +13,31 @@ const mapToAccessPass = (data) => ({
 
 export const useGetAccessPasses = () => {
   const dispatch = useDispatch();
-  const { data: accessPasses, isLoading, ...others } = useApiQuery('/v1/registry/access-passes');
+  const { data, isLoading, ...others } = useApiQuery('/v1/registry/access-passes');
+  const {
+    rapidPassList,
+    currentPage: page,
+    currentPageRows: pageSize,
+    totalPages,
+    ...otherData
+  } = maybe({})(data);
+  const maybeZero = maybe(0);
 
-  const data = Array.isArray(accessPasses) ? accessPasses.map(mapToAccessPass) : [];
+  const list = Array.isArray(rapidPassList) ? rapidPassList.map(mapToAccessPass) : [];
 
   useEffect(() => {
-    if (isLoading && data.length) {
-      dispatch(saveAccessPasses(data));
+    if (isLoading && list.length) {
+      dispatch(saveAccessPasses(list));
     }
-  }, [data, dispatch, isLoading]);
+  }, [list, dispatch, isLoading]);
 
   return {
-    data,
+    data: {
+      page: maybeZero(page),
+      pageSize: maybeZero(pageSize),
+      totalPages: maybeZero(totalPages),
+      ...otherData,
+    },
     isLoading,
     ...others,
   };
