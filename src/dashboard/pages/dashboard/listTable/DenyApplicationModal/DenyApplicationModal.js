@@ -168,11 +168,32 @@ export const DenyApplicationModal = ({ accessPass, open, onClose }) => {
 };
 
 DenyApplicationModal.propTypes = {
-  // ! FIXME: proper shape for `accessPass` prop
-  // eslint-disable-next-line react/forbid-prop-types
-  accessPass: PropTypes.object.isRequired,
+  accessPass: PropTypes.shape({
+    passType: PropTypes.string,
+    aporType: PropTypes.string,
+    referenceId: PropTypes.string,
+    controlCode: PropTypes.string,
+    name: PropTypes.string,
+    company: PropTypes.string,
+    idType: PropTypes.string,
+    identifierNumber: PropTypes.string,
+    plateNumber: PropTypes.string,
+    destName: PropTypes.string,
+    destStreet: PropTypes.string,
+    destCity: PropTypes.string,
+    destProvince: PropTypes.string,
+    status: PropTypes.string,
+    validFrom: PropTypes.string,
+    validUntil: PropTypes.string,
+    remarks: PropTypes.string,
+    id: PropTypes.string,
+  }),
   open: PropTypes.bool,
   onClose: PropTypes.func,
+};
+
+DenyApplicationModal.defaultProps = {
+  accessPass: null,
 };
 
 export default DenyApplicationModal;
