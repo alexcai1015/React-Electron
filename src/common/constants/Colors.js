@@ -12,5 +12,6 @@ export const Colors = {
   LabelGray: '#989898',
   FieldValueGray: '#343434',
   HeaderTextGray: '#2e2e2e',
-  BodyTextBlack: '#2E2E2E'
+  BodyTextBlack: '#2E2E2E',
+  HighlightAmber: '#FF7043'
 }
