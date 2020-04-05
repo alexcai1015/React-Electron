@@ -4,9 +4,11 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
+import { Colors } from '../../../../common/constants/Colors';
+
 const useStyles = makeStyles(() => ({
   sectionTitle: {
-    color: '#5E35B1',
+    color: Colors.SectionTitleBlue,
     fontSize: 14,
     fontWeight: '600',
   },

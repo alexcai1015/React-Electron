@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
     fontSize: 14,
   },
   value: {
-    color: '#343434',
+    color: Colors.FieldValueGray,
     overflowWrap: 'break-word',
     fontSize: 14,
     fontWeight: '500',
