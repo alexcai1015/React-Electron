@@ -42,7 +42,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
 
 export const PROTECTED_ROUTES = [
   {
-    path: ['/', '/dashboard'],
+    path: '/',
     exact: true,
     title: 'Approvals',
     component: Dashboard,
