@@ -8,7 +8,7 @@ import { Login } from './login';
 import { getUserToken } from './store/slices';
 
 /** catch-all */
-const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
+const NotFoundRoute = ({ fallback = '/page-not-found' }) => <ReactRouterRedirect to={fallback} />;
 
 export function Redirect(props) {
   return props.to ? <ReactRouterRedirect {...props} /> : null;
@@ -26,22 +26,23 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
             <Component {...props} />
           </>
         ) : (
-            <Redirect
-              to={{
-                pathname: '/login',
-                state: {
-                  from: props.location,
-                },
-              }}
-            />
-          )}
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: {
+                from: props.location,
+              },
+            }}
+          />
+        )
+      }
     />
   );
 }
 
 export const PROTECTED_ROUTES = [
   {
-    path: '/',
+    path: ['/', '/dashboard'],
     exact: true,
     title: 'Approvals',
     component: Dashboard,
@@ -51,7 +52,7 @@ export const PROTECTED_ROUTES = [
     exact: true,
     title: 'Bulk Upload',
     component: BulkUpload,
-  }
+  },
 ];
 
 export function AppRoutes() {
