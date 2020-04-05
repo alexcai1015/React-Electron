@@ -54,7 +54,7 @@ const PassDetails = ({ handleClose, details }) => {
   const addressOfOrigin = 'N/A';
   return (
     <Box className={classes.container}>
-      <Header handleClose={handleClose} />
+      <Header handleClose={handleClose} text={`Application ${details.status}`} />
       <Box className={classes.content}>
         <AporType aporType={details.aporType || 'N/A'} />
         <SectionTitle title="Personal Details" />

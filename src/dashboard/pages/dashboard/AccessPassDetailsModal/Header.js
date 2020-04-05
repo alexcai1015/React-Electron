@@ -30,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 24,
     color: Colors.HeaderTextGray,
     alignItems: 'center',
+    textTransform: 'capitalize',
     [theme.breakpoints.down('sm')]: {
       fontSize: 18,
     },
@@ -37,13 +38,13 @@ const useStyles = makeStyles((theme) => ({
   headerContainer: { flex: '1 1' },
 }));
 
-const Header = ({ handleClose }) => {
+const Header = ({ handleClose, text }) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.header}>
       <Box className={classes.headerContainer}>
-        <Typography className={classes.headerText}>Application Pending</Typography>
+        <Typography className={classes.headerText}>{text}</Typography>
       </Box>
       <Box className={classes.closeButtonWrapper} onClick={handleClose}>
         <Close />
