@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import * as R from 'ramda';
 
-import { arrayToDictionary } from '../../common/utils/arrays';
+import { arrayToDictionary, dictionaryToArray } from '../../common/utils/arrays';
 import { ApprovalStatus } from '../../common/constants';
 
 const initialState = {
@@ -66,7 +66,7 @@ const { actions, reducer } = createSlice({
   },
 });
 
-export const getAccessPassesSelector = (state) => state.accessPass.byId;
+export const getAccessPasses = (state) => dictionaryToArray(state.accessPass.byId);
 
 export const {
   save: saveAccessPasses,
@@ -76,4 +76,5 @@ export const {
   denyById: denyAccessPassById,
   approveById: approveAccessPassById,
 } = actions;
+
 export { reducer as accessPassReducer };

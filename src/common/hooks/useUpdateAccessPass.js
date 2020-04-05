@@ -1,25 +1,14 @@
-import { useApiMutation, HttpMethod } from '../api';
+import useFetch from 'use-http';
 
-export const useUpdateAccessPass = () => {
-  const { data: accessPass, execute: mutate, ...others } = useApiMutation(
-    '/v1/registry/access-passes/{{referenceId}}',
-    HttpMethod.Put
-  );
-
-  const execute = (referenceId, data) => {
-    if (referenceId && data) {
-      mutate({
-        urlPathParams: {
-          referenceId,
-        },
-        requestData: data,
-      });
-    }
-  };
+export const useUpdateAccessPass = ({ accessPassReferenceId }) => {
+  // data: accessPass, httpResponse, execute: mutate, ...others }
+  const { put: execute, loading: isLoading, ...others } = useFetch({
+    path: `/v1/registry/access-passes/${accessPassReferenceId}`,
+  });
 
   return {
-    data: accessPass || {},
     execute,
+    isLoading,
     ...others,
   };
 };

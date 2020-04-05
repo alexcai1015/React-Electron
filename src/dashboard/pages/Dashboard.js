@@ -1,11 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { Box, Container, Grid, TextField, MenuItem, styled } from '@material-ui/core';
+import React, { useState } from 'react';
+import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
 
 import { NavigationBar } from '../../common/components/NavigationBar';
-import { useGetAccessPasses } from '../../common/hooks';
-import { dictionaryToArray } from '../../common/utils/arrays';
-import { getAccessPassesSelector } from '../../store/slices';
 
 import { ListTable } from './dashboard/ListTable';
 
@@ -36,12 +32,6 @@ const StatusFilterOptions = [
 ];
 
 export const Dashboard = () => {
-  const { isLoading, query } = useGetAccessPasses();
-
-  const data = useSelector(getAccessPassesSelector, (a, b) => {
-    // equality object
-    return JSON.stringify(a) === JSON.stringify(b);
-  });
   const [selectedFilterOption, setSelectedFilterOption] = useState(
     StatusFilterOption.ShowAll.value
   );
@@ -49,10 +39,6 @@ export const Dashboard = () => {
   const handleFilterSelectChange = (event) => {
     setSelectedFilterOption(event.target.value);
   };
-
-  useEffect(() => {
-    query();
-  }, [query]);
 
   return (
     <Box>
@@ -85,7 +71,7 @@ export const Dashboard = () => {
 
         <Box py={3}>
           <Container>
-            <ListTable value={dictionaryToArray(data)} isLoading={isLoading} />
+            <ListTable />
           </Container>
         </Box>
       </Box>

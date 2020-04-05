@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Paper,
   Table,
@@ -15,18 +15,18 @@ import {
   Typography,
 } from '@material-ui/core';
 import { usePagination, useSortBy, useTable } from 'react-table';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Colors } from '../../../common/constants/Colors';
 import { SnackbarAlert } from '../../../common/components/SnackbarAlert';
-import { useUpdateAccessPass } from '../../../common/hooks';
-import { approveAccessPassById } from '../../../store/slices';
+import { useUpdateAccessPass, useGetAccessPasses } from '../../../common/hooks';
+import { approveAccessPassById, getAccessPasses } from '../../../store/slices';
 import { ApprovalStatus } from '../../../common/constants';
 
+import { DenyApplicationModal } from './listTable/DenyApplicationModal';
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
-import DenyApplicationModal from './DenyApplicationModal';
 import AccessPassDetailsModal from './AccessPassDetailsModal';
 import { SkeletonTable } from './listTable/SkeletonTable';
 
@@ -42,9 +42,28 @@ const listTableStyles = makeStyles({
   },
 });
 
-export function ListTable({ getAccessPassesQuery, value, isLoading }) {
+export function ListTable() {
+  const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
+
+  // ! TODO: remove this `accessPass` state
+  const [accessPass, setAccessPass] = useState(undefined);
+
+  // ! TODO: use `useSnackbar()` to remove `updatedAccessPass()` state
+  const [updatedAccessPass, setUpdatedAccessPass] = useState(null);
+
+  // ! TODO: use `useSnackbar()` to remove `errorFromUpdate()` state
+  const [errorFromUpdate, setErrorFromUpdate] = useState('');
+
+  // ! TODO: remove `passDetails` state and use `accessPass` instead
+  const [passDetails, setPassDetails] = useState(null);
+
   const dispatch = useDispatch();
   const classes = listTableStyles();
+
+  const { isLoading, query: getAccessPassesQuery } = useGetAccessPasses();
+
+  const data = useSelector(getAccessPasses);
+
   const {
     headerGroups,
     prepareRow,
@@ -68,7 +87,7 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
         ],
         []
       ),
-      data: useMemo(() => value, [value]),
+      data: useMemo(() => data, [data]),
     },
     useSortBy,
 
@@ -77,18 +96,15 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
   );
 
   /** API Hooks */
-  const { execute: executeUpdate, error: errorUpdate } = useUpdateAccessPass();
+  const { execute: executeUpdate, error: errorUpdate } = useUpdateAccessPass({
+    accessPassReferenceId: accessPass && accessPass.referenceId,
+  });
 
   /** Modals' States  */
 
-  const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
-  const [isDetailsOpen, setIsdDetailsOpen] = useState(false);
-
-  // ! TODO: remove this `accessPassReferenceId` state
-  const [accessPassReferenceId, setAccessPassReferenceId] = useState('');
-  const [updatedAccessPass, setUpdatedAccessPass] = useState(null);
-  const [errorFromUpdate, setErrorFromUpdate] = useState('');
-  const [passDetails, setPassDetails] = useState(null);
+  useEffect(() => {
+    getAccessPassesQuery();
+  }, [getAccessPassesQuery]);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -99,34 +115,36 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
     gotoPage(0);
   };
 
-  const handleApproveActionClick = (accessPass) => {
-    const { referenceId, id, status } = accessPass;
+  const handleApproveActionClick = (accessPassTableRowData) => {
+    const { id, status } = accessPassTableRowData;
 
     if (status !== ApprovalStatus.Pending) {
       return;
     }
 
-    executeUpdate(referenceId, { status: ApprovalStatus.Approved });
+    executeUpdate({ status: ApprovalStatus.Approved });
     dispatch(approveAccessPassById(id));
 
     setUpdatedAccessPass(accessPass);
     setErrorFromUpdate(errorUpdate);
   };
 
-  const handleDenyActionClick = (referenceId) => {
+  const handleDenyActionClick = (accessPassTableRowData) => {
     setIsDenyModalOpen(true);
-    setAccessPassReferenceId(referenceId);
+    setAccessPass(accessPassTableRowData);
   };
 
-  const handleViewDetailsClick = ({ referenceId, details }) => {
-    setIsdDetailsOpen(true);
-    setAccessPassReferenceId(referenceId);
-    setPassDetails(details);
+  const handleViewDetailsClick = (accessPassTableRowData) => {
+    setPassDetails(accessPassTableRowData);
   };
 
   const handleSetPassDetailsClose = () => {
-    setIsdDetailsOpen(false);
     setPassDetails(null);
+  };
+
+  const handleOnDenyModalClose = () => {
+    setIsDenyModalOpen(false);
+    setAccessPass(null);
   };
 
   const totalRecordsCount = rows.length;
@@ -165,27 +183,22 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
               )}
             </TableRow>
           </TableHead>
-
           {isLoading ? (
             <SkeletonTable />
           ) : (
             <TableBody {...getTableBodyProps()}>
-              {page.map((row, index) => {
+              {page.map((row, rowIndex) => {
                 prepareRow(row);
                 return (
-                  <TableRow {...row.getRowProps()} className={classes[`striped${index % 2}`]}>
-                    {row.cells.map((cell, index) => {
-                      return index === lastColumnIndex ? (
+                  <TableRow {...row.getRowProps()} className={classes[`striped${rowIndex % 2}`]}>
+                    {row.cells.map((cell, cellIndex) => {
+                      return cellIndex === lastColumnIndex ? (
                         <TableCell align="center" key={cell.row.values.id}>
                           <ListRowActions
                             status={cell.row.values.status}
                             onApproveClick={() => handleApproveActionClick(cell.row.original)}
-                            onDenyClick={() => handleDenyActionClick(cell.row.values.idNumber)}
-                            onViewDetailsClick={() =>
-                              handleViewDetailsClick({
-                                referenceId: cell.row.values.idNumber,
-                                details: row.original,
-                              })}
+                            onDenyClick={() => handleDenyActionClick(cell.row.original)}
+                            onViewDetailsClick={() => handleViewDetailsClick(row.original)}
                           />
                         </TableCell>
                       ) : (
@@ -202,7 +215,7 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                colSpan={4}
+                colSpan={headerGroups[0].headers.length}
                 count={totalRecordsCount}
                 rowsPerPage={pageSize}
                 page={pageIndex}
@@ -221,15 +234,15 @@ export function ListTable({ getAccessPassesQuery, value, isLoading }) {
 
       <DenyApplicationModal
         open={isDenyModalOpen}
-        handleClose={() => setIsDenyModalOpen(false)}
-        accessPassReferenceId={accessPassReferenceId}
+        accessPass={accessPass}
+        onClose={handleOnDenyModalClose}
       />
+
       <AccessPassDetailsModal
-        open={isDetailsOpen}
+        open={!!passDetails}
         handleClose={handleSetPassDetailsClose}
         passDetails={passDetails}
       />
-
       <SnackbarAlert
         open={!!updatedAccessPass}
         onClose={() => {

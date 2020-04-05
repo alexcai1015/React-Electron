@@ -26,7 +26,7 @@ const useStyles = makeStyles({
   title: {
     marginRight: 24,
     position: 'relative',
-    top: 10
+    top: 10,
   },
   navButtons: {
     textTransform: 'capitalize',
@@ -34,8 +34,8 @@ const useStyles = makeStyles({
       top: 2,
       borderBottom: `4px solid ${Colors.HighlightAmber}`,
       borderRadius: 0,
-    }
-  }
+    },
+  },
 });
 
 export function NavigationBar(props) {
@@ -47,7 +47,7 @@ export function NavigationBar(props) {
     dispatch(removeUser());
   };
 
-  const isActive = (value) => (window.location.pathname === value ? 'active' : '')
+  const isActive = (value) => (window.location.pathname === value ? 'active' : '');
 
   return (
     <AppBar position="static" className={classes.nav}>
@@ -59,12 +59,17 @@ export function NavigationBar(props) {
 
           <div className={classes.title}>
             <Typography variant="h6">RapidPass.PH Dashboard</Typography>
-            <sup>v{process.env.REACT_APP_VERSION}</sup>
+            <sup>{`v${process.env.REACT_APP_VERSION}`}</sup>
           </div>
 
           {PROTECTED_ROUTES.map(({ path, title }) => (
-            <Button key={path} edge="start" color="inherit" onClick={() => history.push(path)}
-              className={`${isActive(path)} ${classes.navButtons}`}>
+            <Button
+              key={path}
+              edge="start"
+              color="inherit"
+              onClick={() => history.push(path)}
+              className={`${isActive(path)} ${classes.navButtons}`}
+            >
               {title}
             </Button>
           ))}
@@ -75,7 +80,7 @@ export function NavigationBar(props) {
             Log Out
           </Button>
         </Toolbar>
-      </Container >
-    </AppBar >
+      </Container>
+    </AppBar>
   );
 }
