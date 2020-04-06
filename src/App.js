@@ -11,14 +11,13 @@ import createHistory from './history';
 import { store, persistor } from './store';
 import { AppRoutes } from './AppRoutes';
 import { SnackbarProvider } from './context';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL;
+import { baseURL } from './common/api';
 
 export function App() {
   const history = createHistory();
 
   return (
-    <HttpProvider url={API_BASE_URL}>
+    <HttpProvider url={baseURL}>
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <Router history={history}>
