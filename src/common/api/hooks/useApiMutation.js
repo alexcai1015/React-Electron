@@ -6,11 +6,12 @@ import { objToEncodedURI, applyPathParams } from '../utils';
 import { maybe } from '../../utils/monads';
 
 const getMutationMethod = (method) => {
-  if (method === HttpMethod.Post) return httpPost;
-  if (method === HttpMethod.Put) return httpPut;
-  if (method === HttpMethod.Patch) return httpPatch;
-  if (method === HttpMethod.Delete) return httpDelete;
-  return httpPost;
+  return ({
+    [HttpMethod.Post]: httpPost,
+    [HttpMethod.Put]: httpPut,
+    [HttpMethod.Patch]: httpPatch,
+    [HttpMethod.Delete]: httpDelete,
+  }[method]) || httpPost;
 };
 
 const maybeObject = maybe({});
