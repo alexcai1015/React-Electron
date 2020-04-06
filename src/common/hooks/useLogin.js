@@ -13,7 +13,7 @@ const mapToUser = (data) => ({
 export const useLogin = () => {
   const dispatch = useDispatch();
   const { data: user, httpResponse, execute: mutate, isLoading, ...others } = useApiMutation(
-    '/v1/registry/auth',
+    '/v1/users/auth',
     HttpMethod.Post
   );
 
