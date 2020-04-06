@@ -13,7 +13,7 @@ export const useUploadFile = (url) => {
     if (xhr.status === 200) {
       setResponse(xhr.response);
     } else {
-      setError(xhr.statusText);
+      setError(xhr.statusText || `There's an error uploading your file. Please try again.`);
     }
 
     setIsCompleted(true);
@@ -31,11 +31,19 @@ export const useUploadFile = (url) => {
     xhr.send(formData);
   };
 
+  const reset = () => {
+    setError(null);
+    setIsLoading(false);
+    setResponse(null);
+    setIsCompleted(false);
+  };
+
   return {
     error,
     isLoading,
     response,
     isCompleted,
     execute,
+    reset,
   };
 };
