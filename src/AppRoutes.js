@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { Dashboard } from './dashboard/pages/Dashboard';
 import { BulkUpload } from './bulkUpload/BulkUpload';
 import { Login } from './login';
+import { EmailLink } from './emailLink/EmailLink';
 import { getUserToken } from './store/slices';
 
 /** catch-all */
@@ -60,6 +61,7 @@ export function AppRoutes() {
   return (
     <Switch>
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
+      <Route exact path="/activate-user" component={EmailLink} />
 
       {PROTECTED_ROUTES.map(({ path, component, exact }) => (
         <ProtectedRoute
