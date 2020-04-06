@@ -32,12 +32,18 @@ const StatusFilterOptions = [
 ];
 
 export const Dashboard = () => {
+  const [searchValue, setSearchValue] = useState('');
   const [selectedFilterOption, setSelectedFilterOption] = useState(
     StatusFilterOption.ShowAll.value
   );
 
   const handleFilterSelectChange = (event) => {
     setSelectedFilterOption(event.target.value);
+  };
+
+  // ? TODO - Remove later once search thru API is ready
+  const handleSearchChange = (event) => {
+    setSearchValue(event.target.value);
   };
 
   return (
@@ -48,7 +54,12 @@ export const Dashboard = () => {
           <Container>
             <Grid container>
               <Grid item lg={6}>
-                <StyledSearchTextField label="Search" type="search" variant="outlined" />
+                <StyledSearchTextField
+                  label="Search"
+                  type="search"
+                  onChange={handleSearchChange}
+                  variant="outlined"
+                />
               </Grid>
               <Grid container justify="flex-end" item lg={6}>
                 <StyledFilterSelectTextField
@@ -71,7 +82,7 @@ export const Dashboard = () => {
 
         <Box py={3}>
           <Container>
-            <ListTable />
+            <ListTable searchValue={searchValue} />
           </Container>
         </Box>
       </Box>

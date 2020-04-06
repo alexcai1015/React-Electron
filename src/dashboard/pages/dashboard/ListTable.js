@@ -14,8 +14,9 @@ import {
   TableSortLabel,
   Typography,
 } from '@material-ui/core';
-import { usePagination, useSortBy, useTable } from 'react-table';
+import { usePagination, useSortBy, useTable, useGlobalFilter } from 'react-table';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { Colors } from '../../../common/constants/Colors';
 import { SnackbarAlert } from '../../../common/components/SnackbarAlert';
@@ -42,7 +43,7 @@ const listTableStyles = makeStyles({
   },
 });
 
-export function ListTable() {
+export function ListTable({ searchValue }) {
   const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
 
   // ! TODO: remove this `accessPass` state
@@ -74,6 +75,9 @@ export function ListTable() {
     setPageSize,
     getTableProps,
     getTableBodyProps,
+
+    // ? TODO - Remove later once search thru API is ready
+    setGlobalFilter,
   } = useTable(
     {
       columns: useMemo(
@@ -89,14 +93,18 @@ export function ListTable() {
       ),
       data: useMemo(() => data, [data]),
     },
+    useGlobalFilter,
     useSortBy,
-
-    // ! `usePagination()` must come after `useSortBy()`
     usePagination
   );
 
   /** API Hooks */
   const { execute: executeUpdate, error: errorUpdate } = useUpdateAccessPass();
+
+  // ? TODO - Remove later once search thru API is ready
+  useEffect(() => {
+    setGlobalFilter(searchValue);
+  }, [searchValue, setGlobalFilter]);
 
   /** Modals' States  */
 
@@ -190,6 +198,7 @@ export function ListTable() {
             <TableBody {...getTableBodyProps()}>
               {page.map((row, rowIndex) => {
                 prepareRow(row);
+
                 return (
                   <TableRow {...row.getRowProps()} className={classes[`striped${rowIndex % 2}`]}>
                     {row.cells.map((cell, cellIndex) => {
@@ -272,5 +281,9 @@ const StyledSortAccessibilityLabel = styled(Typography)({
   top: 20,
   width: 1,
 });
+
+ListTable.propTypes = {
+  searchValue: PropTypes.string,
+};
 
 export default ListTable;
