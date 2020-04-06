@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { Tabs, Tab, Typography } from '@material-ui/core';
+import { Box, Tabs, Tab, Typography, LinearProgress, styled } from '@material-ui/core';
 import { People, LocalShipping } from '@material-ui/icons';
 import { DropzoneArea } from 'material-ui-dropzone';
+
+import { useUploadFile } from '../common/hooks/useUploadFile';
 
 import { UploadSuccessModal } from './UploadSuccessModal';
 
@@ -54,6 +56,7 @@ const useStyles = makeStyles({
 
 export const PassUploadTab = () => {
   const classes = useStyles();
+  const { error, isLoading, isCompleted, execute } = useUploadFile('/v1/batch/access-passes');
   const [value, setValue] = React.useState(0);
   const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = React.useState(
     'Click Here or Drag and Drop to Upload CSV/Excel file'
@@ -69,12 +72,12 @@ export const PassUploadTab = () => {
 
   const handleFileChangeIndividual = (files) => {
     setUploadBoxTextIndividual(files[0].name);
-    setIsUploadSuccessModalOpen(true);
+    execute(files[0]);
   };
 
   const handleFileChangeVehicle = (files) => {
     setUploadBoxTextVehicle(files[0].name);
-    setIsUploadSuccessModalOpen(true);
+    execute(files[0]);
   };
 
   const acceptedFile = [
@@ -82,6 +85,12 @@ export const PassUploadTab = () => {
     'application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   ];
+
+  useEffect(() => {
+    if (isCompleted && !error) {
+      setIsUploadSuccessModalOpen(true);
+    }
+  }, [isCompleted, error]);
 
   return (
     <>
@@ -132,6 +141,13 @@ export const PassUploadTab = () => {
         </div>
       </TabPanel>
 
+      {isLoading && (
+        <StyledBox component="div">
+          <Typography>File Uploading...</Typography>
+          <StyledLinearProgress />
+        </StyledBox>
+      )}
+
       <UploadSuccessModal
         open={isUploadSuccessModalOpen}
         handleClose={() => {
@@ -141,3 +157,15 @@ export const PassUploadTab = () => {
     </>
   );
 };
+
+const StyledBox = styled(Box)({
+  display: 'block',
+  margin: '0 auto',
+  width: 500,
+  marginTop: 50,
+  textAlign: 'center',
+});
+
+const StyledLinearProgress = styled(LinearProgress)({
+  height: 10,
+});
