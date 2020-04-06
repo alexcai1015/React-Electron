@@ -10,11 +10,12 @@ import {
 } from './core';
 
 const httpClient = axios;
-httpClient.defaults.baseURL = process.env.REACT_APP_API_URL || window.REACT_APP_API_URL;
+const baseURL = process.env.REACT_APP_API_URL || window.REACT_APP_API_URL;
+httpClient.defaults.baseURL = baseURL;
 
 export const httpGet = coreGet(httpClient);
 export const httpPost = corePost(httpClient);
 export const httpPut = corePut(httpClient);
 export const httpDelete = coreDelete(httpClient);
 export const httpPatch = corePatch(httpClient);
-export { getBaseHeaders };
+export { getBaseHeaders, baseURL };
