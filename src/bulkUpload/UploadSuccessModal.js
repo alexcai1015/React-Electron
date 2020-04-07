@@ -60,8 +60,7 @@ export const UploadSuccessModal = ({ open, handleClose }) => {
           <CheckCircle className={classes.checkIcon} />
           <h2>Upload Successful</h2>
         </div>
-        We will send the results to individuals via SMS and email. Depending on respective agency
-        approval, this is usually released within 24 - 48 hours.
+        We will send bulk upload results to individuals via SMS and email.
       </DialogContent>
       <DialogActions className={classes.buttonGroup}>
         <Button variant="contained" className={classes.returnButton} onClick={returnToHome}>
