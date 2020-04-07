@@ -43,7 +43,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
 
 export const PROTECTED_ROUTES = [
   {
-    path: '/',
+    path: '/access-passes',
     exact: true,
     title: 'Approvals',
     component: Dashboard,
@@ -60,9 +60,9 @@ export function AppRoutes() {
   const token = useSelector(getUserToken);
   return (
     <Switch>
+      <Route exact path="/" render={() => <Redirect to={{ pathname: '/access-passes' }} />} />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
       <Route exact path="/activate-user" component={EmailLink} />
-
       {PROTECTED_ROUTES.map(({ path, component, exact }) => (
         <ProtectedRoute
           accessCode={token}
