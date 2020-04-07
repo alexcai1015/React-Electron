@@ -9,7 +9,7 @@ import { EmailLink } from './emailLink/EmailLink';
 import { getUserToken } from './store/slices';
 
 /** catch-all */
-const NotFoundRoute = ({ fallback = '/page-not-found' }) => <ReactRouterRedirect to={fallback} />;
+const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
 
 export function Redirect(props) {
   return props.to ? <ReactRouterRedirect {...props} /> : null;
