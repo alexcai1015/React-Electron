@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { Dashboard } from './dashboard/pages/Dashboard';
 import { BulkUpload } from './bulkUpload/BulkUpload';
 import { Login } from './login';
-import { EmailLink } from './emailLink/EmailLink';
+import { ActivateUser } from './pages/ActivateUser';
 import { getUserToken } from './store/slices';
 
 /** catch-all */
@@ -27,15 +27,15 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
             <Component {...props} />
           </>
         ) : (
-          <Redirect
-            to={{
-              pathname: '/login',
-              state: {
-                from: props.location,
-              },
-            }}
-          />
-        )
+            <Redirect
+              to={{
+                pathname: '/login',
+                state: {
+                  from: props.location,
+                },
+              }}
+            />
+          )
       }
     />
   );
@@ -62,7 +62,8 @@ export function AppRoutes() {
     <Switch>
       <Route exact path="/" render={() => <Redirect to={{ pathname: '/access-passes' }} />} />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
-      <Route exact path="/activate-user" component={EmailLink} />
+      <Route exact path="/activate-user" render={() => <ActivateUser />} />
+
       {PROTECTED_ROUTES.map(({ path, component, exact }) => (
         <ProtectedRoute
           accessCode={token}
