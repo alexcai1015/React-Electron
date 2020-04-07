@@ -94,7 +94,7 @@ export const PassUploadTab = () => {
     if (isCompleted && !error) {
       setIsUploadSuccessModalOpen(true);
     }
-  }, [isCompleted, error, showSnackbar]);
+  }, [isCompleted, error]);
 
   useEffect(() => {
     if (isCompleted && error) {
@@ -105,7 +105,7 @@ export const PassUploadTab = () => {
 
       resetUpload();
     }
-  }, [error, isCompleted, resetUpload, showSnackbar]);
+  }, [error, isCompleted, resetUpload]);
 
   return (
     <>
