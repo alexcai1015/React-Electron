@@ -37,7 +37,8 @@
     "build": "cross-env INLINE_RUNTIME_CHUNK=false REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start:mock-server": "json-server --watch mock-server.js -p 3110"
+    "start:mock-server": "json-server --watch mock-server.js -p 3110",
+    "version": "auto-changelog -p && git add CHANGELOG.md"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -55,6 +56,7 @@
     ]
   },
   "devDependencies": {
+    "auto-changelog": "^1.16.4",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
