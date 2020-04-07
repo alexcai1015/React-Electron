@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
 
 import { NavigationBar } from '../../common/components/NavigationBar';
+import { GoogleAnalytics } from '../../common/components/GoogleAnalytics';
 
 import { ListTable } from './dashboard/ListTable';
 
@@ -47,46 +48,50 @@ export const Dashboard = () => {
   };
 
   return (
-    <Box>
-      <NavigationBar />
-      <Box component="main">
-        <StyledFiltersBlock>
-          <Container>
-            <Grid container>
-              <Grid item lg={6}>
-                <StyledSearchTextField
-                  label="Search"
-                  type="search"
-                  onChange={handleSearchChange}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid container justify="flex-end" item lg={6}>
-                <StyledFilterSelectTextField
-                  select
-                  label="Filter by status:"
-                  value={selectedFilterOption}
-                  onChange={handleFilterSelectChange}
-                  variant="outlined"
-                >
-                  {StatusFilterOptions.map(({ label, value }) => (
-                    <MenuItem key={value} value={value}>
-                      {label}
-                    </MenuItem>
-                  ))}
-                </StyledFilterSelectTextField>
-              </Grid>
-            </Grid>
-          </Container>
-        </StyledFiltersBlock>
+    <>
+      <GoogleAnalytics />
 
-        <Box py={3}>
-          <Container>
-            <ListTable searchValue={searchValue} />
-          </Container>
+      <Box>
+        <NavigationBar />
+        <Box component="main">
+          <StyledFiltersBlock>
+            <Container>
+              <Grid container>
+                <Grid item lg={6}>
+                  <StyledSearchTextField
+                    label="Search"
+                    type="search"
+                    onChange={handleSearchChange}
+                    variant="outlined"
+                  />
+                </Grid>
+                <Grid container justify="flex-end" item lg={6}>
+                  <StyledFilterSelectTextField
+                    select
+                    label="Filter by status:"
+                    value={selectedFilterOption}
+                    onChange={handleFilterSelectChange}
+                    variant="outlined"
+                  >
+                    {StatusFilterOptions.map(({ label, value }) => (
+                      <MenuItem key={value} value={value}>
+                        {label}
+                      </MenuItem>
+                    ))}
+                  </StyledFilterSelectTextField>
+                </Grid>
+              </Grid>
+            </Container>
+          </StyledFiltersBlock>
+
+          <Box py={3}>
+            <Container>
+              <ListTable searchValue={searchValue} />
+            </Container>
+          </Box>
         </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
