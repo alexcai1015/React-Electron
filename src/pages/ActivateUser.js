@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { TextField, Button, Box } from '@material-ui/core';
+import { TextField, Button, Box, Typography } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@material-ui/icons';
 import { styled } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import qs from 'query-string';
 
 import { Colors } from '../common/constants/Colors';
 import { CenteredForm } from '../common/components/CenteredForm';
@@ -25,11 +26,11 @@ export const ActivateUser = () => {
   const location = useLocation();
   const { push } = useHistory();
 
-  const [username, setUsername] = useState('');
-  const [activationCode, setActivationCode] = useState('');
+  const [username, setUsername] = useState(null);
+  const [activationCode, setActivationCode] = useState(null);
   const [isSomethingWentWrong, setIsSomethingWentWrong] = useState(false);
 
-  const { execute, isLoading, error, httpResponse } = useActivateApprover(username);
+  const { execute, isLoading, error, httpResponse } = useActivateApprover();
 
   const { handleSubmit, handleChange, values, errors } = useFormik({
     initialValues: {
@@ -37,21 +38,24 @@ export const ActivateUser = () => {
       confirmPassword: '',
     },
     onSubmit: ({ password }) => {
-      execute({ password, activationCode });
+      execute({ username, password, activationCode });
     },
     validationSchema,
   });
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
+    const { username: parsedUsername, activationCode: parsedActivationCode } = qs.parse(
+      location.search
+    );
 
-    setUsername(params.get('username'));
-    setActivationCode(params.get('activationCode'));
-  }, [location]);
+    if (!parsedUsername || !parsedActivationCode) {
+      push('/page-not-found');
+      return;
+    }
 
-  useEffect(() => {
-    if (username === null || activationCode === null) push('/page-not-found');
-  }, [push, username, activationCode]);
+    setUsername(parsedUsername);
+    setActivationCode(parsedActivationCode);
+  }, [activationCode, location, push]);
 
   useEffect(() => {
     if (httpResponse && httpResponse.status === 200) {
@@ -81,7 +85,9 @@ export const ActivateUser = () => {
     <CenteredForm>
       <form onSubmit={handleSubmit} style={{ width: 367 }}>
         <FormFieldWrapper>
-          <label htmlFor="password">Set Password</label>
+          <Typography component="label" htmlFor="password">
+            Set Password
+          </Typography>
           <FormField
             name="password"
             placeholder="Set Password"
@@ -96,7 +102,9 @@ export const ActivateUser = () => {
           />
         </FormFieldWrapper>
         <FormFieldWrapper>
-          <label htmlFor="confirmPaslsword">Confirm Password</label>
+          <Typography component="label" htmlFor="confirmPaslsword">
+            Confirm Password
+          </Typography>
           <FormField
             name="confirmPassword"
             placeholder="Confirm Password"

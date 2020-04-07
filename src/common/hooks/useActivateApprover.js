@@ -2,15 +2,20 @@ import { useCallback } from 'react';
 
 import { useApiMutation, HttpMethod } from '../api';
 
-export const useActivateApprover = (username) => {
+export const useActivateApprover = () => {
   const { httpResponse, execute: mutate, isLoading, ...others } = useApiMutation(
-    `/v1/users/${username}/activate`,
+    `/v1/users/{{username}}/activate`,
     HttpMethod.Post
   );
 
   const execute = useCallback(
-    ({ password, activationCode }) => {
-      mutate({ requestData: { password, activationCode } });
+    ({ username, password, activationCode }) => {
+      mutate({
+        urlPathParams: {
+          username,
+        },
+        requestData: { username, password, activationCode },
+      });
     },
     [mutate]
   );
