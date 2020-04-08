@@ -65,7 +65,7 @@ const PassDetails = ({ handleClose, details }) => {
             <Field label={getReferenceIdLabel(details)} value={details.referenceId || 'N/A'} />
             <Field label="Id type" value={details.idType || 'N/A'} />
             <Field label="Id number" value={details.id || 'N/A'} />
-            <Field label="Company" value={details.company || 'N/A'} />
+            <Field label="Company/Institution" value={details.company || 'N/A'} />
           </Grid>
           <Grid item xs={8}>
             <Field label="Address of origin" value={addressOfOrigin || 'N/A'} />
