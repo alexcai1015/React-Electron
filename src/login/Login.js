@@ -5,7 +5,6 @@ import * as yup from 'yup';
 
 import logo from '../assets/logo_purple_title.svg';
 import { useLogin } from '../common/hooks';
-import { GoogleAnalytics } from '../common/components/GoogleAnalytics';
 
 import classes from './login.module.css';
 
@@ -28,65 +27,61 @@ export const Login = ({ history }) => {
   };
 
   return (
-    <>
-      <GoogleAnalytics />
-
-      <Formik
-        initialValues={{
-          username: '',
-          password: '',
-        }}
-        validationSchema={schema}
-        onSubmit={handleOnSubmit}
-      >
-        {({ handleChange, values }) => (
-          <div className={classes.container}>
-            <img src={logo} width="317" height="252" alt="Logo" title="Logo" />
-            <Form className={classes.formWrapper}>
-              <div className={classes.inputWrapper}>
-                <TextField
-                  className={classes.input}
-                  name="username"
-                  placeholder="Enter Username"
-                  label=""
-                  type="text"
-                  variant="outlined"
-                  value={values.username}
-                  onChange={handleChange}
-                />
+    <Formik
+      initialValues={{
+        username: '',
+        password: '',
+      }}
+      validationSchema={schema}
+      onSubmit={handleOnSubmit}
+    >
+      {({ handleChange, values }) => (
+        <div className={classes.container}>
+          <img src={logo} width="317" height="252" alt="Logo" title="Logo" />
+          <Form className={classes.formWrapper}>
+            <div className={classes.inputWrapper}>
+              <TextField
+                className={classes.input}
+                name="username"
+                placeholder="Enter Username"
+                label=""
+                type="text"
+                variant="outlined"
+                value={values.username}
+                onChange={handleChange}
+              />
+            </div>
+            <div className={classes.inputWrapper}>
+              <TextField
+                className={classes.input}
+                name="password"
+                placeholder="Enter Password"
+                label=""
+                type="password"
+                variant="outlined"
+                value={values.password}
+                onChange={handleChange}
+              />
+            </div>
+            {error && (
+              <div>
+                <h4 style={{ color: 'red' }}>Incorrect username & password. Please try again.</h4>
               </div>
-              <div className={classes.inputWrapper}>
-                <TextField
-                  className={classes.input}
-                  name="password"
-                  placeholder="Enter Password"
-                  label=""
-                  type="password"
-                  variant="outlined"
-                  value={values.password}
-                  onChange={handleChange}
-                />
-              </div>
-              {error && (
-                <div>
-                  <h4 style={{ color: 'red' }}>Incorrect username & password. Please try again.</h4>
-                </div>
-              )}
+            )}
 
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                fullWidth
-                disabled={isLoading}
-              >
-                Sign In
-              </Button>
-            </Form>
-          </div>
-        )}
-      </Formik>
-    </>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={isLoading}
+            >
+              Sign In
+            </Button>
+          </Form>
+        </div>
+      )}
+    </Formik>
   );
 };
 

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
 
 import { NavigationBar } from '../../common/components/NavigationBar';
-import { GoogleAnalytics } from '../../common/components/GoogleAnalytics';
 
 import { ListTable } from './dashboard/ListTable';
 
@@ -49,8 +48,6 @@ export const Dashboard = () => {
 
   return (
     <Box>
-      <GoogleAnalytics />
-
       <NavigationBar />
       <Box component="main">
         <StyledFiltersBlock>
