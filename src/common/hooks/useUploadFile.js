@@ -1,19 +1,33 @@
 import { useState } from 'react';
 
 import { HttpMethod, baseURL } from '../api';
+import { maybe } from '../utils/monads';
+
+const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
 export const useUploadFile = (url) => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
+
   const xhr = new XMLHttpRequest();
 
-  xhr.onload = () => {
-    if (xhr.status === 200) {
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState !== XMLHttpRequest.DONE) {
+      return;
+    }
+
+    const { status } = xhr;
+    const isSuccess = isRequestSuccess(status);
+
+    if (isSuccess) {
       setResponse(xhr.response);
     } else {
-      setError(xhr.statusText || `There's an error uploading your file. Please try again.`);
+      const errorMessage = maybe(`There's an error uploading your file. Please try again.`)(
+        xhr.statusText
+      );
+      setError(errorMessage);
     }
 
     setIsCompleted(true);
