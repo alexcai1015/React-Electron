@@ -9,6 +9,7 @@ import qs from 'query-string';
 
 import { Colors } from '../common/constants/Colors';
 import { CenteredForm } from '../common/components/CenteredForm';
+import { GoogleAnalytics } from '../common/components/GoogleAnalytics';
 import { useActivateApprover } from '../common/hooks/useActivateApprover';
 
 const validationSchema = yup.object({
@@ -83,6 +84,8 @@ export const ActivateUser = () => {
 
   return (
     <CenteredForm>
+      <GoogleAnalytics />
+
       <form onSubmit={handleSubmit} style={{ width: 367 }}>
         <FormFieldWrapper>
           <Typography component="label" htmlFor="password">

@@ -49,6 +49,8 @@ export const Dashboard = () => {
 
   return (
     <Box>
+      <GoogleAnalytics />
+
       <NavigationBar />
       <Box component="main">
         <StyledFiltersBlock>

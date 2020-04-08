@@ -7,12 +7,11 @@ import { PassUploadTab } from './PassUploadTab';
 
 export const BulkUpload = () => {
   return (
-    <>
+    <Box>
       <GoogleAnalytics />
-      <Box>
-        <NavigationBar />
-        <PassUploadTab />
-      </Box>
-    </>
+
+      <NavigationBar />
+      <PassUploadTab />
+    </Box>
   );
 };

@@ -62,7 +62,7 @@ export function AppRoutes() {
     <Switch>
       <Route exact path="/" render={() => <Redirect to={{ pathname: '/access-passes' }} />} />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
-      <Route exact path="/activate-user" render={() => <ActivateUser />} />
+      <Route exact path="/activate-user" component={() => <ActivateUser />} />
 
       {PROTECTED_ROUTES.map(({ path, component, exact }) => (
         <ProtectedRoute
