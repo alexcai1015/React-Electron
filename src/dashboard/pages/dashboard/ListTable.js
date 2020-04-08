@@ -224,7 +224,7 @@ export function ListTable({ searchValue }) {
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                rowsPerPageOptions={[5, 10, 25, 50]}
                 colSpan={headerGroups[0].headers.length}
                 count={totalRecordsCount}
                 rowsPerPage={pageSize}
