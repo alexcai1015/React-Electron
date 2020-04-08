@@ -1,9 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from '@material-ui/core/Box';
+import { Box, Grid } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Colors } from '../../../../common/constants/Colors';
+
+import { AporType as AporTypeMap, Colors } from '../../../../common/constants';
 
 const useStyles = makeStyles(() => ({
   label: {
@@ -24,10 +25,20 @@ const AporType = ({ aporType }) => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.aporTypeSection}>
-      <Typography className={classes.label}>Apor Type</Typography>
-      <Typography className={classes.title}>{aporType}</Typography>
-    </Box>
+    <Grid item xs={12} container>
+      <Grid item xs={4}>
+        <Box className={classes.aporTypeSection}>
+          <Typography className={classes.label}>Apor Type</Typography>
+          <Typography className={classes.title}>{aporType}</Typography>
+        </Box>
+      </Grid>
+      <Grid item xs={8}>
+        <Box className={classes.aporTypeSection}>
+          <Typography className={classes.label}>Apor Type Description</Typography>
+          <Typography className={classes.title}>{AporTypeMap[aporType].value}</Typography>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 

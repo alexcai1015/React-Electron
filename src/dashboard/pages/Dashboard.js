@@ -53,7 +53,7 @@ export const Dashboard = () => {
         <StyledFiltersBlock>
           <Container>
             <Grid container>
-              <Grid item lg={6}>
+              <Grid item lg={8} md={6} sm={12} xs={12}>
                 <StyledSearchTextField
                   label="Search"
                   type="search"
@@ -61,7 +61,7 @@ export const Dashboard = () => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid container justify="flex-end" item lg={6}>
+              <Grid container justify="flex-end" item lg={4} md={6} sm={12} xs={12}>
                 <StyledFilterSelectTextField
                   select
                   label="Filter by status:"
