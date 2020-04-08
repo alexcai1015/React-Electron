@@ -101,7 +101,7 @@ export const PassUploadTab = () => {
 
       resetUpload();
     }
-  }, [error, isCompleted, resetUpload]);
+  }, [error, isCompleted, resetUpload, showSnackbar]);
 
   return (
     <>
