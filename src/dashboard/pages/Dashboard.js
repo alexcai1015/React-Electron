@@ -48,50 +48,46 @@ export const Dashboard = () => {
   };
 
   return (
-    <>
-      <GoogleAnalytics />
-
-      <Box>
-        <NavigationBar />
-        <Box component="main">
-          <StyledFiltersBlock>
-            <Container>
-              <Grid container>
-                <Grid item lg={6}>
-                  <StyledSearchTextField
-                    label="Search"
-                    type="search"
-                    onChange={handleSearchChange}
-                    variant="outlined"
-                  />
-                </Grid>
-                <Grid container justify="flex-end" item lg={6}>
-                  <StyledFilterSelectTextField
-                    select
-                    label="Filter by status:"
-                    value={selectedFilterOption}
-                    onChange={handleFilterSelectChange}
-                    variant="outlined"
-                  >
-                    {StatusFilterOptions.map(({ label, value }) => (
-                      <MenuItem key={value} value={value}>
-                        {label}
-                      </MenuItem>
-                    ))}
-                  </StyledFilterSelectTextField>
-                </Grid>
+    <Box>
+      <NavigationBar />
+      <Box component="main">
+        <StyledFiltersBlock>
+          <Container>
+            <Grid container>
+              <Grid item lg={8} md={6} sm={12} xs={12}>
+                <StyledSearchTextField
+                  label="Search"
+                  type="search"
+                  onChange={handleSearchChange}
+                  variant="outlined"
+                />
               </Grid>
-            </Container>
-          </StyledFiltersBlock>
+              <Grid container justify="flex-end" item lg={4} md={6} sm={12} xs={12}>
+                <StyledFilterSelectTextField
+                  select
+                  label="Filter by status:"
+                  value={selectedFilterOption}
+                  onChange={handleFilterSelectChange}
+                  variant="outlined"
+                >
+                  {StatusFilterOptions.map(({ label, value }) => (
+                    <MenuItem key={value} value={value}>
+                      {label}
+                    </MenuItem>
+                  ))}
+                </StyledFilterSelectTextField>
+              </Grid>
+            </Grid>
+          </Container>
+        </StyledFiltersBlock>
 
-          <Box py={3}>
-            <Container>
-              <ListTable searchValue={searchValue} />
-            </Container>
-          </Box>
+        <Box py={3}>
+          <Container>
+            <ListTable searchValue={searchValue} />
+          </Container>
         </Box>
       </Box>
-    </>
+    </Box>
   );
 };
 

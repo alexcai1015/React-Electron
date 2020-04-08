@@ -55,11 +55,9 @@ const useStyles = makeStyles({
   },
 });
 
-const acceptedFile = [
-  'text/csv',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-];
+const UPLOAD_TEXT = 'Click Here or Drag and Drop to Upload (.csv)/(.xls) file';
+
+const acceptedFile = ['text/csv', 'application/vnd.ms-excel']; // Accept .csv and .xls only
 
 export const PassUploadTab = () => {
   const classes = useStyles();
@@ -68,12 +66,8 @@ export const PassUploadTab = () => {
   );
   const [value, setValue] = useState(0);
   const { showSnackbar } = useSnackbar();
-  const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = useState(
-    'Click Here or Drag and Drop to Upload CSV/Excel file'
-  );
-  const [uploadBoxTextVehicle, setUploadBoxTextVehicle] = useState(
-    'Click Here or Drag and Drop to Upload CSV/Excel file'
-  );
+  const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = useState(UPLOAD_TEXT);
+  const [uploadBoxTextVehicle, setUploadBoxTextVehicle] = useState(UPLOAD_TEXT);
   const [isUploadSuccessModalOpen, setIsUploadSuccessModalOpen] = useState(false);
 
   const handleTabChange = (event, newValue) => {
@@ -90,11 +84,13 @@ export const PassUploadTab = () => {
     execute(files[0]);
   };
 
+  const handleFileAddedMessage = (fileName) => `${fileName} selected.`;
+
   useEffect(() => {
     if (isCompleted && !error) {
       setIsUploadSuccessModalOpen(true);
     }
-  }, [isCompleted, error, showSnackbar]);
+  }, [isCompleted, error]);
 
   useEffect(() => {
     if (isCompleted && error) {
@@ -133,6 +129,7 @@ export const PassUploadTab = () => {
             dropzoneText={uploadBoxTextIndividual}
             showPreviewsInDropzone={false}
             dropzoneParagraphClass={classes.uploadBoxText}
+            getFileAddedMessage={handleFileAddedMessage}
             showAlerts
           />
         </div>
@@ -151,6 +148,7 @@ export const PassUploadTab = () => {
             dropzoneText={uploadBoxTextVehicle}
             showPreviewsInDropzone={false}
             dropzoneParagraphClass={classes.uploadBoxText}
+            getFileAddedMessage={handleFileAddedMessage}
             showAlerts
           />
         </div>
