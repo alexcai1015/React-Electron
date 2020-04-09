@@ -2,6 +2,9 @@
   "name": "rapidpass-dashboard",
   "version": "0.4.0",
   "private": true,
+  "engines": {
+    "node": ">=12"
+  },
   "dependencies": {
     "@material-ui/core": "^4.9.7",
     "@material-ui/icons": "^4.9.1",
@@ -79,5 +82,8 @@
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint --cache --fix"
+  },
+  "volta": {
+    "node": "12.16.2"
   }
 }
