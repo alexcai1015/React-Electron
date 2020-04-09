@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { PassTypeLabel } from '../../../../common/constants/PassType';
+import { PassTypeLabel } from '../../../../../common/constants/PassType';
 
 import Header from './Header';
 import Field from './Field';
@@ -41,7 +41,7 @@ const getReferenceIdLabel = (details) => {
   return label ? label.display : '';
 };
 
-const PassDetails = ({ handleClose, details }) => {
+export const PassDetails = ({ handleClose, details }) => {
   const classes = useStyles();
   const addressOfDestination = formatAddress({
     name: details.destName,
@@ -99,7 +99,6 @@ PassDetails.propTypes = {
     name: PropTypes.string,
     passType: PropTypes.string,
     remarks: PropTypes.string,
+    status: PropTypes.string,
   }),
 };
-
-export default PassDetails;

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import {
   Paper,
   Table,
@@ -15,20 +15,16 @@ import {
   Typography,
 } from '@material-ui/core';
 import { usePagination, useSortBy, useTable, useGlobalFilter } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import { Colors } from '../../../common/constants/Colors';
-import { SnackbarAlert } from '../../../common/components/SnackbarAlert';
-import { useUpdateAccessPass, useGetAccessPasses } from '../../../common/hooks';
-import { approveAccessPassById, getAccessPasses } from '../../../store/slices';
-import { ApprovalStatus } from '../../../common/constants';
+import { setCurrentAccessPass } from '../../../store/slices';
+import { AccessPassPropType } from '../../../types';
 
-import { DenyApplicationModal } from './listTable/DenyApplicationModal';
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
-import AccessPassDetailsModal from './AccessPassDetailsModal';
 import { SkeletonTable } from './listTable/SkeletonTable';
 
 const listTableStyles = makeStyles({
@@ -43,27 +39,17 @@ const listTableStyles = makeStyles({
   },
 });
 
-export function ListTable({ searchValue }) {
-  const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
-
-  // ! TODO: remove this `accessPass` state
-  const [accessPass, setAccessPass] = useState(undefined);
-
-  // ! TODO: use `useSnackbar()` to remove `updatedAccessPass()` state
-  const [updatedAccessPass, setUpdatedAccessPass] = useState(null);
-
-  // ! TODO: use `useSnackbar()` to remove `errorFromUpdate()` state
-  const [errorFromUpdate, setErrorFromUpdate] = useState('');
-
-  // ! TODO: remove `passDetails` state and use `accessPass` instead
-  const [passDetails, setPassDetails] = useState(null);
-
+export const ListTable = ({
+  value,
+  loading,
+  searchValue,
+  disabledActions,
+  onApproveClick,
+  onDenyClick,
+  onViewDetailsClick,
+}) => {
   const dispatch = useDispatch();
   const classes = listTableStyles();
-
-  const { isLoading, query: getAccessPassesQuery } = useGetAccessPasses();
-
-  const data = useSelector(getAccessPasses);
 
   const {
     headerGroups,
@@ -91,7 +77,7 @@ export function ListTable({ searchValue }) {
         ],
         []
       ),
-      data: useMemo(() => data, [data]),
+      data: useMemo(() => value, [value]),
     },
     useGlobalFilter,
     useSortBy,
@@ -99,7 +85,6 @@ export function ListTable({ searchValue }) {
   );
 
   /** API Hooks */
-  const { execute: executeUpdate, error: errorUpdate } = useUpdateAccessPass();
 
   // ? TODO - Remove later once search thru API is ready
   useEffect(() => {
@@ -109,8 +94,10 @@ export function ListTable({ searchValue }) {
   /** Modals' States  */
 
   useEffect(() => {
-    getAccessPassesQuery();
-  }, [getAccessPassesQuery]);
+    return () => {
+      dispatch(setCurrentAccessPass({}));
+    };
+  }, [dispatch]);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -119,41 +106,6 @@ export function ListTable({ searchValue }) {
   const handleChangeRowsPerPage = (event) => {
     setPageSize(+event.target.value);
     gotoPage(0);
-  };
-
-  const handleApproveActionClick = (accessPassTableRowData) => {
-    const { id, status } = accessPassTableRowData;
-
-    if (status !== ApprovalStatus.Pending) {
-      return;
-    }
-
-    executeUpdate(accessPassTableRowData.referenceId, {
-      status: ApprovalStatus.Approved.toUpperCase(),
-    });
-
-    dispatch(approveAccessPassById(id));
-
-    setUpdatedAccessPass(accessPass);
-    setErrorFromUpdate(errorUpdate);
-  };
-
-  const handleDenyActionClick = (accessPassTableRowData) => {
-    setIsDenyModalOpen(true);
-    setAccessPass(accessPassTableRowData);
-  };
-
-  const handleViewDetailsClick = (accessPassTableRowData) => {
-    setPassDetails(accessPassTableRowData);
-  };
-
-  const handleSetPassDetailsClose = () => {
-    setPassDetails(null);
-  };
-
-  const handleOnDenyModalClose = () => {
-    setIsDenyModalOpen(false);
-    setAccessPass(null);
   };
 
   const totalRecordsCount = rows.length;
@@ -192,7 +144,7 @@ export function ListTable({ searchValue }) {
               )}
             </TableRow>
           </TableHead>
-          {isLoading ? (
+          {loading ? (
             <SkeletonTable />
           ) : (
             <TableBody {...getTableBodyProps()}>
@@ -203,12 +155,13 @@ export function ListTable({ searchValue }) {
                   <TableRow {...row.getRowProps()} className={classes[`striped${rowIndex % 2}`]}>
                     {row.cells.map((cell, cellIndex) => {
                       return cellIndex === lastColumnIndex ? (
-                        <TableCell align="center" key={cell.row.values.id}>
+                        <TableCell align="right" key={cell.row.values.id}>
                           <ListRowActions
                             status={cell.row.values.status}
-                            onApproveClick={() => handleApproveActionClick(cell.row.original)}
-                            onDenyClick={() => handleDenyActionClick(cell.row.original)}
-                            onViewDetailsClick={() => handleViewDetailsClick(row.original)}
+                            onApproveClick={() => onApproveClick(cell.row.original)}
+                            onDenyClick={() => onDenyClick(cell.row.original)}
+                            onViewDetailsClick={() => onViewDetailsClick(row.original)}
+                            loading={disabledActions}
                           />
                         </TableCell>
                       ) : (
@@ -241,34 +194,9 @@ export function ListTable({ searchValue }) {
           </TableFooter>
         </Table>
       </TableContainer>
-
-      <DenyApplicationModal
-        open={isDenyModalOpen}
-        accessPass={accessPass}
-        onClose={handleOnDenyModalClose}
-      />
-
-      <AccessPassDetailsModal
-        open={!!passDetails}
-        handleClose={handleSetPassDetailsClose}
-        passDetails={passDetails}
-      />
-      <SnackbarAlert
-        open={!!updatedAccessPass}
-        onClose={() => {
-          setUpdatedAccessPass(null);
-          setErrorFromUpdate('');
-        }}
-        message={
-          updatedAccessPass &&
-          `${errorFromUpdate ? 'Failed to approve' : 'Approved'} ${updatedAccessPass.id}`
-        }
-        severity={!errorFromUpdate ? 'success' : 'warning'}
-        autoHideDuration={2500}
-      />
     </>
   );
-}
+};
 
 const StyledSortAccessibilityLabel = styled(Typography)({
   border: 0,
@@ -283,7 +211,13 @@ const StyledSortAccessibilityLabel = styled(Typography)({
 });
 
 ListTable.propTypes = {
+  value: PropTypes.arrayOf(PropTypes.shape(AccessPassPropType)),
+  loading: PropTypes.bool,
   searchValue: PropTypes.string,
+  disabledActions: PropTypes.bool,
+  onApproveClick: PropTypes.func,
+  onDenyClick: PropTypes.func,
+  onViewDetailsClick: PropTypes.func,
 };
 
 export default ListTable;

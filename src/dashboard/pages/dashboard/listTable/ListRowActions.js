@@ -29,13 +29,13 @@ const allStyles = {
 };
 
 export const ListRowActions = withStyles(allStyles)((props) => {
-  const { classes, onViewDetailsClick, status, isLoading, onApproveClick, onDenyClick } = props;
+  const { classes, onViewDetailsClick, status, loading, onApproveClick, onDenyClick } = props;
 
   return (
     <div className={classes.container}>
       <AccessPassTableStatus
         status={status}
-        loading={isLoading}
+        loading={loading}
         onApproveClick={onApproveClick}
         onDenyClick={onDenyClick}
       />
