@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { Dashboard } from './dashboard/pages/Dashboard';
 import { BulkUpload } from './bulkUpload/BulkUpload';
-import { Login } from './login';
+import { Login } from './pages/Login';
 import { ActivateUser } from './pages/ActivateUser';
 import { getUserToken } from './store/slices';
 
@@ -27,15 +27,15 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
             <Component {...props} />
           </>
         ) : (
-            <Redirect
-              to={{
-                pathname: '/login',
-                state: {
-                  from: props.location,
-                },
-              }}
-            />
-          )
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: {
+                from: props.location,
+              },
+            }}
+          />
+        )
       }
     />
   );
