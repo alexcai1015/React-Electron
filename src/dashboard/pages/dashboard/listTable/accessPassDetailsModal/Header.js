@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Close } from '@material-ui/icons';
 
-import { Colors } from '../../../../common/constants/Colors';
+import { Colors } from '../../../../../common/constants/Colors';
 
 const useStyles = makeStyles((theme) => ({
   closeButtonWrapper: {

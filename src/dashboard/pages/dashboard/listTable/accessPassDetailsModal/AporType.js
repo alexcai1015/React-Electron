@@ -4,7 +4,7 @@ import { Box, Grid } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { AporType as AporTypeMap, Colors } from '../../../../common/constants';
+import { AporType as AporTypeMap, Colors } from '../../../../../common/constants';
 
 const useStyles = makeStyles(() => ({
   label: {

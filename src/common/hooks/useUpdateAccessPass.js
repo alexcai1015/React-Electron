@@ -1,14 +1,28 @@
-import useFetch from 'use-http';
+import { useApiMutation, HttpMethod } from '../api';
+import { maybe } from '../utils/monads';
+
+const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
 export const useUpdateAccessPass = () => {
-  // data: accessPass, httpResponse, execute: mutate, ...others }
-  const { put: execute, loading: isLoading, ...others } = useFetch({
-    path: `/v1/registry/access-passes/`,
-  });
+  const { execute: put, ...others } = useApiMutation(
+    '/v1/registry/access-passes/{{referenceId}}',
+    HttpMethod.Put
+  );
+  const httpResponse = maybe({})(others.httpResponse);
+  const isSuccess = isRequestSuccess(httpResponse.status) || false;
+
+  const execute = (referenceId, data) => {
+    put({
+      urlPathParams: {
+        referenceId,
+      },
+      requestData: data,
+    });
+  };
 
   return {
     execute,
-    isLoading,
+    isSuccess,
     ...others,
   };
 };

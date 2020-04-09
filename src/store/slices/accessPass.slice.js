@@ -53,7 +53,7 @@ const { actions, reducer } = createSlice({
       };
     },
     save: (state, { payload }) => {
-      const byId = arrayToDictionary((value) => value.id)(payload);
+      const byId = arrayToDictionary(({ key }) => key)(payload);
       const allIds = payload.map((value) => value.id);
 
       return {

@@ -8,27 +8,24 @@ import { ApprovalStatus, Colors } from '../../../../common/constants';
 
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
 
-export const AccessPassTableStatus = ({ status, loading, onApproveClick, onDenyClick }) => {
-  const iconProps = { color: 'inherit' };
-  const buttonProps = { variant: 'contained', disabled: loading };
-
+export const AccessPassTableStatus = ({ status, onApproveClick, onDenyClick, loading }) => {
   return (
     <AccessPassTableStatusWrapper status={status}>
       {status === ApprovalStatus.Pending ? (
         <>
-          <ApproveButton {...buttonProps} onClick={(event) => onApproveClick(event)}>
+          <ApproveButton variant="contained" onClick={onApproveClick} disabled={loading}>
             Approve
           </ApproveButton>
-          <DenyButton {...buttonProps} onClick={(event) => onDenyClick(event)}>
+          <DenyButton variant="contained" onClick={() => onDenyClick()} disabled={loading}>
             Deny
           </DenyButton>
         </>
       ) : (
         <>
           {status === ApprovalStatus.Approved ? (
-            <CheckCircleIcon {...iconProps} />
+            <CheckCircleIcon color="inherit" />
           ) : (
-            <CancelIcon {...iconProps} />
+            <CancelIcon color="inherit" />
           )}
           <Typography variant="body1">{status}</Typography>
         </>
