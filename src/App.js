@@ -12,14 +12,12 @@ import { store, persistor } from './store';
 import { AppRoutes } from './AppRoutes';
 import { SnackbarProvider } from './context';
 import { baseURL } from './common/api';
-import { GoogleAnalytics } from './common/components/GoogleAnalytics';
 
 export function App() {
   const history = createHistory();
-
   return (
     <HttpProvider url={baseURL}>
-      <GoogleAnalytics />
+      {/* <GoogleAnalytics /> */}
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <Router history={history}>
