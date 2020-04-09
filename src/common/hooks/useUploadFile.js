@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { HttpMethod, baseURL } from '../api';
 import { maybe } from '../utils/monads';
@@ -6,12 +7,15 @@ import { maybe } from '../utils/monads';
 const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
 export const useUploadFile = (url) => {
+  const token = useSelector((state) => state.user.token);
+
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
 
   const xhr = new XMLHttpRequest();
+  xhr.withCredentials = true;
 
   xhr.onreadystatechange = () => {
     if (xhr.readyState !== XMLHttpRequest.DONE) {
@@ -42,6 +46,7 @@ export const useUploadFile = (url) => {
 
     const newUrl = [baseURL, url].join('');
     xhr.open(HttpMethod.Post, newUrl, true);
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send(formData);
   };
 
