@@ -17,7 +17,6 @@ export function App() {
   const history = createHistory();
   return (
     <HttpProvider url={baseURL}>
-      {/* <GoogleAnalytics /> */}
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <Router history={history}>
