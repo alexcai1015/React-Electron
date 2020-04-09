@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import { Grid, Box } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 
-import logo from '../../assets/logo_purple_title.svg';
+import MainLogo from './MainLogo';
 
 export const CenteredForm = ({ children }) => {
   return (
     <FormWrapper container direction="column" justify="center" alignItems="center">
       <ImageWrapper>
-        <img src={logo} width="317" height="252" alt="Logo" title="Logo" />
+        <MainLogo />
       </ImageWrapper>
       {children}
     </FormWrapper>
