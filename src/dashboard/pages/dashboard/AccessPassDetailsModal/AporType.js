@@ -35,7 +35,9 @@ const AporType = ({ aporType }) => {
       <Grid item xs={8}>
         <Box className={classes.aporTypeSection}>
           <Typography className={classes.label}>Apor Type Description</Typography>
-          <Typography className={classes.title}>{AporTypeMap[aporType].value}</Typography>
+          <Typography className={classes.title}>
+            {AporTypeMap[aporType] ? AporTypeMap[aporType].value : aporType}
+          </Typography>
         </Box>
       </Grid>
     </Grid>
