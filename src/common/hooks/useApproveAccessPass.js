@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
+import * as R from 'ramda';
 
 import { useSnackbar } from '../../hooks';
 import { approveAccessPassById } from '../../store/slices';
@@ -25,7 +26,8 @@ export const useApproveAccessPass = (accessPass) => {
     }
 
     if (error) {
-      showSnackbar({ message: error.message || 'Error occurred', severity: 'error' });
+      const errorMessage = R.pathOr('Error occurred', ['response', 'data', 'message'], error);
+      showSnackbar({ message: errorMessage, severity: 'error' });
       reset();
     }
   }, [dispatch, accessPass, showSnackbar, isSuccess, error, reset]);
