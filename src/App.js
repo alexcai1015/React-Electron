@@ -10,9 +10,14 @@ import createHistory from './history';
 import { store, persistor } from './store';
 import { AppRoutes } from './AppRoutes';
 import { SnackbarProvider } from './context';
+import { Maintenance } from './pages/Maintenance';
 
 export function App() {
   const history = createHistory();
+
+  if (Number(process.env.REACT_APP_MAINTENANCE)) {
+    return <Maintenance />;
+  }
 
   return (
     <Provider store={store}>
