@@ -1,32 +1,59 @@
 import { useState, useRef, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 import { httpPost, httpPut, httpPatch, httpDelete } from '../api';
 import { HttpMethod } from '../constants';
-import { objToEncodedURI, applyPathParams } from '../utils';
+import { objToEncodedURI, applyPathParams, createAuthorizationHeader } from '../utils';
 import { maybe } from '../../utils/monads';
 
 const getMutationMethod = (method) => {
-  return ({
-    [HttpMethod.Post]: httpPost,
-    [HttpMethod.Put]: httpPut,
-    [HttpMethod.Patch]: httpPatch,
-    [HttpMethod.Delete]: httpDelete,
-  }[method]) || httpPost;
+  return (
+    {
+      [HttpMethod.Post]: httpPost,
+      [HttpMethod.Put]: httpPut,
+      [HttpMethod.Patch]: httpPatch,
+      [HttpMethod.Delete]: httpDelete,
+    }[method] || httpPost
+  );
 };
 
 const maybeObject = maybe({});
+
+const getConfig = ({ baseConfig, token }) => {
+  const maybeConfig = maybeObject(baseConfig);
+
+  if (!token) {
+    return maybeConfig;
+  }
+
+  return {
+    ...maybeConfig,
+    headers: {
+      ...maybeConfig.headers,
+      ...createAuthorizationHeader(token),
+    },
+  };
+};
 
 export const useApiMutation = (url, method, config) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({ httpResponse: null, data: null });
   const [error, setError] = useState(null);
   const unmounted = useRef(false);
+  const token = useSelector((state) => state.user.token);
+  const maybeConfig = maybeObject(config);
 
   useEffect(() => {
     return () => {
       unmounted.current = true;
     };
   }, []);
+
+  const reset = () => {
+    setIsLoading(false);
+    setData({ httpResponse: null, data: null });
+    setError(null);
+  };
 
   const execute = async ({ requestData, urlQueryParams, urlPathParams }) => {
     setIsLoading(true);
@@ -41,7 +68,10 @@ export const useApiMutation = (url, method, config) => {
         const mutationUrl = encodedURIParams
           ? [urlWithPathParams, encodedURIParams].join('/')
           : urlWithPathParams;
-        const httpMutationResponse = await mutationMethod(mutationUrl, config);
+        const httpMutationResponse = await mutationMethod(
+          mutationUrl,
+          getConfig({ baseConfig: maybeConfig, token })
+        );
 
         if (!unmounted.current) {
           setData({ httpResponse: httpMutationResponse });
@@ -50,7 +80,7 @@ export const useApiMutation = (url, method, config) => {
         const httpMutationResponse = await mutationMethod(
           urlWithPathParams,
           maybeObject(requestData),
-          config
+          getConfig({ baseConfig: maybeConfig, token })
         );
 
         if (!unmounted.current) {
@@ -76,5 +106,6 @@ export const useApiMutation = (url, method, config) => {
     isLoading,
     error,
     execute,
+    reset,
   };
 };

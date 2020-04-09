@@ -4,7 +4,7 @@ import { Box, Grid } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { AporType as AporTypeMap, Colors } from '../../../../common/constants';
+import { AporType as AporTypeMap, Colors } from '../../../../../common/constants';
 
 const useStyles = makeStyles(() => ({
   label: {
@@ -35,7 +35,9 @@ const AporType = ({ aporType }) => {
       <Grid item xs={8}>
         <Box className={classes.aporTypeSection}>
           <Typography className={classes.label}>Apor Type Description</Typography>
-          <Typography className={classes.title}>{AporTypeMap[aporType].value}</Typography>
+          <Typography className={classes.title}>
+            {AporTypeMap[aporType] ? AporTypeMap[aporType].value : aporType}
+          </Typography>
         </Box>
       </Grid>
     </Grid>

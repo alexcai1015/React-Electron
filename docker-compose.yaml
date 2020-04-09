@@ -13,6 +13,7 @@ services:
         CSP_STYLE_SRC: https://fonts.googleapis.com
         CSP_FONT_SRC: https://fonts.gstatic.com
         ALLOW_ORIGIN: '*'
+        REACT_APP_MAINTENANCE: 0
 
 
       
