@@ -18,9 +18,26 @@ const validationSchema = yup.object({
     then: yup
       .string()
       .oneOf([yup.ref('password')], "Password Doesn't Match")
-      .required('Please confirm your password'),
+      .required('Please confirm your password.')
+      .min(12, 'Password must be at least 12-character long')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).(?=.*[#$^+=!*()@%&]).{12,}$/,
+        'Kindly follow the password requirements:\n' +
+          'English alphabet uppercase letter (A-Z),\n' +
+          'English alphabet lowercase letter (a-z),\n' +
+          'Decimal digit number (0-9), AND\n' +
+          'Symbols (#$^+=!*()@%&)'
+      ),
   }),
 });
+
+const formatError = (error) =>
+  error.split('\n').map((text) => (
+    <React.Fragment key={`${text}`}>
+      {text}
+      <br />
+    </React.Fragment>
+  ));
 
 export const ActivateUser = () => {
   const location = useLocation();
@@ -135,7 +152,7 @@ export const ActivateUser = () => {
         {!!errors.confirmPassword && (
           <ErrorMessage>
             <ErrorIcon />
-            <span>{errors.confirmPassword}</span>
+            <span>{formatError(errors.confirmPassword)}</span>
           </ErrorMessage>
         )}
 
