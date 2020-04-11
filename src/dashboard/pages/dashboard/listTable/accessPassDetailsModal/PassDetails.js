@@ -10,7 +10,7 @@ import Header from './Header';
 import Field from './Field';
 import SectionTitle from './SectionTitle';
 import AporType from './AporType';
-import { ApprovalStatus, Colors } from '../../../../../common/constants';
+import { ApprovalStatus } from '../../../../../common/constants';
 
 const useStyles = makeStyles((theme) => ({
   container: {
