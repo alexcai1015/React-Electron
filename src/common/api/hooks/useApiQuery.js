@@ -1,16 +1,20 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 
 import { httpGet } from '../api';
-import { objToEncodedURI, applyPathParams } from '../utils';
+import { objToEncodedURI, applyPathParams, getConfig } from '../utils';
 import { maybe } from '../../utils/monads';
+import { getUserToken } from '../../../store/slices';
 
 const maybeObject = maybe({});
 
-export const useApiQuery = (url, config) => {
+export const useApiQuery = (url, httpConfig) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({ httpResponse: null, data: null });
   const [error, setError] = useState(null);
   const unmounted = useRef(false);
+  const token = useSelector(getUserToken);
+  const baseConfig = maybeObject(httpConfig);
 
   useEffect(() => {
     return () => {
@@ -35,6 +39,7 @@ export const useApiQuery = (url, config) => {
         const queryUrl = encodedURIParams
           ? [urlWithPathParams, encodedURIParams].join('?')
           : urlWithPathParams;
+        const config = getConfig({ baseConfig, token });
         const httpQueryResponse = await httpGet(queryUrl, config);
 
         if (!unmounted.current) {
@@ -53,7 +58,7 @@ export const useApiQuery = (url, config) => {
         }
       }
     },
-    [url, config, setData, setError]
+    [url, baseConfig, token]
   );
 
   return {

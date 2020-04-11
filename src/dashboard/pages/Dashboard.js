@@ -3,13 +3,18 @@ import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/
 
 import { NavigationBar } from '../../common/components/NavigationBar';
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
-import { ApprovalStatus } from '../../common/constants';
+import { ApprovalStatus, Source } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
 import { useQueryString } from '../../hooks';
 
 import { ListTable } from './dashboard/ListTable';
 import { AccessPassDenyModal } from './dashboard/listTable/AccessPassDenyModal';
 import { AccessPassDetailsModal } from './dashboard/listTable/AccessPassDetailsModal';
+
+/** use this to init any new queryparams */
+const DefaultQueryParams = Object.freeze({
+  source: Source.Online
+});
 
 const StatusFilterOption = {
   ShowAll: {
@@ -117,6 +122,7 @@ export const Dashboard = () => {
     ({ pageIndex, pageSize }) => {
       getAccessPassesQuery({
         urlQueryParams: {
+          ...DefaultQueryParams,
           pageNo: pageIndex,
           maxPageRows: pageSize,
         },
@@ -131,8 +137,8 @@ export const Dashboard = () => {
       <Box component="main">
         <StyledFiltersBlock>
           <Container>
-            <Grid container>
-              <Grid item lg={8} md={6} sm={12} xs={12}>
+            <Grid container spacing={2} justify="space-between">
+              <Grid item lg={8} md={6} sm={6} xs={12}>
                 <StyledSearchTextField
                   label="Search"
                   type="search"
@@ -140,7 +146,7 @@ export const Dashboard = () => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid container justify="flex-end" item lg={4} md={6} sm={12} xs={12}>
+              <Grid item>
                 <StyledFilterSelectTextField
                   select
                   label="Filter by status:"
@@ -155,6 +161,9 @@ export const Dashboard = () => {
                   ))}
                 </StyledFilterSelectTextField>
               </Grid>
+              {/* <Grid container justify="flex-end" item lg={4} md={6} sm={12} xs={12}>
+
+              </Grid> */}
             </Grid>
           </Container>
         </StyledFiltersBlock>
@@ -207,10 +216,9 @@ const StyledFiltersBlock = styled(Box)(({ theme }) => ({
 }));
 
 const StyledFilterSelectTextField = styled(TextField)(({ theme }) => ({
-  marginLeft: theme.spacing(5),
-  width: 180,
+  minWidth: 180,
 }));
 
 const StyledSearchTextField = styled(TextField)({
-  width: 456,
+  minWidth: 350,
 });
