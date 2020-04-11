@@ -7,7 +7,7 @@ const useStyles = makeStyles({
   },
 });
 
-export const DownloadTemplateLink = ({ sourceURL = GITLAB_PUBLIC_URL }) => {
+export const DownloadTemplateLink = ({ sourceURL = '' }) => {
   const classes = useStyles();
   return (
     <Typography>
