@@ -5,6 +5,7 @@ import { httpPost, httpPut, httpPatch, httpDelete } from '../api';
 import { HttpMethod } from '../constants';
 import { objToEncodedURI, applyPathParams, getConfig } from '../utils';
 import { maybe } from '../../utils/monads';
+import { getUserToken } from '../../../store/slices';
 
 const getMutationMethod = (method) => {
   return (
@@ -24,8 +25,8 @@ export const useApiMutation = (url, method, httpConfig) => {
   const [data, setData] = useState({ httpResponse: null, data: null });
   const [error, setError] = useState(null);
   const unmounted = useRef(false);
-  const token = useSelector((state) => state.user.token);
-  const maybeHttpConfig = maybeObject(httpConfig);
+  const token = useSelector(getUserToken);
+  const baseConfig = maybeObject(httpConfig);
 
   useEffect(() => {
     return () => {
@@ -46,7 +47,7 @@ export const useApiMutation = (url, method, httpConfig) => {
     try {
       const mutationMethod = getMutationMethod(method);
       const urlWithPathParams = applyPathParams(url)(maybeObject(urlPathParams));
-      const config = getConfig({ baseConfig: maybeHttpConfig, token });
+      const config = getConfig({ baseConfig, token });
 
       if (method === HttpMethod.Delete) {
         const encodedURIParams = objToEncodedURI(maybeObject(urlQueryParams));

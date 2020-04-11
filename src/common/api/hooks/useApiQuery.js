@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { httpGet } from '../api';
 import { objToEncodedURI, applyPathParams, getConfig } from '../utils';
 import { maybe } from '../../utils/monads';
+import { getUserToken } from '../../../store/slices';
 
 const maybeObject = maybe({});
 
@@ -12,8 +13,8 @@ export const useApiQuery = (url, httpConfig) => {
   const [data, setData] = useState({ httpResponse: null, data: null });
   const [error, setError] = useState(null);
   const unmounted = useRef(false);
-  const token = useSelector((state) => state.user.token);
-  const maybeHttpConfig = maybeObject(httpConfig);
+  const token = useSelector(getUserToken);
+  const baseConfig = maybeObject(httpConfig);
 
   useEffect(() => {
     return () => {
@@ -38,7 +39,7 @@ export const useApiQuery = (url, httpConfig) => {
         const queryUrl = encodedURIParams
           ? [urlWithPathParams, encodedURIParams].join('?')
           : urlWithPathParams;
-        const config = getConfig({ baseConfig: maybeHttpConfig, token });
+        const config = getConfig({ baseConfig, token });
         const httpQueryResponse = await httpGet(queryUrl, config);
 
         if (!unmounted.current) {
@@ -57,7 +58,7 @@ export const useApiQuery = (url, httpConfig) => {
         }
       }
     },
-    [url, maybeHttpConfig, token]
+    [url, baseConfig, token]
   );
 
   return {
