@@ -9,13 +9,37 @@ const middlewares = jsonServer.defaults();
 const BASEPATH = '/api/v1';
 const PORT = 3001;
 
+let currentSession = '';
+
+function generateSession() {
+  return new Date().getTime();
+}
+
+function validateSession(authString) {
+  return authString && `bearer ${currentSession}` === authString.toLowerCase();
+}
+
 const customRouter = new Router();
 
 // override authentication
 customRouter.post(`${BASEPATH}/users/auth`, (req, res) => {
+  currentSession = generateSession();
+
   res.json({
-    accessCode: 'xxxxxx',
+    accessCode: currentSession,
   });
+});
+
+customRouter.get(`${BASEPATH}/registry/access-passes`, (req, res, next) => {
+  const request = req;
+  const auth = request.get('authorization');
+
+  if (validateSession(auth) === false) {
+    res.send(401, {});
+    return res.end();
+  }
+
+  return next();
 });
 
 // modify the default response

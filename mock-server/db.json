@@ -1,7 +1,28 @@
 {
   "access-passes": [
     {
-      "status": "APPROVED"
+      "passType": "INDIVIDUAL",
+      "aporType": "UT",
+      "referenceId": "09598636330",
+      "controlCode": "",
+      "name": "mykLfohe lastfohe",
+      "company": "DevCon PH 9",
+      "idType": "BIR",
+      "identifierNumber": "BULK0407-0832PM-9",
+      "plateNumber": "",
+      "originName": "Origin",
+      "originStreet": "744469 fohe Street",
+      "originCity": "Malabon City",
+      "originProvince": "Dinagat Islands",
+      "destName": "Destination",
+      "destStreet": "9 fohe Road",
+      "destCity": "Iriga City",
+      "destProvince": "Sarangani",
+      "status": "PENDING",
+      "validFrom": "2020-04-11T15:53:43.231Z",
+      "validUntil": "2020-04-30T15:59:59Z",
+      "remarks": "test remark 1586268473.6676089",
+      "updates": "Invalid Apor Type (UT)."
     },
     {
       "passType": "INDIVIDUAL",
@@ -21,7 +42,7 @@
       "destStreet": "9 fohe Road",
       "destCity": "Iriga City",
       "destProvince": "Sarangani",
-      "status": "APPROVED",
+      "status": "PENDING",
       "validFrom": "2020-04-11T15:53:43.231Z",
       "validUntil": "2020-04-30T15:59:59Z",
       "remarks": "test remark 1586268473.6676089",
@@ -52,7 +73,28 @@
       "updates": "Invalid ID Type (idType=OWF)."
     },
     {
-      "status": "APPROVED"
+      "passType": "INDIVIDUAL",
+      "aporType": "UT",
+      "referenceId": "09598636340",
+      "controlCode": "",
+      "name": "mykLfohe lastfohe",
+      "company": "DevCon PH 9",
+      "idType": "BIR",
+      "identifierNumber": "BULK0407-0832PM-9",
+      "plateNumber": "",
+      "originName": "Origin",
+      "originStreet": "744469 fohe Street",
+      "originCity": "Malabon City",
+      "originProvince": "Dinagat Islands",
+      "destName": "Destination",
+      "destStreet": "9 fohe Road",
+      "destCity": "Iriga City",
+      "destProvince": "Sarangani",
+      "status": "APPROVED",
+      "validFrom": "2020-04-11T15:53:43.231Z",
+      "validUntil": "2020-04-30T15:59:59Z",
+      "remarks": "test remark 1586268473.6676089",
+      "updates": "Invalid Apor Type (UT)."
     },
     {
       "passType": "INDIVIDUAL",
