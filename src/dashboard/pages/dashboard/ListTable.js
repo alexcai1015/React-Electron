@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import {
   Paper,
   Table,
@@ -14,11 +16,10 @@ import {
   TableSortLabel,
   Typography,
 } from '@material-ui/core';
-import { usePagination, useSortBy, useTable, useGlobalFilter } from 'react-table';
-import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
+import { usePagination, useTable } from 'react-table';
 
 import { Colors } from '../../../common/constants/Colors';
+import { useQueryString } from '../../../hooks';
 import { setCurrentAccessPass } from '../../../store/slices';
 import { AccessPassPropType } from '../../../types';
 
@@ -26,44 +27,41 @@ import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
 import { SkeletonTable } from './listTable/SkeletonTable';
-
+const defaultRowsPerPage = 15;
 const listTableStyles = makeStyles({
   table: {
     minWidth: 500,
-  },
-  striped0: {
-    backgroundColor: Colors.RowStripeGray,
-  },
-  striped1: {
-    backgroundColor: Colors.White,
+    "& .MuiTableRow-root:nth-child(odd)": {
+      backgroundColor: Colors.RowStripeGray,
+    },
   },
 });
 
 export const ListTable = ({
-  value,
+  data,
+  fetchData,
   loading,
-  searchValue,
+  pageCount,
   disabledActions,
   onApproveClick,
   onDenyClick,
   onViewDetailsClick,
+  rowCount,
 }) => {
   const dispatch = useDispatch();
   const classes = listTableStyles();
 
+  const { queryString, setQueryString } = useQueryString();
+
   const {
     headerGroups,
     prepareRow,
-    rows,
     page,
     state: { pageIndex, pageSize },
     gotoPage,
     setPageSize,
     getTableProps,
     getTableBodyProps,
-
-    // ? TODO - Remove later once search thru API is ready
-    setGlobalFilter,
   } = useTable(
     {
       columns: useMemo(
@@ -77,19 +75,17 @@ export const ListTable = ({
         ],
         []
       ),
-      data: useMemo(() => value, [value]),
+      data,
+      initialState: {
+        // ! TODO: get from query string
+        pageIndex: (queryString && +queryString.page - 1) || 0,
+        pageSize: (queryString && +queryString.pageSize) || defaultRowsPerPage,
+      },
+      manualPagination: true,
+      pageCount,
     },
-    useGlobalFilter,
-    useSortBy,
     usePagination
   );
-
-  /** API Hooks */
-
-  // ? TODO - Remove later once search thru API is ready
-  useEffect(() => {
-    setGlobalFilter(searchValue);
-  }, [searchValue, setGlobalFilter]);
 
   /** Modals' States  */
 
@@ -99,16 +95,33 @@ export const ListTable = ({
     };
   }, [dispatch]);
 
+  // Listen for changes in pagination and use the state to fetch our new data
+  useEffect(() => {
+    fetchData({ pageIndex, pageSize });
+  }, [fetchData, pageIndex, pageSize]);
+
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
+
+    setQueryString({
+      queryString: {
+        page: newPage + 1,
+      },
+    });
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(+event.target.value);
-    gotoPage(0);
+    const nextPageSize = +event.target.value;
+    const nextPageIndex = 0;
+
+    setPageSize(nextPageSize);
+    gotoPage(nextPageIndex);
+
+    setQueryString({
+      queryString: { page: nextPageIndex + 1, pageSize: nextPageSize },
+    });
   };
 
-  const totalRecordsCount = rows.length;
   const lastColumnIndex = 5;
 
   return (
@@ -126,7 +139,7 @@ export const ListTable = ({
                 headerGroup.headers.map((column, index) => (
                   <ListHeaderCell
                     align={index === lastColumnIndex ? 'center' : 'left'}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    {...column.getHeaderProps()}
                   >
                     <TableSortLabel
                       active={column.isSorted}
@@ -145,43 +158,43 @@ export const ListTable = ({
             </TableRow>
           </TableHead>
           {loading ? (
-            <SkeletonTable />
+            <SkeletonTable pageNo={pageIndex} rowsPerPage={pageSize} />
           ) : (
-            <TableBody {...getTableBodyProps()}>
-              {page.map((row, rowIndex) => {
-                prepareRow(row);
+              <TableBody {...getTableBodyProps()}>
+                {page.map((row, rowIndex) => {
+                  prepareRow(row);
 
-                return (
-                  <TableRow {...row.getRowProps()} className={classes[`striped${rowIndex % 2}`]}>
-                    {row.cells.map((cell, cellIndex) => {
-                      return cellIndex === lastColumnIndex ? (
-                        <TableCell align="right" key={cell.row.values.id}>
-                          <ListRowActions
-                            status={cell.row.values.status}
-                            onApproveClick={() => onApproveClick(cell.row.original)}
-                            onDenyClick={() => onDenyClick(cell.row.original)}
-                            onViewDetailsClick={() => onViewDetailsClick(row.original)}
-                            loading={disabledActions}
-                          />
-                        </TableCell>
-                      ) : (
-                        <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          )}
-
+                  return (
+                    <TableRow title={`Row #${(pageIndex * rowCount) + (rowIndex + 1)}`}
+                      {...row.getRowProps()} className={classes.striped}>
+                      {row.cells.map((cell, cellIndex) => {
+                        return cellIndex === lastColumnIndex ? (
+                          <TableCell align="right" key={cell.row.values.id}>
+                            <ListRowActions
+                              status={cell.row.values.status}
+                              onApproveClick={() => onApproveClick(cell.row.original)}
+                              onDenyClick={() => onDenyClick(cell.row.original)}
+                              onViewDetailsClick={() => onViewDetailsClick(row.original)}
+                              loading={disabledActions}
+                            />
+                          </TableCell>
+                        ) : (
+                            <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                          );
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            )}
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, 50]}
+                rowsPerPageOptions={[15, 30, 50, 100]}
                 colSpan={headerGroups[0].headers.length}
-                count={totalRecordsCount}
+                count={rowCount}
                 rowsPerPage={pageSize}
-                page={pageIndex}
+                page={!!rowCount ? pageIndex : 0}
                 SelectProps={{
                   inputProps: { 'aria-label': 'rows per page' },
                   native: true,
@@ -211,10 +224,13 @@ const StyledSortAccessibilityLabel = styled(Typography)({
 });
 
 ListTable.propTypes = {
-  value: PropTypes.arrayOf(PropTypes.shape(AccessPassPropType)),
+  data: PropTypes.arrayOf(PropTypes.shape(AccessPassPropType)),
+  fetchData: PropTypes.func.isRequired,
   loading: PropTypes.bool,
+  pageCount: PropTypes.number.isRequired,
   searchValue: PropTypes.string,
   disabledActions: PropTypes.bool,
+  rowCount: PropTypes.number.isRequired,
   onApproveClick: PropTypes.func,
   onDenyClick: PropTypes.func,
   onViewDetailsClick: PropTypes.func,
