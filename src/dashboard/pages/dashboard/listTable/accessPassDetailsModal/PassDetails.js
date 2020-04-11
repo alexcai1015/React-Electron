@@ -10,6 +10,7 @@ import Header from './Header';
 import Field from './Field';
 import SectionTitle from './SectionTitle';
 import AporType from './AporType';
+import { ApprovalStatus } from '../../../../../common/constants';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
       height: 'auto',
       padding: '16px 24px',
     },
-  },
+  }
 }));
 
 const formatAddress = ({ name, street, city, province }) => {
@@ -72,6 +73,9 @@ export const PassDetails = ({ handleClose, details }) => {
             <Field label="Address of destination" value={addressOfDestination || 'N/A'} />
             <Field label="Remarks" value={details.remarks || 'N/A'} />
             <Field label="Pass type" value={details.passType || 'N/A'} />
+            {(ApprovalStatus.Declined === details.status) &&
+              <Field label="⚠️ Reason for Decline" value={details.updates} />
+            }
           </Grid>
         </Grid>
       </Box>
