@@ -6,3 +6,4 @@ export * from './useLogin';
 export * from './useToggle';
 export * from './useActivateApprover';
 export * from './useDenyAccessPass';
+export * from './useLogout';

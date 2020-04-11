@@ -8,13 +8,12 @@ import {
   Typography,
   makeStyles,
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import logo from '../../assets/rapidpass.svg';
-import { removeUser, clearAccessPass } from '../../store/slices';
 import { PROTECTED_ROUTES } from '../../AppRoutes';
 import { Colors } from '../constants/Colors';
+import { useLogout } from '../hooks';
 
 const useStyles = makeStyles({
   grow: {
@@ -40,12 +39,11 @@ const useStyles = makeStyles({
 
 export function NavigationBar() {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const history = useHistory();
+  const { execute: executeLogout } = useLogout();
 
   const handleLogout = () => {
-    dispatch(removeUser());
-    dispatch(clearAccessPass());
+    executeLogout();
   };
 
   const isActive = (value) => (window.location.pathname === value ? 'active' : '');
