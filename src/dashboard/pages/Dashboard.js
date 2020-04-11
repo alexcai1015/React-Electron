@@ -117,7 +117,7 @@ export const Dashboard = () => {
     ({ pageIndex, pageSize }) => {
       getAccessPassesQuery({
         urlQueryParams: {
-          page: pageIndex,
+          pageNo: pageIndex,
           maxPageRows: pageSize,
         },
       });
