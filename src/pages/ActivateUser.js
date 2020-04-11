@@ -12,6 +12,7 @@ import { CenteredForm } from '../common/components/CenteredForm';
 import { useActivateApprover } from '../common/hooks/useActivateApprover';
 
 const MIN_LENGTH = 12;
+
 /** At least 12, at least 1 upper, 1 lower, 1 symbol. */
 // TODO remove the 11 value - already checked by min()?
 const REGEX_UPPER_LOWER_ALPHANUMERIC = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).(?=.*[#$^+=!*()@%&]).{11,}$/;
@@ -19,18 +20,18 @@ const REGEX_UPPER_LOWER_ALPHANUMERIC = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).(?=.*[#$
 const validationSchema = yup.object({
   password: yup
     .string()
-    .required('Please confirm your password.')
+    .required('Please provide your password.')
     .min(MIN_LENGTH, `At least ${MIN_LENGTH} characters.`)
     .matches(
       REGEX_UPPER_LOWER_ALPHANUMERIC,
-      `Please at least one of each: an uppercase letter, a lowercase letter,  a number, and a symbol.`),
+      `Please at least one of each: an uppercase letter, a lowercase letter,  a number, and a symbol.`
+    ),
   confirmPassword: yup.string().when('password', {
     is: (val) => val && val.length >= MIN_LENGTH,
-    then: yup
-      .string()
-      .oneOf([yup.ref('password')], "Please confirm your chosen password.")
+    then: yup.string().oneOf([yup.ref('password')], 'Please confirm your chosen password.'),
   }),
 });
+
 export const ActivateUser = () => {
   const location = useLocation();
   const { push } = useHistory();
@@ -155,8 +156,6 @@ export const ActivateUser = () => {
     </CenteredForm>
   );
 };
-
-
 
 const FormField = styled(TextField)({
   width: '100%',
