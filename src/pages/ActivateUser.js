@@ -11,17 +11,26 @@ import { Colors } from '../common/constants/Colors';
 import { CenteredForm } from '../common/components/CenteredForm';
 import { useActivateApprover } from '../common/hooks/useActivateApprover';
 
+const MIN_LENGTH = 12;
+/** At least 12, at least 1 upper, 1 lower, 1 symbol. */
+// TODO remove the 11 value - already checked by min()?
+const REGEX_UPPER_LOWER_ALPHANUMERIC = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).(?=.*[#$^+=!*()@%&]).{11,}$/;
+
 const validationSchema = yup.object({
-  password: yup.string().required('Password is required'),
+  password: yup
+    .string()
+    .required('Please confirm your password.')
+    .min(MIN_LENGTH, `At least ${MIN_LENGTH} characters.`)
+    .matches(
+      REGEX_UPPER_LOWER_ALPHANUMERIC,
+      `Please at least one of each: an uppercase letter, a lowercase letter,  a number, and a symbol.`),
   confirmPassword: yup.string().when('password', {
-    is: (val) => val && val.length > 0,
+    is: (val) => val && val.length >= MIN_LENGTH,
     then: yup
       .string()
-      .oneOf([yup.ref('password')], "Password Doesn't Match")
-      .required('Please confirm your password'),
+      .oneOf([yup.ref('password')], "Please confirm your chosen password.")
   }),
 });
-
 export const ActivateUser = () => {
   const location = useLocation();
   const { push } = useHistory();
@@ -113,6 +122,7 @@ export const ActivateUser = () => {
             variant="outlined"
             value={values.confirmPassword}
             onChange={handleChange}
+            helperText={errors.confirmPassword}
             error={!!errors.confirmPassword}
             disabled={isLoading}
           />
@@ -132,13 +142,6 @@ export const ActivateUser = () => {
           </ErrorMessage>
         )}
 
-        {!!errors.confirmPassword && (
-          <ErrorMessage>
-            <ErrorIcon />
-            <span>{errors.confirmPassword}</span>
-          </ErrorMessage>
-        )}
-
         <SubmitButton
           type="submit"
           variant="contained"
@@ -152,6 +155,8 @@ export const ActivateUser = () => {
     </CenteredForm>
   );
 };
+
+
 
 const FormField = styled(TextField)({
   width: '100%',

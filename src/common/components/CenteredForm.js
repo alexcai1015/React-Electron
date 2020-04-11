@@ -25,5 +25,5 @@ const FormWrapper = styled(Grid)({
 });
 
 const ImageWrapper = styled(Box)({
-  marginBottom: 74,
+  marginBottom: 55,
 });
