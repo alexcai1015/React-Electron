@@ -131,8 +131,8 @@ export const Dashboard = () => {
       <Box component="main">
         <StyledFiltersBlock>
           <Container>
-            <Grid container>
-              <Grid item lg={8} md={6} sm={12} xs={12}>
+            <Grid container spacing={2} justify="space-between">
+              <Grid item lg={8} md={6} sm={6} xs={12}>
                 <StyledSearchTextField
                   label="Search"
                   type="search"
@@ -140,7 +140,7 @@ export const Dashboard = () => {
                   variant="outlined"
                 />
               </Grid>
-              <Grid container justify="flex-end" item lg={4} md={6} sm={12} xs={12}>
+              <Grid item>
                 <StyledFilterSelectTextField
                   select
                   label="Filter by status:"
@@ -155,6 +155,9 @@ export const Dashboard = () => {
                   ))}
                 </StyledFilterSelectTextField>
               </Grid>
+              {/* <Grid container justify="flex-end" item lg={4} md={6} sm={12} xs={12}>
+
+              </Grid> */}
             </Grid>
           </Container>
         </StyledFiltersBlock>
@@ -207,10 +210,9 @@ const StyledFiltersBlock = styled(Box)(({ theme }) => ({
 }));
 
 const StyledFilterSelectTextField = styled(TextField)(({ theme }) => ({
-  marginLeft: theme.spacing(5),
-  width: 180,
+  minWidth: 180,
 }));
 
 const StyledSearchTextField = styled(TextField)({
-  width: 456,
+  minWidth: 350,
 });
