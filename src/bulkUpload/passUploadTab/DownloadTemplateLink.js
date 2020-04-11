@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, makeStyles } from '@material-ui/core';
-const GITLAB_PUBLIC_URL = `https://gitlab.com/dctx/rapidpass/rapidpass-dashboard/-/tree/master/public`;
+// const GITLAB_PUBLIC_URL = `https://gitlab.com/dctx/rapidpass/rapidpass-dashboard/-/tree/master/public`;
 const useStyles = makeStyles({
   linkText: {
     paddingLeft: 5,
@@ -12,7 +12,11 @@ export const DownloadTemplateLink = ({ sourceURL = '' }) => {
   return (
     <Typography>
       Download the template
-      <a href={`${sourceURL}/templates/bulk-upload.csv`} download className={classes.linkText} target="_blank">
+      <a href={`${sourceURL}/templates/bulk-upload.csv`}
+        download
+        className={classes.linkText}
+        target="_blank"
+        rel="noopener noreferrer">
         here.
       </a>
     </Typography>
