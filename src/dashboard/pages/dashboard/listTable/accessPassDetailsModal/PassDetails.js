@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { PassTypeLabel } from '../../../../common/constants/PassType';
+import { PassTypeLabel } from '../../../../../common/constants/PassType';
 
 import Header from './Header';
 import Field from './Field';
@@ -41,7 +41,7 @@ const getReferenceIdLabel = (details) => {
   return label ? label.display : '';
 };
 
-const PassDetails = ({ handleClose, details }) => {
+export const PassDetails = ({ handleClose, details }) => {
   const classes = useStyles();
   const addressOfDestination = formatAddress({
     name: details.destName,
@@ -65,7 +65,7 @@ const PassDetails = ({ handleClose, details }) => {
             <Field label={getReferenceIdLabel(details)} value={details.referenceId || 'N/A'} />
             <Field label="Id type" value={details.idType || 'N/A'} />
             <Field label="Id number" value={details.id || 'N/A'} />
-            <Field label="Company" value={details.company || 'N/A'} />
+            <Field label="Company/Institution" value={details.company || 'N/A'} />
           </Grid>
           <Grid item xs={8}>
             <Field label="Address of origin" value={addressOfOrigin || 'N/A'} />
@@ -99,7 +99,6 @@ PassDetails.propTypes = {
     name: PropTypes.string,
     passType: PropTypes.string,
     remarks: PropTypes.string,
+    status: PropTypes.string,
   }),
 };
-
-export default PassDetails;

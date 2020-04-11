@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { Colors } from '../../../../common/constants/Colors';
+import { Colors } from '../../../../../common/constants/Colors';
 
 const useStyles = makeStyles(() => ({
   label: {

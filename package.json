@@ -1,7 +1,10 @@
 {
   "name": "rapidpass-dashboard",
-  "version": "0.1.0",
+  "version": "0.5.0",
   "private": true,
+  "engines": {
+    "node": ">=12"
+  },
   "dependencies": {
     "@material-ui/core": "^4.9.7",
     "@material-ui/icons": "^4.9.1",
@@ -28,7 +31,6 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
-    "use-http": "^0.4.5",
     "yup": "^0.28.3"
   },
   "scripts": {
@@ -37,7 +39,8 @@
     "build": "cross-env INLINE_RUNTIME_CHUNK=false REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start:mock-server": "json-server --watch mock-server.js -p 3110"
+    "start:mock-server": "json-server --watch mock-server.js -p 3110",
+    "version": "auto-changelog -p && git add CHANGELOG.md"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -55,6 +58,7 @@
     ]
   },
   "devDependencies": {
+    "auto-changelog": "^1.16.4",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.1.0",
@@ -78,5 +82,8 @@
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint --cache --fix"
+  },
+  "volta": {
+    "node": "12.16.2"
   }
 }

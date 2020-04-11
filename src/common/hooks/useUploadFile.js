@@ -1,19 +1,37 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { HttpMethod, baseURL } from '../api';
+import { maybe } from '../utils/monads';
+
+const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
 export const useUploadFile = (url) => {
+  const token = useSelector((state) => state.user.token);
+
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [isCompleted, setIsCompleted] = useState(false);
-  const xhr = new XMLHttpRequest();
 
-  xhr.onload = () => {
-    if (xhr.status === 200) {
+  const xhr = new XMLHttpRequest();
+  xhr.withCredentials = true;
+
+  xhr.onreadystatechange = () => {
+    if (xhr.readyState !== XMLHttpRequest.DONE) {
+      return;
+    }
+
+    const { status } = xhr;
+    const isSuccess = isRequestSuccess(status);
+
+    if (isSuccess) {
       setResponse(xhr.response);
     } else {
-      setError(xhr.statusText);
+      const errorMessage = maybe(`There's an error uploading your file. Please try again.`)(
+        xhr.statusText
+      );
+      setError(errorMessage);
     }
 
     setIsCompleted(true);
@@ -28,7 +46,15 @@ export const useUploadFile = (url) => {
 
     const newUrl = [baseURL, url].join('');
     xhr.open(HttpMethod.Post, newUrl, true);
+    xhr.setRequestHeader('Authorization', `Bearer ${token}`);
     xhr.send(formData);
+  };
+
+  const reset = () => {
+    setError(null);
+    setIsLoading(false);
+    setResponse(null);
+    setIsCompleted(false);
   };
 
   return {
@@ -37,5 +63,6 @@ export const useUploadFile = (url) => {
     response,
     isCompleted,
     execute,
+    reset,
   };
 };

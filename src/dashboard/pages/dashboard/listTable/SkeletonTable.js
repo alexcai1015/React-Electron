@@ -2,15 +2,15 @@ import React from 'react';
 import { TableBody } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 
-const defaultRowsPerPage = 15; // probably import from ListTable pagination
+
 const range = (start, end) => [...Array(end - start + 1)].map((_, i) => start + i);
 
-export function SkeletonTable() {
+export function SkeletonTable({ pageNo, rowsPerPage }) {
   return (
     <TableBody>
-      {range(0, defaultRowsPerPage).map((i) => (
-        <tr key={i}>
-          <td colSpan={6}>
+      {range(1, (rowsPerPage || 10)).map((i) => (
+        <tr key={i} height="80px" cell>
+          <td colSpan={6} title={`Rows #${(pageNo * rowsPerPage) + i}`}>
             <Skeleton animation="wave" height={80} />
           </td>
         </tr>

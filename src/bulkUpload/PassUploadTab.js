@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Tabs, Tab, Typography, LinearProgress, styled } from '@material-ui/core';
@@ -6,6 +6,7 @@ import { People, LocalShipping } from '@material-ui/icons';
 import { DropzoneArea } from 'material-ui-dropzone';
 
 import { useUploadFile } from '../common/hooks/useUploadFile';
+import { useSnackbar } from '../hooks';
 
 import { UploadSuccessModal } from './UploadSuccessModal';
 import { DownloadTemplateLink } from './passUploadTab/DownloadTemplateLink';
@@ -55,17 +56,20 @@ const useStyles = makeStyles({
   },
 });
 
+const UPLOAD_TEXT = 'Click Here or Drag and Drop to Upload (.csv)/(.xls) file';
+
+const acceptedFile = ['text/csv', 'application/vnd.ms-excel']; // Accept .csv and .xls only
+
 export const PassUploadTab = () => {
   const classes = useStyles();
-  const { error, isLoading, isCompleted, execute } = useUploadFile('/v1/batch/access-passes');
-  const [value, setValue] = React.useState(0);
-  const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = React.useState(
-    'Click Here or Drag and Drop to Upload CSV/Excel file'
+  const { error, isLoading, isCompleted, execute, reset: resetUpload } = useUploadFile(
+    '/v1/batch/access-passes'
   );
-  const [uploadBoxTextVehicle, setUploadBoxTextVehicle] = React.useState(
-    'Click Here or Drag and Drop to Upload CSV/Excel file'
-  );
-  const [isUploadSuccessModalOpen, setIsUploadSuccessModalOpen] = React.useState(false);
+  const [value, setValue] = useState(0);
+  const { showSnackbar } = useSnackbar();
+  const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = useState(UPLOAD_TEXT);
+  const [uploadBoxTextVehicle, setUploadBoxTextVehicle] = useState(UPLOAD_TEXT);
+  const [isUploadSuccessModalOpen, setIsUploadSuccessModalOpen] = useState(false);
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
@@ -81,17 +85,24 @@ export const PassUploadTab = () => {
     execute(files[0]);
   };
 
-  const acceptedFile = [
-    'text/csv',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  ];
+  const handleFileAddedMessage = (fileName) => `${fileName} selected.`;
 
   useEffect(() => {
     if (isCompleted && !error) {
       setIsUploadSuccessModalOpen(true);
     }
   }, [isCompleted, error]);
+
+  useEffect(() => {
+    if (isCompleted && error) {
+      showSnackbar({
+        message: error,
+        severity: 'error',
+      });
+
+      resetUpload();
+    }
+  }, [error, isCompleted, resetUpload, showSnackbar]);
 
   return (
     <>
@@ -118,8 +129,9 @@ export const PassUploadTab = () => {
             filesLimit={1}
             dropzoneText={uploadBoxTextIndividual}
             showPreviewsInDropzone={false}
-            showAlerts={false}
             dropzoneParagraphClass={classes.uploadBoxText}
+            getFileAddedMessage={handleFileAddedMessage}
+            showAlerts
           />
         </div>
       </TabPanel>
@@ -136,8 +148,9 @@ export const PassUploadTab = () => {
             filesLimit={1}
             dropzoneText={uploadBoxTextVehicle}
             showPreviewsInDropzone={false}
-            showAlerts={false}
             dropzoneParagraphClass={classes.uploadBoxText}
+            getFileAddedMessage={handleFileAddedMessage}
+            showAlerts
           />
         </div>
       </TabPanel>

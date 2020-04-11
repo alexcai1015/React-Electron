@@ -1,4 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
+import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
 import {
   Paper,
   Table,
@@ -14,70 +16,52 @@ import {
   TableSortLabel,
   Typography,
 } from '@material-ui/core';
-import { usePagination, useSortBy, useTable, useGlobalFilter } from 'react-table';
-import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { usePagination, useTable } from 'react-table';
 
 import { Colors } from '../../../common/constants/Colors';
-import { SnackbarAlert } from '../../../common/components/SnackbarAlert';
-import { useUpdateAccessPass, useGetAccessPasses } from '../../../common/hooks';
-import { approveAccessPassById, getAccessPasses } from '../../../store/slices';
-import { ApprovalStatus } from '../../../common/constants';
+import { useQueryString } from '../../../hooks';
+import { setCurrentAccessPass } from '../../../store/slices';
+import { AccessPassPropType } from '../../../types';
 
-import { DenyApplicationModal } from './listTable/DenyApplicationModal';
 import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
-import AccessPassDetailsModal from './AccessPassDetailsModal';
 import { SkeletonTable } from './listTable/SkeletonTable';
-
+const defaultRowsPerPage = 15;
 const listTableStyles = makeStyles({
   table: {
     minWidth: 500,
-  },
-  striped0: {
-    backgroundColor: Colors.RowStripeGray,
-  },
-  striped1: {
-    backgroundColor: Colors.White,
+    "& .MuiTableRow-root:nth-child(odd)": {
+      backgroundColor: Colors.RowStripeGray,
+    },
   },
 });
 
-export function ListTable({ searchValue }) {
-  const [isDenyModalOpen, setIsDenyModalOpen] = useState(false);
-
-  // ! TODO: remove this `accessPass` state
-  const [accessPass, setAccessPass] = useState(undefined);
-
-  // ! TODO: use `useSnackbar()` to remove `updatedAccessPass()` state
-  const [updatedAccessPass, setUpdatedAccessPass] = useState(null);
-
-  // ! TODO: use `useSnackbar()` to remove `errorFromUpdate()` state
-  const [errorFromUpdate, setErrorFromUpdate] = useState('');
-
-  // ! TODO: remove `passDetails` state and use `accessPass` instead
-  const [passDetails, setPassDetails] = useState(null);
-
+export const ListTable = ({
+  data,
+  fetchData,
+  loading,
+  pageCount,
+  disabledActions,
+  onApproveClick,
+  onDenyClick,
+  onViewDetailsClick,
+  rowCount,
+}) => {
   const dispatch = useDispatch();
   const classes = listTableStyles();
 
-  const { isLoading, query: getAccessPassesQuery } = useGetAccessPasses();
-
-  const data = useSelector(getAccessPasses);
+  const { queryString, setQueryString } = useQueryString();
 
   const {
     headerGroups,
     prepareRow,
-    rows,
     page,
     state: { pageIndex, pageSize },
     gotoPage,
     setPageSize,
     getTableProps,
     getTableBodyProps,
-
-    // ? TODO - Remove later once search thru API is ready
-    setGlobalFilter,
   } = useTable(
     {
       columns: useMemo(
@@ -91,72 +75,53 @@ export function ListTable({ searchValue }) {
         ],
         []
       ),
-      data: useMemo(() => data, [data]),
+      data,
+      initialState: {
+        // ! TODO: get from query string
+        pageIndex: (queryString && +queryString.page - 1) || 0,
+        pageSize: (queryString && +queryString.pageSize) || defaultRowsPerPage,
+      },
+      manualPagination: true,
+      pageCount,
     },
-    useGlobalFilter,
-    useSortBy,
     usePagination
   );
-
-  /** API Hooks */
-  const { execute: executeUpdate, error: errorUpdate } = useUpdateAccessPass();
-
-  // ? TODO - Remove later once search thru API is ready
-  useEffect(() => {
-    setGlobalFilter(searchValue);
-  }, [searchValue, setGlobalFilter]);
 
   /** Modals' States  */
 
   useEffect(() => {
-    getAccessPassesQuery();
-  }, [getAccessPassesQuery]);
+    return () => {
+      dispatch(setCurrentAccessPass({}));
+    };
+  }, [dispatch]);
+
+  // Listen for changes in pagination and use the state to fetch our new data
+  useEffect(() => {
+    fetchData({ pageIndex, pageSize });
+  }, [fetchData, pageIndex, pageSize]);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
+
+    setQueryString({
+      queryString: {
+        page: newPage + 1,
+      },
+    });
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPageSize(+event.target.value);
-    gotoPage(0);
-  };
+    const nextPageSize = +event.target.value;
+    const nextPageIndex = 0;
 
-  const handleApproveActionClick = (accessPassTableRowData) => {
-    const { id, status } = accessPassTableRowData;
+    setPageSize(nextPageSize);
+    gotoPage(nextPageIndex);
 
-    if (status !== ApprovalStatus.Pending) {
-      return;
-    }
-
-    executeUpdate(accessPassTableRowData.referenceId, {
-      status: ApprovalStatus.Approved.toUpperCase(),
+    setQueryString({
+      queryString: { page: nextPageIndex + 1, pageSize: nextPageSize },
     });
-
-    dispatch(approveAccessPassById(id));
-
-    setUpdatedAccessPass(accessPass);
-    setErrorFromUpdate(errorUpdate);
   };
 
-  const handleDenyActionClick = (accessPassTableRowData) => {
-    setIsDenyModalOpen(true);
-    setAccessPass(accessPassTableRowData);
-  };
-
-  const handleViewDetailsClick = (accessPassTableRowData) => {
-    setPassDetails(accessPassTableRowData);
-  };
-
-  const handleSetPassDetailsClose = () => {
-    setPassDetails(null);
-  };
-
-  const handleOnDenyModalClose = () => {
-    setIsDenyModalOpen(false);
-    setAccessPass(null);
-  };
-
-  const totalRecordsCount = rows.length;
   const lastColumnIndex = 5;
 
   return (
@@ -174,7 +139,7 @@ export function ListTable({ searchValue }) {
                 headerGroup.headers.map((column, index) => (
                   <ListHeaderCell
                     align={index === lastColumnIndex ? 'center' : 'left'}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
+                    {...column.getHeaderProps()}
                   >
                     <TableSortLabel
                       active={column.isSorted}
@@ -192,43 +157,44 @@ export function ListTable({ searchValue }) {
               )}
             </TableRow>
           </TableHead>
-          {isLoading ? (
-            <SkeletonTable />
+          {loading ? (
+            <SkeletonTable pageNo={pageIndex} rowsPerPage={pageSize} />
           ) : (
-            <TableBody {...getTableBodyProps()}>
-              {page.map((row, rowIndex) => {
-                prepareRow(row);
+              <TableBody {...getTableBodyProps()}>
+                {page.map((row, rowIndex) => {
+                  prepareRow(row);
 
-                return (
-                  <TableRow {...row.getRowProps()} className={classes[`striped${rowIndex % 2}`]}>
-                    {row.cells.map((cell, cellIndex) => {
-                      return cellIndex === lastColumnIndex ? (
-                        <TableCell align="center" key={cell.row.values.id}>
-                          <ListRowActions
-                            status={cell.row.values.status}
-                            onApproveClick={() => handleApproveActionClick(cell.row.original)}
-                            onDenyClick={() => handleDenyActionClick(cell.row.original)}
-                            onViewDetailsClick={() => handleViewDetailsClick(row.original)}
-                          />
-                        </TableCell>
-                      ) : (
-                        <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                      );
-                    })}
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          )}
-
+                  return (
+                    <TableRow title={`Row #${(pageIndex * rowCount) + (rowIndex + 1)}`}
+                      {...row.getRowProps()} className={classes.striped}>
+                      {row.cells.map((cell, cellIndex) => {
+                        return cellIndex === lastColumnIndex ? (
+                          <TableCell align="right" key={cell.row.values.id}>
+                            <ListRowActions
+                              status={cell.row.values.status}
+                              onApproveClick={() => onApproveClick(cell.row.original)}
+                              onDenyClick={() => onDenyClick(cell.row.original)}
+                              onViewDetailsClick={() => onViewDetailsClick(row.original)}
+                              loading={disabledActions}
+                            />
+                          </TableCell>
+                        ) : (
+                            <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                          );
+                      })}
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            )}
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+                rowsPerPageOptions={[15, 30, 50, 100]}
                 colSpan={headerGroups[0].headers.length}
-                count={totalRecordsCount}
+                count={rowCount}
                 rowsPerPage={pageSize}
-                page={pageIndex}
+                page={!!rowCount ? pageIndex : 0}
                 SelectProps={{
                   inputProps: { 'aria-label': 'rows per page' },
                   native: true,
@@ -241,34 +207,9 @@ export function ListTable({ searchValue }) {
           </TableFooter>
         </Table>
       </TableContainer>
-
-      <DenyApplicationModal
-        open={isDenyModalOpen}
-        accessPass={accessPass}
-        onClose={handleOnDenyModalClose}
-      />
-
-      <AccessPassDetailsModal
-        open={!!passDetails}
-        handleClose={handleSetPassDetailsClose}
-        passDetails={passDetails}
-      />
-      <SnackbarAlert
-        open={!!updatedAccessPass}
-        onClose={() => {
-          setUpdatedAccessPass(null);
-          setErrorFromUpdate('');
-        }}
-        message={
-          updatedAccessPass &&
-          `${errorFromUpdate ? 'Failed to approve' : 'Approved'} ${updatedAccessPass.id}`
-        }
-        severity={!errorFromUpdate ? 'success' : 'warning'}
-        autoHideDuration={2500}
-      />
     </>
   );
-}
+};
 
 const StyledSortAccessibilityLabel = styled(Typography)({
   border: 0,
@@ -283,7 +224,16 @@ const StyledSortAccessibilityLabel = styled(Typography)({
 });
 
 ListTable.propTypes = {
+  data: PropTypes.arrayOf(PropTypes.shape(AccessPassPropType)),
+  fetchData: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  pageCount: PropTypes.number.isRequired,
   searchValue: PropTypes.string,
+  disabledActions: PropTypes.bool,
+  rowCount: PropTypes.number.isRequired,
+  onApproveClick: PropTypes.func,
+  onDenyClick: PropTypes.func,
+  onViewDetailsClick: PropTypes.func,
 };
 
 export default ListTable;

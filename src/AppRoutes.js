@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux';
 
 import { Dashboard } from './dashboard/pages/Dashboard';
 import { BulkUpload } from './bulkUpload/BulkUpload';
-import { Login } from './login';
-import { EmailLink } from './emailLink/EmailLink';
+import { Login } from './pages/Login';
+import { ActivateUser } from './pages/ActivateUser';
 import { getUserToken } from './store/slices';
 
 /** catch-all */
-const NotFoundRoute = ({ fallback = '/page-not-found' }) => <ReactRouterRedirect to={fallback} />;
+const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
 
 export function Redirect(props) {
   return props.to ? <ReactRouterRedirect {...props} /> : null;
@@ -43,7 +43,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
 
 export const PROTECTED_ROUTES = [
   {
-    path: '/',
+    path: '/access-passes',
     exact: true,
     title: 'Approvals',
     component: Dashboard,
@@ -60,8 +60,9 @@ export function AppRoutes() {
   const token = useSelector(getUserToken);
   return (
     <Switch>
+      <Route exact path="/" render={() => <Redirect to={{ pathname: '/access-passes' }} />} />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
-      <Route exact path="/activate-user" component={EmailLink} />
+      <Route exact path="/activate-user" render={() => <ActivateUser />} />
 
       {PROTECTED_ROUTES.map(({ path, component, exact }) => (
         <ProtectedRoute

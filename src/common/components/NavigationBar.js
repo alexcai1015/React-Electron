@@ -12,7 +12,7 @@ import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 
 import logo from '../../assets/rapidpass.svg';
-import { removeUser } from '../../store/slices';
+import { removeUser, clearAccessPass } from '../../store/slices';
 import { PROTECTED_ROUTES } from '../../AppRoutes';
 import { Colors } from '../constants/Colors';
 
@@ -38,13 +38,14 @@ const useStyles = makeStyles({
   },
 });
 
-export function NavigationBar(props) {
+export function NavigationBar() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
 
   const handleLogout = () => {
     dispatch(removeUser());
+    dispatch(clearAccessPass());
   };
 
   const isActive = (value) => (window.location.pathname === value ? 'active' : '');

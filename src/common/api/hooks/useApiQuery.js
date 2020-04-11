@@ -18,6 +18,12 @@ export const useApiQuery = (url, config) => {
     };
   }, []);
 
+  const reset = () => {
+    setIsLoading(false);
+    setData({ httpResponse: null, data: null });
+    setError(null);
+  };
+
   const query = useCallback(
     async ({ urlQueryParams, urlPathParams } = {}) => {
       setIsLoading(true);
@@ -55,5 +61,6 @@ export const useApiQuery = (url, config) => {
     isLoading,
     error,
     query,
+    reset,
   };
 };
