@@ -12,7 +12,7 @@ export const DownloadTemplateLink = ({ sourceURL = GITLAB_PUBLIC_URL }) => {
   return (
     <Typography>
       Download the template
-      <a href={`${sourceURL}/templates/bulk-upload-template.csv`} download className={classes.linkText} target="_blank">
+      <a href={`${sourceURL}/templates/bulk-upload.csv`} download className={classes.linkText} target="_blank">
         here.
       </a>
     </Typography>
