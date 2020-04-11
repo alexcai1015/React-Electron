@@ -9,7 +9,7 @@ export function SkeletonTable({ pageNo, rowsPerPage }) {
   return (
     <TableBody>
       {range(1, (rowsPerPage || 10)).map((i) => (
-        <tr key={i} height="80px" cell>
+        <tr key={i} height="80px">
           <td colSpan={6} title={`Rows #${(pageNo * rowsPerPage) + i}`}>
             <Skeleton animation="wave" height={80} />
           </td>
