@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
 
 import { NavigationBar } from '../../common/components/NavigationBar';
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
 import { ApprovalStatus } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
+import { useQueryString } from '../../hooks';
 
 import { ListTable } from './dashboard/ListTable';
 import { AccessPassDenyModal } from './dashboard/listTable/AccessPassDenyModal';
@@ -45,9 +46,12 @@ export const Dashboard = () => {
   const { on: isDenyAcessPassModalDisplayed, toggle: toggleDenyAccessPassModal } = useToggle();
   const { on: isAccessPassDetailModalDisplayed, toggle: toggleAccessPassDetailModal } = useToggle();
   const {
-    data: { list: accessPasses },
+    data: { list: accessPasses, totalPages, totalRows },
     isLoading: isGetAccessPassesLoading,
+    query: getAccessPassesQuery,
   } = useGetAccessPasses();
+
+  const { setQueryString } = useQueryString();
 
   const {
     execute: executeApproveAccessPass,
@@ -67,7 +71,15 @@ export const Dashboard = () => {
   }, [isSuccessDenyAccessPass, toggleDenyAccessPassModal]);
 
   const handleFilterSelectChange = (event) => {
-    setSelectedFilterOption(event.target.value);
+    const nextFilterValue = event.target.value;
+
+    setSelectedFilterOption(nextFilterValue);
+
+    setQueryString({
+      queryString: {
+        filter: nextFilterValue,
+      },
+    });
   };
 
   // ? TODO - Remove later once search thru API is ready
@@ -100,6 +112,18 @@ export const Dashboard = () => {
       remarks,
     });
   };
+
+  const fetchData = useCallback(
+    ({ pageIndex, pageSize }) => {
+      getAccessPassesQuery({
+        urlQueryParams: {
+          page: pageIndex,
+          maxPageRows: pageSize,
+        },
+      });
+    },
+    [getAccessPassesQuery]
+  );
 
   return (
     <Box>
@@ -138,10 +162,13 @@ export const Dashboard = () => {
         <Box py={3}>
           <Container>
             <ListTable
-              value={accessPasses}
+              data={accessPasses}
+              fetchData={fetchData}
               loading={isGetAccessPassesLoading}
+              pageCount={totalPages}
               searchValue={searchValue}
               disabledActions={isDenyAccessPassLoading || isApproveAccessPassLoading}
+              rowCount={totalRows}
               onApproveClick={handleApproveAccessPassClicked}
               onDenyClick={handleDenyAccessPassClicked}
               onViewDetailsClick={handleViewDetailsClicked}

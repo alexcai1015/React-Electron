@@ -1,9 +1,9 @@
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
 
 import { useApiQuery } from '../api';
-import { saveAccessPasses, getAccessPasses } from '../../store/slices';
 import { maybe, createUniqueKeyFromAccessPass } from '../utils';
+import { getAccessPasses, saveAccessPasses } from '../../store/slices';
 
 const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
@@ -19,14 +19,20 @@ const maybeArray = maybe([]);
 const maybeObject = maybe({});
 
 export const useGetAccessPasses = () => {
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalRows, setTotalRows] = useState(0);
+
   const dispatch = useDispatch();
   const accessPasses = useSelector(getAccessPasses);
+
   const { data, isLoading, query, reset, ...others } = useApiQuery('/v1/registry/access-passes');
+
   const {
     rapidPassList,
-    currentPage: page,
-    currentPageRows: pageSize,
-    totalPages,
+    currentPage: dataCurrentPage,
+    totalPages: dataTotalPages,
+    totalRows: dataTotalRows,
     ...otherData
   } = maybeObject(data);
 
@@ -38,24 +44,27 @@ export const useGetAccessPasses = () => {
   useEffect(() => {
     if (isSuccess && list.length) {
       dispatch(saveAccessPasses(list));
+
+      setPage(dataCurrentPage);
+      setTotalPages(dataTotalPages);
+      setTotalRows(dataTotalRows);
+
       reset();
     }
-  }, [list, dispatch, isSuccess, reset]);
-
-  useEffect(() => {
-    query();
-  }, [query]);
+  }, [dataCurrentPage, dataTotalPages, dataTotalRows, list, dispatch, isSuccess, reset]);
 
   return {
     data: {
-      page: maybeZero(page),
-      pageSize: maybeZero(pageSize),
-      totalPages: maybeZero(totalPages),
       list: maybeArray(accessPasses),
+      page: maybeZero(page),
+      totalPages: maybeZero(totalPages),
+      totalRows: maybeZero(totalRows),
       ...otherData,
     },
     isLoading,
     reset,
+    query,
+    isSuccess,
     ...others,
   };
 };
