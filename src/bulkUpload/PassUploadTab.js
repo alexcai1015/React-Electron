@@ -9,6 +9,7 @@ import { useUploadFile } from '../common/hooks/useUploadFile';
 import { useSnackbar } from '../hooks';
 
 import { UploadSuccessModal } from './UploadSuccessModal';
+import { DownloadTemplateLink } from './passUploadTab/DownloadTemplateLink';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -120,7 +121,7 @@ export const PassUploadTab = () => {
         <h3>Bulk Upload File for Individuals</h3>
         Please follow the fields format to avoid data error upon uploading.
         <br />
-        Download the template here.
+        <DownloadTemplateLink />
         <div className={classes.uploadBox}>
           <DropzoneArea
             onChange={handleFileChangeIndividual}
@@ -139,7 +140,7 @@ export const PassUploadTab = () => {
         <h3>Bulk Upload File for Vehicles</h3>
         Please follow the fields format to avoid data error upon uploading.
         <br />
-        Download the template here.
+        <DownloadTemplateLink />
         <div className={classes.uploadBox}>
           <DropzoneArea
             onChange={handleFileChangeVehicle}
