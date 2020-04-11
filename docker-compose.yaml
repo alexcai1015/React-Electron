@@ -12,6 +12,8 @@ services:
         REACT_APP_API_URL: http://localhost:8080
         CSP_STYLE_SRC: https://fonts.googleapis.com
         CSP_FONT_SRC: https://fonts.gstatic.com
+        CSP_SCRIPT_SRC: https://www.googletagmanager.com 
+        CSP_DEFAULT_SRC: https://www.google-analytics.com
         ALLOW_ORIGIN: '*'
         REACT_APP_MAINTENANCE: 0
 
