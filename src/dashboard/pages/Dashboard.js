@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
 
-import { NavigationBar } from '../../common/components/NavigationBar';
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
 import { ApprovalStatus, Source } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
@@ -140,7 +139,6 @@ export const Dashboard = () => {
 
   return (
     <Box>
-      <NavigationBar />
       <Box component="main">
         <StyledFiltersBlock>
           <Container>
