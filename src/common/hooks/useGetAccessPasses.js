@@ -4,6 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useApiQuery } from '../api';
 import { maybe, createUniqueKeyFromAccessPass } from '../utils';
 import { getAccessPasses, saveAccessPasses } from '../../store/slices';
+import { isUnauthorized } from '../api/utils';
+
+import { useLogout } from './useLogout';
 
 const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
@@ -26,7 +29,10 @@ export const useGetAccessPasses = () => {
   const dispatch = useDispatch();
   const accessPasses = useSelector(getAccessPasses);
 
-  const { data, isLoading, query, reset, ...others } = useApiQuery('/v1/registry/access-passes');
+  const { data, error, isLoading, query, reset, ...others } = useApiQuery(
+    '/v1/registry/access-passes'
+  );
+  const { execute: executeLogout } = useLogout();
 
   const {
     rapidPassList,
@@ -51,7 +57,21 @@ export const useGetAccessPasses = () => {
 
       reset();
     }
-  }, [dataCurrentPage, dataTotalPages, dataTotalRows, list, dispatch, isSuccess, reset]);
+
+    if (error && isUnauthorized(error)) {
+      executeLogout();
+    }
+  }, [
+    dataCurrentPage,
+    dataTotalPages,
+    dataTotalRows,
+    list,
+    dispatch,
+    isSuccess,
+    reset,
+    error,
+    executeLogout,
+  ]);
 
   return {
     data: {
@@ -65,6 +85,7 @@ export const useGetAccessPasses = () => {
     reset,
     query,
     isSuccess,
+    error,
     ...others,
   };
 };

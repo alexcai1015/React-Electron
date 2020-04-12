@@ -1,15 +1,11 @@
 import { createAuthorizationHeader } from './createAuthorizationHeader';
+import { createAPIKeyHeader } from './createAPIKeyHeader';
 
-export const getConfig = ({ baseConfig, token }) => {
-  if (!token) {
-    return baseConfig;
-  }
-
-  return {
-    ...baseConfig,
-    headers: {
-      ...baseConfig.headers,
-      ...createAuthorizationHeader(token),
-    },
-  };
-};
+export const getConfig = ({ baseConfig, token }) => ({
+  ...baseConfig,
+  headers: {
+    ...baseConfig.headers,
+    ...createAuthorizationHeader(token),
+    ...createAPIKeyHeader(),
+  },
+});

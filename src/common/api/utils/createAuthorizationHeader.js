@@ -1,3 +1,9 @@
-export const createAuthorizationHeader = (token) => ({
-  Authorization: `Bearer ${token}`,
-});
+export const createAuthorizationHeader = (token) => {
+  if (!token) {
+    return {};
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
