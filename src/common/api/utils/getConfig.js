@@ -1,17 +1,11 @@
 import { createAuthorizationHeader } from './createAuthorizationHeader';
+import { createAPIKeyHeader } from './createAPIKeyHeader';
 
-export const getConfig = ({ baseConfig, token }) => {
-  const apiKey = process.env.REACT_APP_API_KEY;
-
-  if (!token || !apiKey) {
-    return baseConfig;
-  }
-
-  return {
-    ...baseConfig,
-    headers: {
-      ...baseConfig.headers,
-      ...createAuthorizationHeader(token, apiKey),
-    },
-  };
-};
+export const getConfig = ({ baseConfig, token }) => ({
+  ...baseConfig,
+  headers: {
+    ...baseConfig.headers,
+    ...createAuthorizationHeader(token),
+    ...createAPIKeyHeader(),
+  },
+});
