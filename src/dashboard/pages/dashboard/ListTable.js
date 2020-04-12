@@ -43,6 +43,7 @@ export const ListTable = ({
   data,
   fetchData,
   filterStatus,
+  searchValue,
   loading,
   pageCount,
   pageIndex: controlledPageIndex = 0,
@@ -116,8 +117,8 @@ export const ListTable = ({
       return;
     }
 
-    fetchData({ filters, pageIndex, pageSize });
-  }, [fetchData, filters, isFirstRender, pageIndex, pageSize]);
+    fetchData({ filters, pageIndex, pageSize, search: searchValue });
+  }, [fetchData, filters, isFirstRender, pageIndex, pageSize, searchValue]);
 
   useEffect(() => {
     setIsFirstRender(false);

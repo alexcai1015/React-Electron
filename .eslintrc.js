@@ -65,5 +65,6 @@ module.exports = {
     'react/jsx-props-no-spreading': [0],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
+    'no-use-before-define': ['error', { 'variables': false }]
   },
 };

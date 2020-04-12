@@ -1,5 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
+import { DebounceInput } from 'react-debounce-input';
 
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
 import { ApprovalStatus, Source } from '../../common/constants';
@@ -88,9 +89,26 @@ export const Dashboard = () => {
     });
   };
 
-  // ? TODO - Remove later once search thru API is ready
   const handleSearchChange = (event) => {
-    setSearchValue(event.target.value);
+    const searchQuery = event.target.value;
+    setSearchValue(searchQuery);
+
+    if (!searchQuery) {
+      const newQueryString = { ...queryString, search: undefined };
+
+      setQueryString({
+        queryString: newQueryString,
+      });
+
+      return;
+    }
+
+    setQueryString({
+      queryString: {
+        ...queryString,
+        search: searchQuery,
+      },
+    });
   };
 
   const handleViewDetailsClicked = (accessPass) => {
@@ -120,7 +138,7 @@ export const Dashboard = () => {
   };
 
   const fetchData = useCallback(
-    ({ filters, pageIndex, pageSize }) => {
+    ({ filters, pageIndex, pageSize, search }) => {
       const statusFilter = filters.find(({ id }) => id === 'status');
 
       const statusFilterValue = statusFilter.value;
@@ -133,6 +151,7 @@ export const Dashboard = () => {
           pageNo: pageIndex,
           maxPageRows: pageSize,
           status,
+          search,
         },
       });
     },
@@ -146,7 +165,9 @@ export const Dashboard = () => {
           <Container>
             <Grid container spacing={2} justify="space-between">
               <Grid item lg={8} md={6} sm={6} xs={12}>
-                <StyledSearchTextField
+                <DebounceInput
+                  element={StyledSearchTextField}
+                  debounceTimeout={300}
                   label="Search"
                   type="search"
                   onChange={handleSearchChange}
@@ -225,9 +246,9 @@ const StyledFiltersBlock = styled(Box)(({ theme }) => ({
   paddingTop: theme.spacing(4),
 }));
 
-const StyledFilterSelectTextField = styled(TextField)(({ theme }) => ({
+const StyledFilterSelectTextField = styled(TextField)({
   minWidth: 180,
-}));
+});
 
 const StyledSearchTextField = styled(TextField)({
   minWidth: 350,
