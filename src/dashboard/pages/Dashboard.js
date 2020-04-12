@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
 
-import { NavigationBar } from '../../common/components/NavigationBar';
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
 import { ApprovalStatus, Source } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
@@ -13,7 +12,7 @@ import { AccessPassDetailsModal } from './dashboard/listTable/AccessPassDetailsM
 
 /** use this to init any new queryparams */
 const DefaultQueryParams = Object.freeze({
-  source: Source.Online
+  source: Source.Online,
 });
 
 const StatusFilterOption = {
@@ -30,7 +29,7 @@ const StatusFilterOption = {
     label: 'Approved',
   },
   Denied: {
-    value: 'denied',
+    value: 'declined',
     label: 'Denied',
   },
 };
@@ -43,9 +42,11 @@ const StatusFilterOptions = [
 ];
 
 export const Dashboard = () => {
+  const { queryString, setQueryString } = useQueryString();
+
   const [searchValue, setSearchValue] = useState('');
   const [selectedFilterOption, setSelectedFilterOption] = useState(
-    StatusFilterOption.ShowAll.value
+    (queryString && queryString.status) || StatusFilterOption.ShowAll.value
   );
   const [selectedAcessPass, setSelectedAccesPass] = useState(undefined);
   const { on: isDenyAcessPassModalDisplayed, toggle: toggleDenyAccessPassModal } = useToggle();
@@ -55,8 +56,6 @@ export const Dashboard = () => {
     isLoading: isGetAccessPassesLoading,
     query: getAccessPassesQuery,
   } = useGetAccessPasses();
-
-  const { setQueryString } = useQueryString();
 
   const {
     execute: executeApproveAccessPass,
@@ -80,9 +79,11 @@ export const Dashboard = () => {
 
     setSelectedFilterOption(nextFilterValue);
 
+    // Always reset to `1` when selecting new filter status
     setQueryString({
       queryString: {
-        filter: nextFilterValue,
+        page: 1,
+        status: nextFilterValue,
       },
     });
   };
@@ -119,12 +120,19 @@ export const Dashboard = () => {
   };
 
   const fetchData = useCallback(
-    ({ pageIndex, pageSize }) => {
+    ({ filters, pageIndex, pageSize }) => {
+      const statusFilter = filters.find(({ id }) => id === 'status');
+
+      const statusFilterValue = statusFilter.value;
+
+      const status = statusFilterValue === 'show_all' ? undefined : statusFilterValue.toUpperCase();
+
       getAccessPassesQuery({
         urlQueryParams: {
           ...DefaultQueryParams,
           pageNo: pageIndex,
           maxPageRows: pageSize,
+          status,
         },
       });
     },
@@ -133,7 +141,6 @@ export const Dashboard = () => {
 
   return (
     <Box>
-      <NavigationBar />
       <Box component="main">
         <StyledFiltersBlock>
           <Container>
@@ -173,11 +180,14 @@ export const Dashboard = () => {
             <ListTable
               data={accessPasses}
               fetchData={fetchData}
+              filterStatus={selectedFilterOption}
               loading={isGetAccessPassesLoading}
               pageCount={totalPages}
               searchValue={searchValue}
               disabledActions={isDenyAccessPassLoading || isApproveAccessPassLoading}
               rowCount={totalRows}
+              pageIndex={queryString && +queryString.page - 1}
+              pageSize={queryString && +queryString.pageSize}
               onApproveClick={handleApproveAccessPassClicked}
               onDenyClick={handleDenyAccessPassClicked}
               onViewDetailsClick={handleViewDetailsClicked}
