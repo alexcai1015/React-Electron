@@ -1,4 +1,9 @@
-export const createAuthorizationHeader = (token, apiKey) => ({
-  Authorization: `Bearer ${token}`,
-  'RP-API-KEY': apiKey,
-});
+export const createAuthorizationHeader = (token) => {
+  if (!token) {
+    return {};
+  }
+
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+};
