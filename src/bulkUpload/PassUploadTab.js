@@ -56,9 +56,9 @@ const useStyles = makeStyles({
   },
 });
 
-const UPLOAD_TEXT = 'Click Here or Drag and Drop to Upload (.csv)/(.xls) file';
+const UPLOAD_TEXT = 'Click Here or Drag and Drop to Upload (.csv) file';
 
-const acceptedFile = ['text/csv', 'application/vnd.ms-excel']; // Accept .csv and .xls only
+const acceptedFile = ['.csv', 'text/csv'];
 
 export const PassUploadTab = () => {
   const classes = useStyles();
