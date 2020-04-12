@@ -45,6 +45,8 @@ export const ListTable = ({
   filterStatus,
   loading,
   pageCount,
+  pageIndex: controlledPageIndex = 0,
+  pageSize: controlledPageSize = defaultRowsPerPage,
   disabledActions,
   onApproveClick,
   onDenyClick,
@@ -83,8 +85,8 @@ export const ListTable = ({
       data,
       initialState: {
         // ! TODO: get from query string
-        pageIndex: (queryString && +queryString.page - 1) || 0,
-        pageSize: (queryString && +queryString.pageSize) || defaultRowsPerPage,
+        pageIndex: controlledPageIndex,
+        pageSize: controlledPageSize,
         filters: [
           {
             id: 'status',
@@ -110,37 +112,21 @@ export const ListTable = ({
 
   // Listen for changes in pagination and use the state to fetch our new data
   useEffect(() => {
+    if (isFirstRender) {
+      return;
+    }
+
     fetchData({ filters, pageIndex, pageSize });
-  }, [fetchData, filters, pageIndex, pageSize]);
+  }, [fetchData, filters, isFirstRender, pageIndex, pageSize]);
 
   useEffect(() => {
     setIsFirstRender(false);
   }, [setIsFirstRender]);
 
   useEffect(() => {
-    if (isFirstRender) {
-      return;
-    }
-
-    const nextFilterStatusValue = filterStatus;
-    const nextPageIndex = 0;
-
-    gotoPage(nextPageIndex);
+    gotoPage(controlledPageIndex);
     setFilter('status', filterStatus);
-
-    setQueryString({
-      queryString: {
-        page: nextPageIndex + 1,
-        status: nextFilterStatusValue,
-      },
-    });
-
-    /**
-     * Intentionally omitted `isFirstRender` and `setQueryString`
-     * - omit isFirstRender - to prevent double network request on page load
-     * - omit `setQueryString` because it's not a memoized function
-     */
-  }, [filterStatus, gotoPage, setFilter]);
+  }, [controlledPageIndex, filterStatus, gotoPage, setFilter]);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -275,6 +261,8 @@ ListTable.propTypes = {
   searchValue: PropTypes.string,
   disabledActions: PropTypes.bool,
   rowCount: PropTypes.number.isRequired,
+  pageIndex: PropTypes.number,
+  pageSize: PropTypes.number,
   onApproveClick: PropTypes.func,
   onDenyClick: PropTypes.func,
   onViewDetailsClick: PropTypes.func,

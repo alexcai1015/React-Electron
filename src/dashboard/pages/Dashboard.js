@@ -13,7 +13,7 @@ import { AccessPassDetailsModal } from './dashboard/listTable/AccessPassDetailsM
 
 /** use this to init any new queryparams */
 const DefaultQueryParams = Object.freeze({
-  source: Source.Online
+  source: Source.Online,
 });
 
 const StatusFilterOption = {
@@ -80,8 +80,10 @@ export const Dashboard = () => {
 
     setSelectedFilterOption(nextFilterValue);
 
+    // Always reset to `1` when selecting new filter status
     setQueryString({
       queryString: {
+        page: 1,
         status: nextFilterValue,
       },
     });
@@ -183,6 +185,8 @@ export const Dashboard = () => {
               searchValue={searchValue}
               disabledActions={isDenyAccessPassLoading || isApproveAccessPassLoading}
               rowCount={totalRows}
+              pageIndex={queryString && +queryString.page - 1}
+              pageSize={queryString && +queryString.pageSize}
               onApproveClick={handleApproveAccessPassClicked}
               onDenyClick={handleDenyAccessPassClicked}
               onViewDetailsClick={handleViewDetailsClicked}
