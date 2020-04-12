@@ -21,16 +21,16 @@ const StatusFilterOption = {
     label: 'Show All',
   },
   Pending: {
-    value: 'pending',
+    value: ApprovalStatus.Pending,
     label: 'Pending',
   },
   Approved: {
-    value: 'approved',
+    value: ApprovalStatus.Approved,
     label: 'Approved',
   },
-  Denied: {
-    value: 'declined',
-    label: 'Denied',
+  Declined: {
+    value: ApprovalStatus.Declined,
+    label: 'Declined',
   },
 };
 
@@ -38,7 +38,7 @@ const StatusFilterOptions = [
   StatusFilterOption.ShowAll,
   StatusFilterOption.Pending,
   StatusFilterOption.Approved,
-  StatusFilterOption.Denied,
+  StatusFilterOption.Declined,
 ];
 
 export const Dashboard = () => {
