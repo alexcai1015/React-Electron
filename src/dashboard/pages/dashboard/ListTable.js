@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -16,7 +16,7 @@ import {
   TableSortLabel,
   Typography,
 } from '@material-ui/core';
-import { usePagination, useTable } from 'react-table';
+import { useFilters, usePagination, useTable } from 'react-table';
 
 import { Colors } from '../../../common/constants/Colors';
 import { useQueryString } from '../../../hooks';
@@ -27,11 +27,13 @@ import { ListHeaderCell } from './listTable/ListHeaderCell';
 import { ListTablePaginationActions } from './listTable/ListTablePaginationActions';
 import { ListRowActions } from './listTable/ListRowActions';
 import { SkeletonTable } from './listTable/SkeletonTable';
+
 const defaultRowsPerPage = 15;
+
 const listTableStyles = makeStyles({
   table: {
     minWidth: 500,
-    "& .MuiTableRow-root:nth-child(odd)": {
+    '& .MuiTableRow-root:nth-child(odd)': {
       backgroundColor: Colors.RowStripeGray,
     },
   },
@@ -40,6 +42,7 @@ const listTableStyles = makeStyles({
 export const ListTable = ({
   data,
   fetchData,
+  filterStatus,
   loading,
   pageCount,
   disabledActions,
@@ -52,16 +55,18 @@ export const ListTable = ({
   const classes = listTableStyles();
 
   const { queryString, setQueryString } = useQueryString();
+  const [isFirstRender, setIsFirstRender] = useState(true);
 
   const {
     headerGroups,
-    prepareRow,
-    page,
-    state: { pageIndex, pageSize },
-    gotoPage,
-    setPageSize,
     getTableProps,
     getTableBodyProps,
+    gotoPage,
+    page,
+    prepareRow,
+    setFilter,
+    setPageSize,
+    state: { pageIndex, pageSize, filters },
   } = useTable(
     {
       columns: useMemo(
@@ -80,10 +85,18 @@ export const ListTable = ({
         // ! TODO: get from query string
         pageIndex: (queryString && +queryString.page - 1) || 0,
         pageSize: (queryString && +queryString.pageSize) || defaultRowsPerPage,
+        filters: [
+          {
+            id: 'status',
+            value: (queryString && queryString.status) || 'show_all',
+          },
+        ],
       },
       manualPagination: true,
+      manualFilters: true,
       pageCount,
     },
+    useFilters,
     usePagination
   );
 
@@ -97,8 +110,37 @@ export const ListTable = ({
 
   // Listen for changes in pagination and use the state to fetch our new data
   useEffect(() => {
-    fetchData({ pageIndex, pageSize });
-  }, [fetchData, pageIndex, pageSize]);
+    fetchData({ filters, pageIndex, pageSize });
+  }, [fetchData, filters, pageIndex, pageSize]);
+
+  useEffect(() => {
+    setIsFirstRender(false);
+  }, [setIsFirstRender]);
+
+  useEffect(() => {
+    if (isFirstRender) {
+      return;
+    }
+
+    const nextFilterStatusValue = filterStatus;
+    const nextPageIndex = 0;
+
+    gotoPage(nextPageIndex);
+    setFilter('status', filterStatus);
+
+    setQueryString({
+      queryString: {
+        page: nextPageIndex + 1,
+        status: nextFilterStatusValue,
+      },
+    });
+
+    /**
+     * Intentionally omitted `isFirstRender` and `setQueryString`
+     * - omit isFirstRender - to prevent double network request on page load
+     * - omit `setQueryString` because it's not a memoized function
+     */
+  }, [filterStatus, gotoPage, setFilter]);
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);
@@ -125,89 +167,90 @@ export const ListTable = ({
   const lastColumnIndex = 5;
 
   return (
-    <>
-      <TableContainer component={Paper}>
-        <Table
-          {...getTableProps()}
-          className={classes.table}
-          stickyHeader
-          aria-label="sticky header pagination table"
-        >
-          <TableHead>
-            <TableRow>
-              {headerGroups.map((headerGroup) =>
-                headerGroup.headers.map((column, index) => (
-                  <ListHeaderCell
-                    align={index === lastColumnIndex ? 'center' : 'left'}
-                    {...column.getHeaderProps()}
+    <TableContainer component={Paper}>
+      <Table
+        {...getTableProps()}
+        className={classes.table}
+        stickyHeader
+        aria-label="sticky header pagination table"
+      >
+        <TableHead>
+          <TableRow>
+            {headerGroups.map((headerGroup) =>
+              headerGroup.headers.map((column, index) => (
+                <ListHeaderCell
+                  align={index === lastColumnIndex ? 'center' : 'left'}
+                  {...column.getHeaderProps()}
+                >
+                  <TableSortLabel
+                    active={column.isSorted}
+                    direction={column.isSortedDesc ? 'desc' : 'asc'}
                   >
-                    <TableSortLabel
-                      active={column.isSorted}
-                      direction={column.isSortedDesc ? 'desc' : 'asc'}
-                    >
-                      {column.render('Header')}
-                      {column.isSorted ? (
-                        <StyledSortAccessibilityLabel component="span">
-                          {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
-                        </StyledSortAccessibilityLabel>
-                      ) : null}
-                    </TableSortLabel>
-                  </ListHeaderCell>
-                ))
-              )}
-            </TableRow>
-          </TableHead>
-          {loading ? (
-            <SkeletonTable pageNo={pageIndex} rowsPerPage={pageSize} />
-          ) : (
-              <TableBody {...getTableBodyProps()}>
-                {page.map((row, rowIndex) => {
-                  prepareRow(row);
-
-                  return (
-                    <TableRow title={`Row #${(pageIndex * rowCount) + (rowIndex + 1)}`}
-                      {...row.getRowProps()} className={classes.striped}>
-                      {row.cells.map((cell, cellIndex) => {
-                        return cellIndex === lastColumnIndex ? (
-                          <TableCell align="right" key={cell.row.values.id}>
-                            <ListRowActions
-                              status={cell.row.values.status}
-                              onApproveClick={() => onApproveClick(cell.row.original)}
-                              onDenyClick={() => onDenyClick(cell.row.original)}
-                              onViewDetailsClick={() => onViewDetailsClick(row.original)}
-                              loading={disabledActions}
-                            />
-                          </TableCell>
-                        ) : (
-                            <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
-                          );
-                      })}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
+                    {column.render('Header')}
+                    {column.isSorted ? (
+                      <StyledSortAccessibilityLabel component="span">
+                        {column.isSortedDesc ? 'sorted descending' : 'sorted ascending'}
+                      </StyledSortAccessibilityLabel>
+                    ) : null}
+                  </TableSortLabel>
+                </ListHeaderCell>
+              ))
             )}
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[15, 30, 50, 100]}
-                colSpan={headerGroups[0].headers.length}
-                count={rowCount}
-                rowsPerPage={pageSize}
-                page={!!rowCount ? pageIndex : 0}
-                SelectProps={{
-                  inputProps: { 'aria-label': 'rows per page' },
-                  native: true,
-                }}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                ActionsComponent={ListTablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
-    </>
+          </TableRow>
+        </TableHead>
+        {loading ? (
+          <SkeletonTable pageNo={pageIndex} rowsPerPage={pageSize} />
+        ) : (
+          <TableBody {...getTableBodyProps()}>
+            {page.map((row, rowIndex) => {
+              prepareRow(row);
+
+              return (
+                <TableRow
+                  title={`Row #${pageIndex * rowCount + (rowIndex + 1)}`}
+                  {...row.getRowProps()}
+                  className={classes.striped}
+                >
+                  {row.cells.map((cell, cellIndex) => {
+                    return cellIndex === lastColumnIndex ? (
+                      <TableCell align="right" key={cell.row.values.id}>
+                        <ListRowActions
+                          status={cell.row.values.status}
+                          onApproveClick={() => onApproveClick(cell.row.original)}
+                          onDenyClick={() => onDenyClick(cell.row.original)}
+                          onViewDetailsClick={() => onViewDetailsClick(row.original)}
+                          loading={disabledActions}
+                        />
+                      </TableCell>
+                    ) : (
+                      <TableCell {...cell.getCellProps()}>{cell.render('Cell')}</TableCell>
+                    );
+                  })}
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        )}
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[15, 30, 50, 100]}
+              colSpan={headerGroups[0].headers.length}
+              count={rowCount}
+              rowsPerPage={pageSize}
+              page={rowCount ? pageIndex : 0}
+              SelectProps={{
+                inputProps: { 'aria-label': 'rows per page' },
+                native: true,
+              }}
+              onChangePage={handleChangePage}
+              onChangeRowsPerPage={handleChangeRowsPerPage}
+              ActionsComponent={ListTablePaginationActions}
+            />
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </TableContainer>
   );
 };
 
@@ -226,6 +269,7 @@ const StyledSortAccessibilityLabel = styled(Typography)({
 ListTable.propTypes = {
   data: PropTypes.arrayOf(PropTypes.shape(AccessPassPropType)),
   fetchData: PropTypes.func.isRequired,
+  filterStatus: PropTypes.string.isRequired,
   loading: PropTypes.bool,
   pageCount: PropTypes.number.isRequired,
   searchValue: PropTypes.string,

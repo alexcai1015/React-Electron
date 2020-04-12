@@ -30,7 +30,7 @@ const StatusFilterOption = {
     label: 'Approved',
   },
   Denied: {
-    value: 'denied',
+    value: 'declined',
     label: 'Denied',
   },
 };
@@ -43,9 +43,11 @@ const StatusFilterOptions = [
 ];
 
 export const Dashboard = () => {
+  const { queryString, setQueryString } = useQueryString();
+
   const [searchValue, setSearchValue] = useState('');
   const [selectedFilterOption, setSelectedFilterOption] = useState(
-    StatusFilterOption.ShowAll.value
+    (queryString && queryString.status) || StatusFilterOption.ShowAll.value
   );
   const [selectedAcessPass, setSelectedAccesPass] = useState(undefined);
   const { on: isDenyAcessPassModalDisplayed, toggle: toggleDenyAccessPassModal } = useToggle();
@@ -55,8 +57,6 @@ export const Dashboard = () => {
     isLoading: isGetAccessPassesLoading,
     query: getAccessPassesQuery,
   } = useGetAccessPasses();
-
-  const { setQueryString } = useQueryString();
 
   const {
     execute: executeApproveAccessPass,
@@ -82,7 +82,7 @@ export const Dashboard = () => {
 
     setQueryString({
       queryString: {
-        filter: nextFilterValue,
+        status: nextFilterValue,
       },
     });
   };
@@ -119,12 +119,19 @@ export const Dashboard = () => {
   };
 
   const fetchData = useCallback(
-    ({ pageIndex, pageSize }) => {
+    ({ filters, pageIndex, pageSize }) => {
+      const statusFilter = filters.find(({ id }) => id === 'status');
+
+      const statusFilterValue = statusFilter.value;
+
+      const status = statusFilterValue === 'show_all' ? undefined : statusFilterValue.toUpperCase();
+
       getAccessPassesQuery({
         urlQueryParams: {
           ...DefaultQueryParams,
           pageNo: pageIndex,
           maxPageRows: pageSize,
+          status,
         },
       });
     },
@@ -173,6 +180,7 @@ export const Dashboard = () => {
             <ListTable
               data={accessPasses}
               fetchData={fetchData}
+              filterStatus={selectedFilterOption}
               loading={isGetAccessPassesLoading}
               pageCount={totalPages}
               searchValue={searchValue}
