@@ -42,7 +42,7 @@ export const useGetAccessPasses = () => {
   const list = Array.isArray(rapidPassList) ? rapidPassList.map(mapToAccessPass) : [];
 
   useEffect(() => {
-    if (isSuccess && list.length) {
+    if (isSuccess) {
       dispatch(saveAccessPasses(list));
 
       setPage(dataCurrentPage);
