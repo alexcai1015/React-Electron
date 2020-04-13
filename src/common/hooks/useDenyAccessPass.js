@@ -16,7 +16,7 @@ export const useDenyAccessPass = (accessPass) => {
       const { key, referenceId } = accessPass;
 
       showSnackbar({
-        message: `Denied application with Reference ID: ${referenceId}`,
+        message: `Declined application with Reference ID: ${referenceId}`,
         severity: 'warning',
       });
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
+import { DebounceInput } from 'react-debounce-input';
 
-import { NavigationBar } from '../../common/components/NavigationBar';
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
 import { ApprovalStatus, Source } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
@@ -13,7 +13,7 @@ import { AccessPassDetailsModal } from './dashboard/listTable/AccessPassDetailsM
 
 /** use this to init any new queryparams */
 const DefaultQueryParams = Object.freeze({
-  source: Source.Online
+  source: Source.Online,
 });
 
 const StatusFilterOption = {
@@ -22,16 +22,16 @@ const StatusFilterOption = {
     label: 'Show All',
   },
   Pending: {
-    value: 'pending',
+    value: ApprovalStatus.Pending,
     label: 'Pending',
   },
   Approved: {
-    value: 'approved',
+    value: ApprovalStatus.Approved,
     label: 'Approved',
   },
-  Denied: {
-    value: 'denied',
-    label: 'Denied',
+  Declined: {
+    value: ApprovalStatus.Declined,
+    label: 'Declined',
   },
 };
 
@@ -39,13 +39,15 @@ const StatusFilterOptions = [
   StatusFilterOption.ShowAll,
   StatusFilterOption.Pending,
   StatusFilterOption.Approved,
-  StatusFilterOption.Denied,
+  StatusFilterOption.Declined,
 ];
 
 export const Dashboard = () => {
+  const { queryString, setQueryString } = useQueryString();
+
   const [searchValue, setSearchValue] = useState('');
   const [selectedFilterOption, setSelectedFilterOption] = useState(
-    StatusFilterOption.ShowAll.value
+    (queryString && queryString.status) || StatusFilterOption.ShowAll.value
   );
   const [selectedAcessPass, setSelectedAccesPass] = useState(undefined);
   const { on: isDenyAcessPassModalDisplayed, toggle: toggleDenyAccessPassModal } = useToggle();
@@ -55,8 +57,6 @@ export const Dashboard = () => {
     isLoading: isGetAccessPassesLoading,
     query: getAccessPassesQuery,
   } = useGetAccessPasses();
-
-  const { setQueryString } = useQueryString();
 
   const {
     execute: executeApproveAccessPass,
@@ -80,16 +80,35 @@ export const Dashboard = () => {
 
     setSelectedFilterOption(nextFilterValue);
 
+    // Always reset to `1` when selecting new filter status
     setQueryString({
       queryString: {
-        filter: nextFilterValue,
+        page: 1,
+        status: nextFilterValue,
       },
     });
   };
 
-  // ? TODO - Remove later once search thru API is ready
   const handleSearchChange = (event) => {
-    setSearchValue(event.target.value);
+    const searchQuery = event.target.value;
+    setSearchValue(searchQuery);
+
+    if (!searchQuery) {
+      const newQueryString = { ...queryString, search: undefined };
+
+      setQueryString({
+        queryString: newQueryString,
+      });
+
+      return;
+    }
+
+    setQueryString({
+      queryString: {
+        ...queryString,
+        search: searchQuery,
+      },
+    });
   };
 
   const handleViewDetailsClicked = (accessPass) => {
@@ -119,12 +138,20 @@ export const Dashboard = () => {
   };
 
   const fetchData = useCallback(
-    ({ pageIndex, pageSize }) => {
+    ({ filters, pageIndex, pageSize, search }) => {
+      const statusFilter = filters.find(({ id }) => id === 'status');
+
+      const statusFilterValue = statusFilter.value;
+
+      const status = statusFilterValue === 'show_all' ? undefined : statusFilterValue.toUpperCase();
+
       getAccessPassesQuery({
         urlQueryParams: {
           ...DefaultQueryParams,
           pageNo: pageIndex,
           maxPageRows: pageSize,
+          status,
+          search,
         },
       });
     },
@@ -133,13 +160,14 @@ export const Dashboard = () => {
 
   return (
     <Box>
-      <NavigationBar />
       <Box component="main">
         <StyledFiltersBlock>
           <Container>
             <Grid container spacing={2} justify="space-between">
               <Grid item lg={8} md={6} sm={6} xs={12}>
-                <StyledSearchTextField
+                <DebounceInput
+                  element={StyledSearchTextField}
+                  debounceTimeout={300}
                   label="Search"
                   type="search"
                   onChange={handleSearchChange}
@@ -173,11 +201,14 @@ export const Dashboard = () => {
             <ListTable
               data={accessPasses}
               fetchData={fetchData}
+              filterStatus={selectedFilterOption}
               loading={isGetAccessPassesLoading}
               pageCount={totalPages}
               searchValue={searchValue}
               disabledActions={isDenyAccessPassLoading || isApproveAccessPassLoading}
               rowCount={totalRows}
+              pageIndex={queryString && +queryString.page - 1}
+              pageSize={queryString && +queryString.pageSize}
               onApproveClick={handleApproveAccessPassClicked}
               onDenyClick={handleDenyAccessPassClicked}
               onViewDetailsClick={handleViewDetailsClicked}
@@ -215,9 +246,9 @@ const StyledFiltersBlock = styled(Box)(({ theme }) => ({
   paddingTop: theme.spacing(4),
 }));
 
-const StyledFilterSelectTextField = styled(TextField)(({ theme }) => ({
+const StyledFilterSelectTextField = styled(TextField)({
   minWidth: 180,
-}));
+});
 
 const StyledSearchTextField = styled(TextField)({
   minWidth: 350,

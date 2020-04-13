@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect as ReactRouterRedirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
+import { NavigationBar } from './common/components/NavigationBar';
 import { Dashboard } from './dashboard/pages/Dashboard';
 import { BulkUpload } from './bulkUpload/BulkUpload';
 import { Login } from './pages/Login';
@@ -24,18 +25,19 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
       render={(props) =>
         authenticated ? (
           <>
+            <NavigationBar />
             <Component {...props} />
           </>
         ) : (
-          <Redirect
-            to={{
-              pathname: '/login',
-              state: {
-                from: props.location,
-              },
-            }}
-          />
-        )
+            <Redirect
+              to={{
+                pathname: '/login',
+                state: {
+                  from: props.location,
+                },
+              }}
+            />
+          )
       }
     />
   );

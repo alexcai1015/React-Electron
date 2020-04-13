@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const faker = require('faker');
 
-const approvalStatus = ['pending', 'approved', 'denied'];
+const approvalStatus = ['pending', 'approved', 'declined'];
 const passTypes = ['INDIVIDUAL', 'VEHICLE'];
 const aporTypes = ['AG', 'CA', 'BP', 'BA', 'FC', 'DO', 'MS'];
 const idTypes = ['passport', 'PGB', 'DPL', 'COM', 'PHC', 'PRC', 'PersonalID'];

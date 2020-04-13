@@ -1,6 +1,6 @@
 {
   "name": "rapidpass-dashboard",
-  "version": "0.7.0",
+  "version": "0.14.2",
   "private": true,
   "engines": {
     "node": ">=12"
@@ -24,6 +24,7 @@
     "query-string": "^6.11.1",
     "ramda": "^0.27.0",
     "react": "^16.13.1",
+    "react-debounce-input": "^3.2.2",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.0",
     "react-router-dom": "^5.1.2",
