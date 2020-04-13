@@ -6,8 +6,11 @@ const server = jsonServer.create();
 const router = jsonServer.router('db.json');
 const middlewares = jsonServer.defaults();
 
+// server configurations
+const RP_API_KEY = 'XXXX';
 const BASEPATH = '/api/v1';
 const PORT = 3001;
+const privateRoutes = ['/api/v1/registry/access-passes'];
 
 let currentSession = '';
 
@@ -17,6 +20,38 @@ function generateSession() {
 
 function validateSession(authString) {
   return authString && `bearer ${currentSession}` === authString.toLowerCase();
+}
+
+function validateRpApikey(authString) {
+  return RP_API_KEY === authString;
+}
+
+function authenticateRequest(req, res, next) {
+  const authString = req.get('authorization');
+  const rpApiKey = req.get('rp-api-key');
+
+  // remove all private routes that don't match
+  // or are properly authenticated
+  const remaining = privateRoutes.filter((privateRoute) => {
+    if (req.path.startsWith(privateRoute)) {
+      console.log(`running auth for ${req.path}`);
+
+      if (!authString || !rpApiKey) {
+        return false;
+      }
+
+      return !(validateSession(authString) && validateRpApikey(rpApiKey));
+    }
+
+    // remove this from our list
+    return false;
+  });
+
+  if (remaining.length > 0) {
+    return res.send(401).end();
+  }
+
+  return next();
 }
 
 const customRouter = new Router();
@@ -30,17 +65,17 @@ customRouter.post(`${BASEPATH}/users/auth`, (req, res) => {
   });
 });
 
-customRouter.get(`${BASEPATH}/registry/access-passes`, (req, res, next) => {
-  const request = req;
-  const auth = request.get('authorization');
+// customRouter.get(`${BASEPATH}/registry/access-passes`, (req, res, next) => {
+//   const request = req;
+//   const auth = request.get('authorization');
 
-  if (validateSession(auth) === false) {
-    res.send(401, {});
-    return res.end();
-  }
+//   if (validateSession(auth) === false) {
 
-  return next();
-});
+//     return res.end();
+//   }
+
+//   return next();
+// });
 
 // modify the default response
 router.render = (req, res) => {
@@ -69,6 +104,7 @@ server.use(
 );
 
 server.use(cors());
+server.use(authenticateRequest);
 server.use(customRouter);
 server.use(`${BASEPATH}/registry`, router);
 server.use(middlewares);
