@@ -50,9 +50,13 @@ export const PassDetails = ({ handleClose, details }) => {
     city: details.destCity,
     province: details.destProvince,
   });
+  const addressOfOrigin = formatAddress({
+    name: details.originName,
+    street: details.originStreet,
+    city: details.originCity,
+    province: details.originProvince,
+  });
 
-  // There's no address of origin from the backend.
-  const addressOfOrigin = 'N/A';
   return (
     <Box className={classes.container}>
       <Header handleClose={handleClose} text={`Application ${details.status}`} />
