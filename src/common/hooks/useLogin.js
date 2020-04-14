@@ -14,7 +14,8 @@ export const useLogin = () => {
   const dispatch = useDispatch();
   const { data: user, httpResponse, execute: mutate, isLoading, ...others } = useApiMutation(
     '/v1/users/auth',
-    HttpMethod.Post
+    HttpMethod.Post,
+    { public: true }
   );
 
   const data = R.pipe(maybe({}), mapToUser)(user);
