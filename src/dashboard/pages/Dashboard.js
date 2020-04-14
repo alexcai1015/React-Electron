@@ -1,11 +1,13 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
 import { DebounceInput } from 'react-debounce-input';
+import { useSelector } from 'react-redux';
 
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
 import { ApprovalStatus, Source } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
 import { useQueryString } from '../../hooks';
+import { getUserAporTypes } from '../../store/slices';
 
 import { ListTable } from './dashboard/ListTable';
 import { AccessPassDenyModal } from './dashboard/listTable/AccessPassDenyModal';
@@ -44,6 +46,7 @@ const StatusFilterOptions = [
 
 export const Dashboard = () => {
   const { queryString, setQueryString } = useQueryString();
+  const aporTypes = useSelector(getUserAporTypes);
 
   const [searchValue, setSearchValue] = useState('');
   const [selectedFilterOption, setSelectedFilterOption] = useState(
@@ -152,10 +155,11 @@ export const Dashboard = () => {
           maxPageRows: pageSize,
           status,
           search,
+          aporType: aporTypes.join(','),
         },
       });
     },
-    [getAccessPassesQuery]
+    [aporTypes, getAccessPassesQuery]
   );
 
   return (
