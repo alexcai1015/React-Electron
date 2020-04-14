@@ -1,6 +1,7 @@
 image: docker:latest
 
 stages:
+  - develop
   - stage
   - deploy
 
@@ -8,33 +9,51 @@ services:
   - docker:dind
 
 variables:
-  STAGE_IMAGE: $CI_REGISTRY_IMAGE:$CI_BUILD_ID
-  STAGE_IMAGE_LATEST: $CI_REGISTRY_IMAGE:latest
+  STAGE_IMAGE: "dctx/rapidpass-approver-staging"
+  DEVELOP_IMAGE: "dctx/rapidpass-approver-develop"
+  PROD_IMAGE: "dctx/rapidpass-approver"
+
+docker-build-develop:
+  stage: develop
+  before_script:
+    - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
+  script:
+    - docker pull "$ACR_REGISTRY/$DEVELOP_IMAGE:latest" || true
+    - docker build --cache-from "$ACR_REGISTRY/$DEVELOP_IMAGE:latest"
+                   --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_DEVELOP
+                   --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_DEVELOP
+                   -t "$ACR_REGISTRY/$DEVELOP_IMAGE:latest" -t "$ACR_REGISTRY/$DEVELOP_IMAGE:$CI_BUILD_ID" .
+    - docker push "$ACR_REGISTRY/$DEVELOP_IMAGE:latest"
+    - docker push "$ACR_REGISTRY/$DEVELOP_IMAGE:$CI_BUILD_ID"
+  only:
+    - develop
 
 docker-build-stage:
   stage: stage
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
   script:
-    - docker pull $STAGE_IMAGE_LATEST || true
-    - docker build --cache-from $STAGE_IMAGE_LATEST
-                   --build-arg REACT_APP_API_URL=$REACT_APP_API_URL
-                   --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY
-                   -t $STAGE_IMAGE_LATEST .
-    - docker tag $STAGE_IMAGE_LATEST $STAGE_IMAGE
-    - docker push $STAGE_IMAGE_LATEST
-    - docker push $STAGE_IMAGE
+    - docker pull "$ACR_REGISTRY/$STAGE_IMAGE:latest" || true
+    - docker build --cache-from "$ACR_REGISTRY/$STAGE_IMAGE:latest"
+                   --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_STAGING
+                   --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_STAGING
+                   -t "$ACR_REGISTRY/$STAGE_IMAGE:latest" -t "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID" .
+    - docker push "$ACR_REGISTRY/$STAGE_IMAGE:latest"
+    - docker push "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID"
   only:
-    - develop
+    - staging
 
-docker-build-production:
+docker-build-prod:
   stage: deploy
   before_script:
     - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
   script:
-    - docker build -t "$ACR_REGISTRY/dctx/rapidpass-approver:latest" .
-    - docker tag "$ACR_REGISTRY/dctx/rapidpass-approver:latest" "$ACR_REGISTRY/dctx/rapidpass-approver:$CI_BUILD_ID"
-    - docker push "$ACR_REGISTRY/dctx/rapidpass-approver:latest"
-    - docker push "$ACR_REGISTRY/dctx/rapidpass-approver:$CI_BUILD_ID"
+    - docker pull "$ACR_REGISTRY/$PROD_IMAGE:latest" || true
+    - docker build --cache-from "$ACR_REGISTRY/$PROD_IMAGE:latest"
+                   --build-arg REACT_APP_API_URL=$REACT_APP_API_URL
+                   --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY
+                   -t "$ACR_REGISTRY/$PROD_IMAGE:latest" -t "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID" .
+    - docker push "$ACR_REGISTRY/$PROD_IMAGE:latest"
+    - docker push "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID"
   only:
     - master

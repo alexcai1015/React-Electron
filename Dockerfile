@@ -26,4 +26,4 @@ COPY --from=builder /app/build .
 
 EXPOSE 3030
 
-CMD [ "nginx", "-g", "daemon off;" ]
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
