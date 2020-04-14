@@ -21,9 +21,9 @@ docker-build-stage:
                    --build-arg REACT_APP_API_URL=$REACT_APP_API_URL
                    --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY
                    -t $STAGE_IMAGE_LATEST .
-    - docker tag STAGE_IMAGE_LATEST $STAGE_IMAGE
-    - docker push $TEST_IMAGE_LATEST
-    - docker push $TEST_IMAGE
+    - docker tag $STAGE_IMAGE_LATEST $STAGE_IMAGE
+    - docker push $STAGE_IMAGE_LATEST
+    - docker push $STAGE_IMAGE
   only:
     - develop
 
