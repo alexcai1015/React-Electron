@@ -1,6 +1,6 @@
 #!/bin/sh
 
-apiUrl="${REACT_APP_API_URL:-https://api.test.rapidpass.amihan.net/api}"
+apiUrl="${REACT_APP_API_URL:-https://rapidpass-api-stage.azurewebsites.net/api}"
 apiKey="${REACT_APP_API_KEY:-unset}"
 cat <<EOF
 window.REACT_APP_API_URL='$apiUrl';
