@@ -167,7 +167,7 @@ export const Dashboard = () => {
               <Grid item lg={8} md={6} sm={6} xs={12}>
                 <DebounceInput
                   element={StyledSearchTextField}
-                  debounceTimeout={300}
+                  debounceTimeout={500}
                   label="Search"
                   type="search"
                   onChange={handleSearchChange}
