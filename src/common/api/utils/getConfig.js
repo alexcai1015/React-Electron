@@ -5,7 +5,7 @@ export const getConfig = ({ baseConfig, token }) => ({
   ...baseConfig,
   headers: {
     ...baseConfig.headers,
-    ...(!baseConfig.public && createAuthorizationHeader(token)),
+    ...createAuthorizationHeader(token),
     ...createAPIKeyHeader(),
   },
 });
