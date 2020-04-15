@@ -6,6 +6,12 @@ COPY . .
 
 RUN npm install
 
+ARG REACT_APP_API_KEY
+ENV REACT_APP_API_KEY=$REACT_APP_API_KEY
+
+ARG REACT_APP_API_URL
+ENV REACT_APP_API_URL=$REACT_APP_API_URL
+
 RUN npm run build
 
 FROM openresty/openresty:alpine
@@ -18,11 +24,6 @@ COPY --from=builder /app/nginx/nginx.conf /usr/local/openresty/nginx/conf/nginx.
 
 COPY --from=builder /app/build .
 
-COPY --from=builder /app/scripts/env.sh .
-
-RUN chmod +x env.sh
-
 EXPOSE 3030
 
-# Start Nginx server
-ENTRYPOINT ["/bin/sh", "-c", "/usr/share/nginx/html/env.sh > /usr/share/nginx/html/env.js && nginx -g\"daemon off;\""]
+ENTRYPOINT [ "nginx", "-g", "daemon off;" ]

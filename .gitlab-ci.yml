@@ -1,14 +1,68 @@
-docker-build-deploy:
-  image: docker:latest
-  stage: deploy
-  services:
-    - docker:dind
+image: docker:latest
+
+stages:
+  - develop
+  - stage
+  - deploy
+
+services:
+  - docker:dind
+
+variables:
+  STAGE_IMAGE: "dctx/rapidpass-approver-staging"
+  DEVELOP_IMAGE: "dctx/rapidpass-approver-develop"
+  PROD_IMAGE: "dctx/rapidpass-approver"
+
+docker-build-develop:
+  stage: develop
   before_script:
     - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
   script:
-    - docker build -t "$ACR_REGISTRY/dctx/rapidpass-approver:latest" .
-    - docker tag "$ACR_REGISTRY/dctx/rapidpass-approver:latest" "$ACR_REGISTRY/dctx/rapidpass-approver:$CI_BUILD_ID"
-    - docker push "$ACR_REGISTRY/dctx/rapidpass-approver:latest"
-    - docker push "$ACR_REGISTRY/dctx/rapidpass-approver:$CI_BUILD_ID"
+    - docker pull "$ACR_REGISTRY/$DEVELOP_IMAGE:latest" || true
+    - docker build --cache-from "$ACR_REGISTRY/$DEVELOP_IMAGE:latest"
+                   --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_DEVELOP
+                   --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_DEVELOP
+                   -t "$ACR_REGISTRY/$DEVELOP_IMAGE:latest" -t "$ACR_REGISTRY/$DEVELOP_IMAGE:$CI_BUILD_ID" .
+    - docker push "$ACR_REGISTRY/$DEVELOP_IMAGE:latest"
+    - docker push "$ACR_REGISTRY/$DEVELOP_IMAGE:$CI_BUILD_ID"
+  environment:
+    name: development
+    url: https://rapidpass-approver-dev.azurewebsites.net
+  only:
+    - develop
+
+docker-build-stage:
+  stage: stage
+  before_script:
+    - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
+  script:
+    - docker pull "$ACR_REGISTRY/$STAGE_IMAGE:latest" || true
+    - docker build --cache-from "$ACR_REGISTRY/$STAGE_IMAGE:latest"
+                   --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_STAGING
+                   --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_STAGING
+                   -t "$ACR_REGISTRY/$STAGE_IMAGE:latest" -t "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID" .
+    - docker push "$ACR_REGISTRY/$STAGE_IMAGE:latest"
+    - docker push "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID"
+  environment:
+    name: staging
+    url: https://rapidpass-approver-staging.azurewebsites.net
+  only:
+    - staging
+
+docker-build-prod:
+  stage: deploy
+  before_script:
+    - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
+  script:
+    - docker pull "$ACR_REGISTRY/$PROD_IMAGE:latest" || true
+    - docker build --cache-from "$ACR_REGISTRY/$PROD_IMAGE:latest"
+                   --build-arg REACT_APP_API_URL=$REACT_APP_API_URL
+                   --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY
+                   -t "$ACR_REGISTRY/$PROD_IMAGE:latest" -t "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID" .
+    - docker push "$ACR_REGISTRY/$PROD_IMAGE:latest"
+    - docker push "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID"
+  environment:
+    name: production
+    url: https://dashboard.rapidpass.ph
   only:
     - master
