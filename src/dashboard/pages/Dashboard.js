@@ -35,6 +35,10 @@ const StatusFilterOption = {
     value: ApprovalStatus.Declined,
     label: 'Declined',
   },
+  Suspended: {
+    value: ApprovalStatus.Suspended,
+    label: 'Suspended',
+  },
 };
 
 const StatusFilterOptions = [
@@ -42,6 +46,7 @@ const StatusFilterOptions = [
   StatusFilterOption.Pending,
   StatusFilterOption.Approved,
   StatusFilterOption.Declined,
+  StatusFilterOption.Suspended,
 ];
 
 export const Dashboard = () => {
