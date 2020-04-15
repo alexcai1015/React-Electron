@@ -36,7 +36,19 @@ export const useLogin = () => {
   useEffect(() => {
     if (httpResponse && httpResponse.status === 200) {
       // username is not returned; only accessCode
-      dispatch(saveUser(data));
+      try {
+        const { username } = JSON.parse(httpResponse.config.data);
+
+        dispatch(
+          saveUser({
+            ...data,
+            username,
+          })
+        );
+      } catch {
+        // eslint-disable-next-line no-console
+        console.error('Error logging in');
+      }
     }
   }, [data, dispatch, httpResponse, isLoading]);
 
