@@ -18,7 +18,6 @@ import {
 } from '@material-ui/core';
 import { useFilters, usePagination, useTable } from 'react-table';
 
-import { Colors } from '../../../common/constants/Colors';
 import { useQueryString } from '../../../hooks';
 import { setCurrentAccessPass } from '../../../store/slices';
 import { AccessPassPropType } from '../../../types';
@@ -29,15 +28,14 @@ import { ListRowActions } from './listTable/ListRowActions';
 import { SkeletonTable } from './listTable/SkeletonTable';
 
 const defaultRowsPerPage = 15;
-
-const listTableStyles = makeStyles({
+const listTableStyles = makeStyles((theme) => ({
   table: {
     minWidth: 500,
     '& .MuiTableRow-root:nth-child(odd)': {
-      backgroundColor: Colors.RowStripeGray,
+      backgroundColor: theme.palette.rowStripeGray,
     },
   },
-});
+}));
 
 export const ListTable = ({
   data,

@@ -7,7 +7,6 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import qs from 'query-string';
 
-import { Colors } from '../common/constants/Colors';
 import { CenteredForm } from '../common/components/CenteredForm';
 import { useActivateApprover } from '../common/hooks/useActivateApprover';
 
@@ -177,13 +176,13 @@ const BaseMessage = styled(Box)({
   },
 });
 
-const SuccessMessage = styled(BaseMessage)({
-  color: Colors.ApprovalGreen,
-});
+const SuccessMessage = styled(BaseMessage)(({ theme }) => ({
+  color: theme.palette.approvalGreen,
+}));
 
-const ErrorMessage = styled(BaseMessage)({
-  color: Colors.DenialDarkRed,
-});
+const ErrorMessage = styled(BaseMessage)(({ theme }) => ({
+  color: theme.palette.denialDarkRed,
+}));
 
 const SubmitButton = styled(Button)(({ theme }) => ({
   borderRadius: 20,
