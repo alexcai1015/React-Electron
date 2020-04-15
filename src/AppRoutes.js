@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route, Redirect as ReactRouterRedirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -7,7 +7,8 @@ import { Dashboard } from './dashboard/pages/Dashboard';
 import { BulkUpload } from './bulkUpload/BulkUpload';
 import { Login } from './pages/Login';
 import { ActivateUser } from './pages/ActivateUser';
-import { getUserToken } from './store/slices';
+import { getUserToken, getUsername } from './store/slices';
+import { useGetUserAporTypes } from './common/hooks';
 
 /** catch-all */
 const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
@@ -17,7 +18,17 @@ export function Redirect(props) {
 }
 
 function ProtectedRoute({ component: Component, accessCode, ...rest }) {
+  const username = useSelector(getUsername);
   const authenticated = !!accessCode;
+  const { query, isLoading } = useGetUserAporTypes();
+
+  useEffect(() => {
+    query(username);
+  }, [query, username]);
+
+  if (isLoading) {
+    return null;
+  }
 
   return (
     <Route
