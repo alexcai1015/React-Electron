@@ -1,6 +1,6 @@
 {
   "name": "rapidpass-dashboard",
-  "version": "0.14.3",
+  "version": "0.16.0",
   "private": true,
   "engines": {
     "node": ">=12"
@@ -14,7 +14,9 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.2",
+    "express": "^4.17.1",
     "formik": "^2.1.4",
     "history": "^4.10.1",
     "material-ui-dropzone": "^2.4.9",
@@ -32,7 +34,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
-    "yup": "^0.28.3"
+    "yup": "^0.28.3",
+    "json-server": "^0.16.1"
   },
   "scripts": {
     "lint": "eslint --cache --ext .js,.jsx src",
@@ -40,7 +43,7 @@
     "build": "cross-env INLINE_RUNTIME_CHUNK=false REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "start:mock-server": "json-server --watch mock-server.js -p 3110",
+    "start:mock-server": "cd mock-server && node json-server.js",
     "version": "auto-changelog -p && git add CHANGELOG.md"
   },
   "eslintConfig": {
@@ -72,7 +75,6 @@
     "eslint-plugin-react-hooks": "^3.0.0",
     "faker": "^4.1.0",
     "husky": "^4.2.3",
-    "json-server": "^0.16.1",
     "lint-staged": "^10.0.9",
     "prettier": "^2.0.2"
   },

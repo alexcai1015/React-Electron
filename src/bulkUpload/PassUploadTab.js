@@ -7,6 +7,7 @@ import { DropzoneArea } from 'material-ui-dropzone';
 
 import { useUploadFile } from '../common/hooks/useUploadFile';
 import { useSnackbar } from '../hooks';
+import { PassType } from '../common/constants/PassType';
 
 import { UploadSuccessModal } from './UploadSuccessModal';
 import { DownloadTemplateLink } from './passUploadTab/DownloadTemplateLink';
@@ -56,9 +57,9 @@ const useStyles = makeStyles({
   },
 });
 
-const UPLOAD_TEXT = 'Click Here or Drag and Drop to Upload (.csv)/(.xls) file';
+const UPLOAD_TEXT = 'Click Here or Drag and Drop to Upload (.csv) file';
 
-const acceptedFile = ['text/csv', 'application/vnd.ms-excel']; // Accept .csv and .xls only
+const acceptedFile = ['.csv', 'text/csv'];
 
 export const PassUploadTab = () => {
   const classes = useStyles();
@@ -121,7 +122,7 @@ export const PassUploadTab = () => {
         <h3>Bulk Upload File for Individuals</h3>
         Please follow the fields format to avoid data error upon uploading.
         <br />
-        <DownloadTemplateLink />
+        <DownloadTemplateLink type={PassType.INDIVIDUAL} />
         <div className={classes.uploadBox}>
           <DropzoneArea
             onChange={handleFileChangeIndividual}
@@ -140,7 +141,7 @@ export const PassUploadTab = () => {
         <h3>Bulk Upload File for Vehicles</h3>
         Please follow the fields format to avoid data error upon uploading.
         <br />
-        <DownloadTemplateLink />
+        <DownloadTemplateLink type={PassType.VEHICLE} />
         <div className={classes.uploadBox}>
           <DropzoneArea
             onChange={handleFileChangeVehicle}
