@@ -25,6 +25,9 @@ docker-build-develop:
                    -t "$ACR_REGISTRY/$DEVELOP_IMAGE:latest" -t "$ACR_REGISTRY/$DEVELOP_IMAGE:$CI_BUILD_ID" .
     - docker push "$ACR_REGISTRY/$DEVELOP_IMAGE:latest"
     - docker push "$ACR_REGISTRY/$DEVELOP_IMAGE:$CI_BUILD_ID"
+  environment:
+    name: development
+    url: https://rapidpass-approver-dev.azurewebsites.net
   only:
     - develop
 
@@ -40,6 +43,9 @@ docker-build-stage:
                    -t "$ACR_REGISTRY/$STAGE_IMAGE:latest" -t "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID" .
     - docker push "$ACR_REGISTRY/$STAGE_IMAGE:latest"
     - docker push "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID"
+  environment:
+    name: staging
+    url: https://rapidpass-approver-staging.azurewebsites.net
   only:
     - staging
 
@@ -55,5 +61,8 @@ docker-build-prod:
                    -t "$ACR_REGISTRY/$PROD_IMAGE:latest" -t "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID" .
     - docker push "$ACR_REGISTRY/$PROD_IMAGE:latest"
     - docker push "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID"
+  environment:
+    name: production
+    url: https://dashboard.rapidpass.ph
   only:
     - master
