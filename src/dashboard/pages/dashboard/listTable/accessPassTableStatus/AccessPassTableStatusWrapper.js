@@ -3,7 +3,7 @@ import { Box } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 
-import { ApprovalStatus, Colors } from '../../../../../common/constants';
+import { ApprovalStatus } from '../../../../../common/constants';
 
 export const AccessPassTableStatusWrapper = ({ status, children }) => {
   switch (status) {
@@ -25,7 +25,7 @@ AccessPassTableStatusWrapper.propTypes = {
   status: PropTypes.string.isRequired,
 };
 
-const StatusBase = styled(Box)({
+const StatusBase = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
   alignItems: 'center',
   flexDirection: 'row',
@@ -36,7 +36,7 @@ const StatusBase = styled(Box)({
   textTransform: 'uppercase',
   letterSpacing: 2,
   marginLeft: 130,
-  color: Colors.CancelGray,
+  color: theme.palette.cancelGray,
   '& .MuiSvgIcon-root': {
     marginRight: 4,
     fontSize: 20,
@@ -44,30 +44,30 @@ const StatusBase = styled(Box)({
   '& .MuiTypography-root': {
     marginRight: 'auto',
   },
-});
+}));
 
-const StatusApproved = styled(StatusBase)({
-  color: Colors.ApprovalGreen,
-});
+const StatusApproved = styled(StatusBase)(({ theme }) => ({
+  color: theme.palette.approvalGreen,
+}));
 
-const StatusDeclined = styled(StatusBase)({
-  color: Colors.DenialDarkRed,
-});
+const StatusDeclined = styled(StatusBase)(({ theme }) => ({
+  color: theme.palette.denialDarkRed,
+}));
 
-const StatusExpired = styled(StatusBase)({
-  color: Colors.DenialDarkRed,
-});
+const StatusExpired = styled(StatusBase)(({ theme }) => ({
+  color: theme.palette.denialDarkRed,
+}));
 
-const StatusPending = styled(Box)({
+const StatusPending = styled(Box)(({ theme }) => ({
   display: 'inline-flex',
   marginLeft: 'auto',
   '& .MuiButton-root': {
     width: 130,
     fontSize: 14,
-    color: Colors.White,
+    color: theme.palette.white,
     '&:hover': {
       opacity: 0.9,
       textShadow: '0 -1px 1px #5f5f5f, 0 -1px 1px #fff',
     },
   },
-});
+}));

@@ -1,12 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, withStyles } from '@material-ui/core';
+import { Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
-import { Colors, ApprovalStatus } from '../../../../common/constants';
+import { ApprovalStatus } from '../../../../common/constants';
 
 import { AccessPassTableStatus } from './AccessPassTableStatus';
 
-const allStyles = {
+const useStyles = makeStyles((theme) => ({
   container: {
     flex: 1,
     flexDirection: 'row',
@@ -22,15 +23,15 @@ const allStyles = {
     },
   },
   view: {
-    color: Colors.LinkBlue,
+    color: theme.palette.linkBlue,
     textDecoration: 'underline',
     fontSize: 16,
   },
-};
+}));
 
-export const ListRowActions = withStyles(allStyles)((props) => {
-  const { classes, onViewDetailsClick, status, loading, onApproveClick, onDenyClick } = props;
-
+export const ListRowActions = (props) => {
+  const { onViewDetailsClick, status, loading, onApproveClick, onDenyClick } = props;
+  const classes = useStyles();
   return (
     <div className={classes.container}>
       <AccessPassTableStatus
@@ -44,7 +45,7 @@ export const ListRowActions = withStyles(allStyles)((props) => {
       </Button>
     </div>
   );
-});
+};
 
 ListRowActions.defaultProps = {
   type: ApprovalStatus.Pending,

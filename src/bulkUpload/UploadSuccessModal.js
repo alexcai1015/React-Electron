@@ -5,9 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Button, Dialog, DialogContent, DialogActions } from '@material-ui/core';
 import { CheckCircle } from '@material-ui/icons';
 
-import { Colors } from '../common/constants/Colors';
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   dialog: {
     textAlign: 'center',
     '& .MuiDialogActions-root': {
@@ -18,7 +16,7 @@ const useStyles = makeStyles(() => ({
     padding: 30,
   },
   checkIcon: {
-    color: Colors.ApprovalGreen,
+    color: theme.palette.approvalGreen,
     fontSize: 50,
   },
   buttonGroup: {
@@ -27,7 +25,7 @@ const useStyles = makeStyles(() => ({
       fontWeight: 600,
       width: 300,
       fontSize: 14,
-      color: Colors.White,
+      color: theme.palette.white,
       '&:hover': {
         opacity: 0.9,
         textShadow: '0 -1px 1px #5f5f5f, 0 -1px 1px #fff',
@@ -37,9 +35,9 @@ const useStyles = makeStyles(() => ({
     paddingBottom: 40,
   },
   returnButton: {
-    backgroundColor: Colors.ApprovalGreen,
+    backgroundColor: theme.palette.approvalGreen,
     '&:hover': {
-      backgroundColor: Colors.ApprovalGreen,
+      backgroundColor: theme.palette.approvalGreen,
     },
   },
 }));

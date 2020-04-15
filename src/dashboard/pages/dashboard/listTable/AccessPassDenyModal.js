@@ -13,9 +13,7 @@ import {
 } from '@material-ui/core';
 import * as Yup from 'yup';
 
-import { Colors } from '../../../../common/constants';
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   dialog: {
     fontSize: 16,
   },
@@ -24,7 +22,7 @@ const useStyles = makeStyles(() => ({
     fontSize: 24,
     fontWeight: 600,
     height: 70,
-    borderBottom: `0.5px solid ${Colors.BorderGray}`,
+    borderBottom: `0.5px solid ${theme.palette.borderGray}`,
   },
   modalPrompt: {
     margin: '34px auto 26px auto',
@@ -33,7 +31,7 @@ const useStyles = makeStyles(() => ({
   },
   remarksLabel: {
     marginBottom: 12,
-    color: Colors.BodyTextBlack,
+    color: theme.palette.bodyTextBlack,
     fontWeight: 500,
   },
   actions: {
@@ -47,7 +45,7 @@ const useStyles = makeStyles(() => ({
       fontWeight: 600,
       width: 160,
       fontSize: 14,
-      color: Colors.White,
+      color: theme.palette.white,
       marginLeft: 18,
       marginRight: 18,
       '&:hover': {
@@ -57,15 +55,15 @@ const useStyles = makeStyles(() => ({
     },
   },
   denyAction: {
-    backgroundColor: Colors.DenialDarkRed,
+    backgroundColor: theme.palette.denialDarkRed,
     '&:hover': {
-      backgroundColor: Colors.DenialDarkRed,
+      backgroundColor: theme.palette.denialDarkRed,
     },
   },
   cancelAction: {
-    backgroundColor: Colors.CancelGray,
+    backgroundColor: theme.palette.cancelGray,
     '&:hover': {
-      backgroundColor: Colors.CancelGray,
+      backgroundColor: theme.palette.cancelGray,
     },
   },
 }));
