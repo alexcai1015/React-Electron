@@ -15,7 +15,6 @@ export const useUploadFile = (url) => {
   const [isCompleted, setIsCompleted] = useState(false);
 
   const xhr = new XMLHttpRequest();
-  xhr.withCredentials = true;
 
   xhr.onreadystatechange = () => {
     if (xhr.readyState !== XMLHttpRequest.DONE) {
