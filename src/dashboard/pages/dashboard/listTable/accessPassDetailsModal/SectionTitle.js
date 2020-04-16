@@ -4,11 +4,9 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { Colors } from '../../../../../common/constants/Colors';
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   sectionTitle: {
-    color: Colors.SectionTitleBlue,
+    color: theme.palette.sectionTitleBlue,
     fontSize: 14,
     fontWeight: '600',
   },
