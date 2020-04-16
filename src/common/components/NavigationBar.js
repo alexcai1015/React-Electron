@@ -12,10 +12,9 @@ import { useHistory } from 'react-router-dom';
 
 import logo from '../../assets/rapidpass.svg';
 import { PROTECTED_ROUTES } from '../../AppRoutes';
-import { Colors } from '../constants/Colors';
 import { useLogout } from '../hooks';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
@@ -31,11 +30,11 @@ const useStyles = makeStyles({
     textTransform: 'capitalize',
     '&.active': {
       top: 2,
-      borderBottom: `4px solid ${Colors.HighlightAmber}`,
+      borderBottom: `4px solid ${theme.palette.highlightAmber}`,
       borderRadius: 0,
     },
   },
-});
+}));
 
 export function NavigationBar() {
   const classes = useStyles();

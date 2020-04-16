@@ -4,7 +4,7 @@ import { styled } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 
-import { ApprovalStatus, Colors } from '../../../../common/constants';
+import { ApprovalStatus } from '../../../../common/constants';
 
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
 
@@ -45,16 +45,16 @@ AccessPassTableStatus.defaultProps = {
   loading: false,
 };
 
-const ApproveButton = styled(Button)({
-  backgroundColor: Colors.ApprovalGreen,
+const ApproveButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.approvalGreen,
   '&:hover': {
-    backgroundColor: Colors.ApprovalGreen,
+    backgroundColor: theme.palette.approvalGreen,
   },
-});
+}));
 
-const DenyButton = styled(Button)({
-  backgroundColor: Colors.DenialRed,
+const DenyButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.denialRed,
   '&:hover': {
-    backgroundColor: Colors.DenialRed,
+    backgroundColor: theme.palette.denialRed,
   },
-});
+}));

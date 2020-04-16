@@ -4,16 +4,14 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { Colors } from '../../../../../common/constants/Colors';
-
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   label: {
-    color: Colors.LabelGray,
+    color: theme.palette.labelGray,
     textTransform: 'uppercase',
     fontSize: 14,
   },
   value: {
-    color: Colors.FieldValueGray,
+    color: theme.palette.fieldValueGray,
     overflowWrap: 'break-word',
     fontSize: 14,
     fontWeight: '500',

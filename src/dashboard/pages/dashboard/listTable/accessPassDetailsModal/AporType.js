@@ -4,11 +4,11 @@ import { Box, Grid } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { AporType as AporTypeMap, Colors } from '../../../../../common/constants';
+import { AporType as AporTypeMap } from '../../../../../common/constants';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   label: {
-    color: Colors.LabelGray,
+    color: theme.palette.labelGray,
     textTransform: 'uppercase',
     fontSize: 14,
   },
