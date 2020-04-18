@@ -49,6 +49,7 @@ export const ListTable = ({
   disabledActions,
   onApproveClick,
   onDenyClick,
+  onSuspendClick,
   onViewDetailsClick,
   rowCount,
 }) => {
@@ -203,6 +204,7 @@ export const ListTable = ({
                           status={cell.row.values.status}
                           onApproveClick={() => onApproveClick(cell.row.original)}
                           onDenyClick={() => onDenyClick(cell.row.original)}
+                          onSuspendClick={() => onSuspendClick(cell.row.original)}
                           onViewDetailsClick={() => onViewDetailsClick(row.original)}
                           loading={disabledActions}
                         />
@@ -264,6 +266,7 @@ ListTable.propTypes = {
   pageSize: PropTypes.number,
   onApproveClick: PropTypes.func,
   onDenyClick: PropTypes.func,
+  onSuspendClick: PropTypes.func,
   onViewDetailsClick: PropTypes.func,
 };
 
