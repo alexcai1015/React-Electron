@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
 import { ApprovalStatus, Source } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
+import { useSuspendAccessPass } from '../../common/hooks/useSuspendAccessPass';
 import { useQueryString } from '../../hooks';
 import { getUserAporTypes } from '../../store/slices';
 
@@ -77,6 +78,11 @@ export const Dashboard = () => {
     isLoading: isDenyAccessPassLoading,
   } = useDenyAccessPass(selectedAcessPass);
 
+  const {
+    execute: executeSuspendAccessPass,
+    isLoading: isSuspendedAccessPassLoading,
+  } = useSuspendAccessPass(selectedAcessPass);
+
   useEffect(() => {
     if (isSuccessDenyAccessPass) {
       toggleDenyAccessPassModal();
@@ -136,6 +142,15 @@ export const Dashboard = () => {
   const handleDenyAccessPassClicked = (accessPass) => {
     setSelectedAccesPass(accessPass);
     toggleDenyAccessPassModal();
+  };
+
+  const handleSuspendAccessPassClicked = (accessPass) => {
+    const { referenceId } = accessPass;
+    setSelectedAccesPass(accessPass);
+
+    executeSuspendAccessPass(referenceId, {
+      status: ApprovalStatus.Suspended.toUpperCase(),
+    });
   };
 
   const handleDenyAccessPass = ({ referenceId, remarks } = {}) => {
@@ -214,12 +229,17 @@ export const Dashboard = () => {
               loading={isGetAccessPassesLoading}
               pageCount={totalPages}
               searchValue={searchValue}
-              disabledActions={isDenyAccessPassLoading || isApproveAccessPassLoading}
+              disabledActions={
+                isDenyAccessPassLoading ||
+                isApproveAccessPassLoading ||
+                isSuspendedAccessPassLoading
+              }
               rowCount={totalRows}
               pageIndex={queryString && +queryString.page - 1}
               pageSize={queryString && +queryString.pageSize}
               onApproveClick={handleApproveAccessPassClicked}
               onDenyClick={handleDenyAccessPassClicked}
+              onSuspendClick={handleSuspendAccessPassClicked}
               onViewDetailsClick={handleViewDetailsClicked}
             />
 

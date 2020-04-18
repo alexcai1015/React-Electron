@@ -4,14 +4,15 @@ import { styled } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 
+import { theme } from '../../../../theme';
 import { ApprovalStatus } from '../../../../common/constants';
 
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
 
-export const AccessPassTableStatus = ({ status, onApproveClick, onDenyClick, loading }) => {
-  return (
-    <AccessPassTableStatusWrapper status={status}>
-      {status === ApprovalStatus.Pending ? (
+const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendClick, loading) => {
+  switch (status) {
+    case ApprovalStatus.Pending:
+      return (
         <>
           <ApproveButton variant="contained" onClick={onApproveClick} disabled={loading}>
             Approve
@@ -20,16 +21,46 @@ export const AccessPassTableStatus = ({ status, onApproveClick, onDenyClick, loa
             Deny
           </DenyButton>
         </>
-      ) : (
+      );
+    case ApprovalStatus.Approved:
+      return (
         <>
-          {status === ApprovalStatus.Approved ? (
-            <CheckCircleIcon color="inherit" />
-          ) : (
-            <CancelIcon color="inherit" />
-          )}
+          <CheckCircleIcon color="inherit" />
+          <Typography variant="body1">{status}</Typography>
+          <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
+            Suspend
+          </SuspendButton>
+        </>
+      );
+    case ApprovalStatus.Declined:
+      return (
+        <>
+          <CancelIcon color="inherit" />
           <Typography variant="body1">{status}</Typography>
         </>
-      )}
+      );
+    case ApprovalStatus.Suspended:
+      return (
+        <>
+          <CancelIcon color="inherit" />
+          <Typography variant="body1">{status}</Typography>
+        </>
+      );
+    default:
+      return null;
+  }
+};
+
+export const AccessPassTableStatus = ({
+  status,
+  onApproveClick,
+  onDenyClick,
+  onSuspendClick,
+  loading,
+}) => {
+  return (
+    <AccessPassTableStatusWrapper status={status}>
+      {renderAccessPassOptions(status, onApproveClick, onDenyClick, onSuspendClick, loading)}
     </AccessPassTableStatusWrapper>
   );
 };
@@ -38,6 +69,7 @@ AccessPassTableStatus.propTypes = {
   status: PropTypes.string.isRequired,
   onApproveClick: PropTypes.func.isRequired,
   onDenyClick: PropTypes.func.isRequired,
+  onSuspendClick: PropTypes.func.isRequired,
   loading: PropTypes.bool,
 };
 
@@ -58,3 +90,10 @@ const DenyButton = styled(Button)(({ theme }) => ({
     backgroundColor: theme.palette.denialRed,
   },
 }));
+
+const SuspendButton = styled(Button)({
+  backgroundColor: theme.palette.suspendOrange,
+  '&:hover': {
+    backgroundColor: theme.palette.suspendOrange,
+  },
+});
