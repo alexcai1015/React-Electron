@@ -7,27 +7,25 @@ import { Login } from './pages/Login';
 import { ActivateUser } from './pages/ActivateUser';
 import { PROTECTED_ROUTES } from './common/components/navigationBar/ProtectedRoutes';
 import { NavigationBar } from './common/components/navigationBar/NavigationBar';
-
 import { getUserToken, getUsername } from './store/slices';
 import { useGetUserAporTypes } from './common/hooks';
 import PageSpinner from './common/components/PageSpinner';
 
-
-
 /* catch-all */
 const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
+
 NotFoundRoute.propTypes = {
   fallback: PropTypes.string,
-}
+};
 
 /* Wrapper for Router Redirect */
 export function Redirect({ to, ...props }) {
   return to ? <ReactRouterRedirect {...props} /> : null;
 }
+
 Redirect.propTypes = {
   to: PropTypes.string,
-  location: PropTypes.string
-}
+};
 
 function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   const username = useSelector(getUsername);
@@ -41,35 +39,28 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   if (isLoading) {
     return <PageSpinner />;
   }
-  const getElement = (props) =>
+
+  const getElement = ({ ...props }) =>
     authenticated ? (
       <>
         <NavigationBar username={username} />
         <Component {...props} />
       </>
     ) : (
-        <Redirect
-          to={{
-            pathname: '/login',
-            state: {
-              from: props.location,
-            },
-          }}
-        />
-      )
+      <Redirect
+        to={{
+          pathname: '/login',
+        }}
+      />
+    );
 
-  return (
-    <Route
-      {...rest}
-      render={getElement}
-    />
-  );
+  return <Route {...rest} render={getElement} />;
 }
+
 ProtectedRoute.propTypes = {
   component: PropTypes.element.isRequired,
-  accessCode: PropTypes.string.isRequired
-}
-
+  accessCode: PropTypes.string.isRequired,
+};
 
 export function AppRoutes() {
   const token = useSelector(getUserToken);

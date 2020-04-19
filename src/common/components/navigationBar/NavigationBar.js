@@ -12,10 +12,10 @@ import {
 import { useHistory } from 'react-router-dom';
 
 import logo from '../../../assets/rapidpass.svg';
-import UserMenu from './UserMenu';
-import { PROTECTED_ROUTES } from './ProtectedRoutes';
 import { useLogout } from '../../hooks';
 
+import UserMenu from './UserMenu';
+import { PROTECTED_ROUTES } from './ProtectedRoutes';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -63,19 +63,17 @@ export function NavigationBar({ username }) {
             <sup>{`v${process.env.REACT_APP_VERSION}`}</sup>
           </div>
 
-          {PROTECTED_ROUTES
-            .filter(({ show }) => show)
-            .map(({ path, title }) => (
-              <Button
-                key={path}
-                edge="start"
-                color="inherit"
-                onClick={() => history.push(path)}
-                className={`${isActive(path)} ${classes.navButtons}`}
-              >
-                {title}
-              </Button>
-            ))}
+          {PROTECTED_ROUTES.filter(({ show }) => show).map(({ path, title }) => (
+            <Button
+              key={path}
+              edge="start"
+              color="inherit"
+              onClick={() => history.push(path)}
+              className={`${isActive(path)} ${classes.navButtons}`}
+            >
+              {title}
+            </Button>
+          ))}
 
           <div className={classes.grow} />
           <UserMenu username={username}>
@@ -93,5 +91,5 @@ export function NavigationBar({ username }) {
 }
 
 NavigationBar.propTypes = {
-  username: PropTypes.string
-}
+  username: PropTypes.string,
+};
