@@ -24,7 +24,7 @@ export function Redirect({ to, ...props }) {
 }
 
 Redirect.propTypes = {
-  to: PropTypes.string,
+  to: PropTypes.shape({ pathname: PropTypes.string }),
 };
 
 function ProtectedRoute({ component: Component, accessCode, ...rest }) {
@@ -58,7 +58,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
 }
 
 ProtectedRoute.propTypes = {
-  component: PropTypes.element.isRequired,
+  component: PropTypes.elementType,
   accessCode: PropTypes.string.isRequired,
 };
 
