@@ -9,12 +9,12 @@ export const useChangePassword = () => {
   );
 
   const execute = useCallback(
-    ({ username, currentPassword, password }) => {
+    ({ username, currentPassword, newPassword }) => {
       mutate({
         urlPathParams: {
           username,
         },
-        requestData: { currentPassword, password },
+        requestData: { currentPassword, newPassword },
       });
     },
     [mutate]
