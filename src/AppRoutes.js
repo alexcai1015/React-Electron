@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Switch, Route, Redirect as ReactRouterRedirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { NavigationBar } from './common/components/NavigationBar';
+import { NavigationBar } from './common/components/navigationBar/NavigationBar';
 import { Dashboard } from './dashboard/pages/Dashboard';
 import { BulkUpload } from './bulkUpload/BulkUpload';
 import { Login } from './pages/Login';
@@ -37,7 +37,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
       render={(props) =>
         authenticated ? (
           <>
-            <NavigationBar />
+            <NavigationBar username={username} />
             <Component {...props} />
           </>
         ) : (
