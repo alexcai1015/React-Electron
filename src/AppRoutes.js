@@ -18,15 +18,6 @@ NotFoundRoute.propTypes = {
   fallback: PropTypes.string,
 };
 
-/* Wrapper for Router Redirect */
-export function Redirect({ to, ...props }) {
-  return to ? <ReactRouterRedirect {...props} /> : null;
-}
-
-Redirect.propTypes = {
-  to: PropTypes.shape({ pathname: PropTypes.string }),
-};
-
 function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   const username = useSelector(getUsername);
   const authenticated = !!accessCode;
@@ -47,7 +38,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
         <Component {...props} />
       </>
     ) : (
-      <Redirect
+      <ReactRouterRedirect
         to={{
           pathname: '/login',
         }}
@@ -66,7 +57,11 @@ export function AppRoutes() {
   const token = useSelector(getUserToken);
   return (
     <Switch>
-      <Route exact path="/" render={() => <Redirect to={{ pathname: '/access-passes' }} />} />
+      <Route
+        exact
+        path="/"
+        render={() => <ReactRouterRedirect to={{ pathname: '/access-passes' }} />}
+      />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
       <Route exact path="/activate-user" render={() => <ActivateUser />} />
 
