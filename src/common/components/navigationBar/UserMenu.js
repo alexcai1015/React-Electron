@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { IconButton, Menu, MenuItem, Fade, Typography } from '@material-ui/core';
 import SettingsIcon from '@material-ui/icons/Settings';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { styled } from '@material-ui/core/styles';
 
 function UserMenu({ username, children }) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -42,7 +43,7 @@ function UserMenu({ username, children }) {
         TransitionComponent={Fade}
       >
         {React.Children.map(children, (child) => (
-          <MenuItem onClick={handleCloseMenu}>{child}</MenuItem>
+          <StyledMenuItem onClick={handleCloseMenu}>{child}</StyledMenuItem>
         ))}
       </Menu>
     </>
@@ -55,3 +56,12 @@ UserMenu.propTypes = {
 };
 
 export default UserMenu;
+
+const StyledMenuItem = styled(MenuItem)({
+  '& .MuiButton-root': {
+    width: '100%',
+    '&:hover': {
+      backgroundColor: 'unset',
+    },
+  },
+});
