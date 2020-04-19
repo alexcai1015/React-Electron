@@ -1,21 +1,32 @@
 import React, { useEffect } from 'react';
 import { Switch, Route, Redirect as ReactRouterRedirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import { NavigationBar } from './common/components/navigationBar/NavigationBar';
-import { Dashboard } from './dashboard/pages/Dashboard';
-import { BulkUpload } from './bulkUpload/BulkUpload';
 import { Login } from './pages/Login';
 import { ActivateUser } from './pages/ActivateUser';
+import { PROTECTED_ROUTES } from './common/components/navigationBar/ProtectedRoutes';
+import { NavigationBar } from './common/components/navigationBar/NavigationBar';
+
 import { getUserToken, getUsername } from './store/slices';
 import { useGetUserAporTypes } from './common/hooks';
 import PageSpinner from './common/components/PageSpinner';
 
-/** catch-all */
-const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
 
-export function Redirect(props) {
-  return props.to ? <ReactRouterRedirect {...props} /> : null;
+
+/* catch-all */
+const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
+NotFoundRoute.propTypes = {
+  fallback: PropTypes.string,
+}
+
+/* Wrapper for Router Redirect */
+export function Redirect({ to, ...props }) {
+  return to ? <ReactRouterRedirect {...props} /> : null;
+}
+Redirect.propTypes = {
+  to: PropTypes.string,
+  location: PropTypes.string
 }
 
 function ProtectedRoute({ component: Component, accessCode, ...rest }) {
@@ -30,45 +41,35 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   if (isLoading) {
     return <PageSpinner />;
   }
+  const getElement = (props) =>
+    authenticated ? (
+      <>
+        <NavigationBar username={username} />
+        <Component {...props} />
+      </>
+    ) : (
+        <Redirect
+          to={{
+            pathname: '/login',
+            state: {
+              from: props.location,
+            },
+          }}
+        />
+      )
 
   return (
     <Route
       {...rest}
-      render={(props) =>
-        authenticated ? (
-          <>
-            <NavigationBar username={username} />
-            <Component {...props} />
-          </>
-        ) : (
-            <Redirect
-              to={{
-                pathname: '/login',
-                state: {
-                  from: props.location,
-                },
-              }}
-            />
-          )
-      }
+      render={getElement}
     />
   );
 }
+ProtectedRoute.propTypes = {
+  component: PropTypes.element.isRequired,
+  accessCode: PropTypes.string.isRequired
+}
 
-export const PROTECTED_ROUTES = [
-  {
-    path: '/access-passes',
-    exact: true,
-    title: 'Approvals',
-    component: Dashboard,
-  },
-  {
-    path: '/bulk-upload',
-    exact: true,
-    title: 'Bulk Upload',
-    component: BulkUpload,
-  },
-];
 
 export function AppRoutes() {
   const token = useSelector(getUserToken);
