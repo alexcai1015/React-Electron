@@ -1,22 +1,22 @@
 import React, { useEffect } from 'react';
 import { Switch, Route, Redirect as ReactRouterRedirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import { Dashboard } from './dashboard/pages/Dashboard';
-import { BulkUpload } from './bulkUpload/BulkUpload';
 import { Login } from './pages/Login';
 import { ActivateUser } from './pages/ActivateUser';
+import { PROTECTED_ROUTES } from './common/components/navigationBar/ProtectedRoutes';
+import { NavigationBar } from './common/components/navigationBar/NavigationBar';
 import { getUserToken, getUsername } from './store/slices';
 import { useGetUserAporTypes } from './common/hooks';
-import { NavigationBar } from './common/components/NavigationBar';
 import PageSpinner from './common/components/PageSpinner';
 
-/** catch-all */
+/* catch-all */
 const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
 
-export function Redirect(props) {
-  return props.to ? <ReactRouterRedirect {...props} /> : null;
-}
+NotFoundRoute.propTypes = {
+  fallback: PropTypes.string,
+};
 
 function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   const username = useSelector(getUsername);
@@ -31,50 +31,37 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
     return <PageSpinner />;
   }
 
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        authenticated ? (
-          <>
-            <NavigationBar username={username} />
-            <Component {...props} />
-          </>
-        ) : (
-            <Redirect
-              to={{
-                pathname: '/login',
-                state: {
-                  from: props.location,
-                },
-              }}
-            />
-          )
-      }
-    />
-  );
+  const getElement = ({ ...props }) =>
+    authenticated ? (
+      <>
+        <NavigationBar username={username} />
+        <Component {...props} />
+      </>
+    ) : (
+      <ReactRouterRedirect
+        to={{
+          pathname: '/login',
+        }}
+      />
+    );
+
+  return <Route {...rest} render={getElement} />;
 }
 
-export const PROTECTED_ROUTES = [
-  {
-    path: '/access-passes',
-    exact: true,
-    title: 'Approvals',
-    component: Dashboard,
-  },
-  {
-    path: '/bulk-upload',
-    exact: true,
-    title: 'Bulk Upload',
-    component: BulkUpload,
-  },
-];
+ProtectedRoute.propTypes = {
+  component: PropTypes.elementType,
+  accessCode: PropTypes.string.isRequired,
+};
 
 export function AppRoutes() {
   const token = useSelector(getUserToken);
   return (
     <Switch>
-      <Route exact path="/" render={() => <Redirect to={{ pathname: '/access-passes' }} />} />
+      <Route
+        exact
+        path="/"
+        render={() => <ReactRouterRedirect to={{ pathname: '/access-passes' }} />}
+      />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
       <Route exact path="/activate-user" render={() => <ActivateUser />} />
 
