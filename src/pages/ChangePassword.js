@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { TextField, Button, Box, Typography } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@material-ui/icons';
 import { styled } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 
+import { getUsername } from '../store/slices';
 import { CenteredForm } from '../common/components/CenteredForm';
 import { useChangePassword } from '../common/hooks/useChangePassword';
 
@@ -32,6 +34,7 @@ const validationSchema = yup.object({
 
 export const ChangePassword = () => {
   const { push } = useHistory();
+  const username = useSelector(getUsername);
 
   const [isSomethingWentWrong, setIsSomethingWentWrong] = useState(false);
 
@@ -44,7 +47,7 @@ export const ChangePassword = () => {
       confirmPassword: '',
     },
     onSubmit: ({ currentPassword, password }) => {
-      execute({ currentPassword, password });
+      execute({ username, currentPassword, password });
     },
     validationSchema,
   });
