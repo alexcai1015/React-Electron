@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   AppBar,
   Button,
@@ -12,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 
 import logo from '../../../assets/rapidpass.svg';
 import UserMenu from './UserMenu';
-import { PROTECTED_ROUTES } from '../../../AppRoutes';
+import { PROTECTED_ROUTES } from './ProtectedRoutes';
 import { useLogout } from '../../hooks';
 
 
@@ -62,17 +63,19 @@ export function NavigationBar({ username }) {
             <sup>{`v${process.env.REACT_APP_VERSION}`}</sup>
           </div>
 
-          {PROTECTED_ROUTES.map(({ path, title }) => (
-            <Button
-              key={path}
-              edge="start"
-              color="inherit"
-              onClick={() => history.push(path)}
-              className={`${isActive(path)} ${classes.navButtons}`}
-            >
-              {title}
-            </Button>
-          ))}
+          {PROTECTED_ROUTES
+            .filter(({ show }) => show)
+            .map(({ path, title }) => (
+              <Button
+                key={path}
+                edge="start"
+                color="inherit"
+                onClick={() => history.push(path)}
+                className={`${isActive(path)} ${classes.navButtons}`}
+              >
+                {title}
+              </Button>
+            ))}
 
           <div className={classes.grow} />
           <UserMenu username={username}>
@@ -87,4 +90,8 @@ export function NavigationBar({ username }) {
       </Container>
     </AppBar>
   );
+}
+
+NavigationBar.propTypes = {
+  username: PropTypes.string
 }
