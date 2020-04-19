@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
 import { ApprovalStatus, Source } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
+import { useSuspendAccessPass } from '../../common/hooks/useSuspendAccessPass';
 import { useQueryString } from '../../hooks';
 import { getUserAporTypes } from '../../store/slices';
 
@@ -77,6 +78,11 @@ export const Dashboard = () => {
     isLoading: isDenyAccessPassLoading,
   } = useDenyAccessPass(selectedAcessPass);
 
+  const {
+    execute: executeSuspendAccessPass,
+    isLoading: isSuspendedAccessPassLoading,
+  } = useSuspendAccessPass(selectedAcessPass);
+
   useEffect(() => {
     if (isSuccessDenyAccessPass) {
       toggleDenyAccessPassModal();
@@ -138,6 +144,15 @@ export const Dashboard = () => {
     toggleDenyAccessPassModal();
   };
 
+  const handleSuspendAccessPassClicked = (accessPass) => {
+    const { referenceId } = accessPass;
+    setSelectedAccesPass(accessPass);
+
+    executeSuspendAccessPass(referenceId, {
+      status: ApprovalStatus.Suspended.toUpperCase(),
+    });
+  };
+
   const handleDenyAccessPass = ({ referenceId, remarks } = {}) => {
     executeDenyAccessPass(referenceId, {
       status: ApprovalStatus.Declined.toUpperCase(),
@@ -147,9 +162,7 @@ export const Dashboard = () => {
 
   const fetchData = useCallback(
     ({ filters, pageIndex, pageSize, search }) => {
-      const statusFilter = filters.find(({ id }) => id === 'status');
-
-      const statusFilterValue = statusFilter.value;
+      const { value: statusFilterValue } = filters.find(({ id }) => id === 'status');
 
       const status = statusFilterValue === 'show_all' ? undefined : statusFilterValue.toUpperCase();
 
@@ -214,12 +227,15 @@ export const Dashboard = () => {
               loading={isGetAccessPassesLoading}
               pageCount={totalPages}
               searchValue={searchValue}
-              disabledActions={isDenyAccessPassLoading || isApproveAccessPassLoading}
+              disabledActions={
+                isDenyAccessPassLoading ||
+                isApproveAccessPassLoading ||
+                isSuspendedAccessPassLoading
+              }
               rowCount={totalRows}
-              pageIndex={queryString && +queryString.page - 1}
-              pageSize={queryString && +queryString.pageSize}
               onApproveClick={handleApproveAccessPassClicked}
               onDenyClick={handleDenyAccessPassClicked}
+              onSuspendClick={handleSuspendAccessPassClicked}
               onViewDetailsClick={handleViewDetailsClicked}
             />
 

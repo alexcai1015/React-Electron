@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   AppBar,
   Button,
@@ -10,16 +11,18 @@ import {
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
-import logo from '../../assets/rapidpass.svg';
-import { PROTECTED_ROUTES } from '../../AppRoutes';
-import { useLogout } from '../hooks';
+import logo from '../../../assets/rapidpass.svg';
+import { useLogout } from '../../hooks';
+
+import UserMenu from './UserMenu';
+import { PROTECTED_ROUTES } from './ProtectedRoutes';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
   nav: {
-    backgroundColor: 'rgb(72, 34, 164)',
+    backgroundColor: theme.palette.mainPurple,
   },
   title: {
     marginRight: 24,
@@ -36,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function NavigationBar() {
+export function NavigationBar({ username }) {
   const classes = useStyles();
   const history = useHistory();
   const { execute: executeLogout } = useLogout();
@@ -60,7 +63,7 @@ export function NavigationBar() {
             <sup>{`v${process.env.REACT_APP_VERSION}`}</sup>
           </div>
 
-          {PROTECTED_ROUTES.map(({ path, title }) => (
+          {PROTECTED_ROUTES.filter(({ show }) => show).map(({ path, title }) => (
             <Button
               key={path}
               edge="start"
@@ -73,12 +76,20 @@ export function NavigationBar() {
           ))}
 
           <div className={classes.grow} />
-
-          <Button edge="end" color="inherit" onClick={handleLogout}>
-            Log Out
-          </Button>
+          <UserMenu username={username}>
+            <Button edge="end" color="inherit" href="/change-password">
+              Change Password
+            </Button>
+            <Button edge="end" color="inherit" onClick={handleLogout}>
+              Log out
+            </Button>
+          </UserMenu>
         </Toolbar>
       </Container>
     </AppBar>
   );
 }
+
+NavigationBar.propTypes = {
+  username: PropTypes.string,
+};

@@ -52,6 +52,16 @@ const { actions, reducer } = createSlice({
         byId,
       };
     },
+    suspendById: (state, { payload }) => {
+      const id = payload;
+      const accessPass = R.prop([id], state.byId);
+
+      const byId = { ...state.byId, [id]: { ...accessPass, status: ApprovalStatus.Suspended } };
+      return {
+        ...state,
+        byId,
+      };
+    },
     save: (state, { payload }) => {
       const byId = arrayToDictionary(({ key }) => key)(payload);
       const allIds = payload.map((value) => value.id);
@@ -75,6 +85,7 @@ export const {
   removeById: removeAccessPassById,
   denyById: denyAccessPassById,
   approveById: approveAccessPassById,
+  suspendById: suspendAccessPassById,
 } = actions;
 
 export { reducer as accessPassReducer };
