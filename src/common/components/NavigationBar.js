@@ -10,11 +10,11 @@ import {
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
-import logo from '../../../assets/rapidpass.svg';
-import UserMenu from './UserMenu';
-import { PROTECTED_ROUTES } from '../../../AppRoutes';
-import { useLogout } from '../../hooks';
+import logo from '../../assets/rapidpass.svg';
+import { PROTECTED_ROUTES } from '../../AppRoutes';
+import { useLogout } from '../hooks';
 
+import UserMenu from './navigationBar/UserMenu';
 
 const useStyles = makeStyles((theme) => ({
   grow: {

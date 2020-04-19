@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { Switch, Route, Redirect as ReactRouterRedirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-import { NavigationBar } from './common/components/navigationBar/NavigationBar';
 import { Dashboard } from './dashboard/pages/Dashboard';
 import { BulkUpload } from './bulkUpload/BulkUpload';
 import { Login } from './pages/Login';
 import { ActivateUser } from './pages/ActivateUser';
 import { getUserToken, getUsername } from './store/slices';
 import { useGetUserAporTypes } from './common/hooks';
+import { NavigationBar } from './common/components/NavigationBar';
 import PageSpinner from './common/components/PageSpinner';
 
 /** catch-all */
