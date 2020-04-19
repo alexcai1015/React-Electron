@@ -47,7 +47,7 @@ export const ChangePassword = () => {
       confirmPassword: '',
     },
     onSubmit: ({ currentPassword, password }) => {
-      execute({ username, currentPassword, password });
+      execute({ username, currentPassword, newPassword: password });
     },
     validationSchema,
   });
