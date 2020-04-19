@@ -9,6 +9,7 @@ import { Login } from './pages/Login';
 import { ActivateUser } from './pages/ActivateUser';
 import { getUserToken, getUsername } from './store/slices';
 import { useGetUserAporTypes } from './common/hooks';
+import PageSpinner from './common/components/PageSpinner';
 
 /** catch-all */
 const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
@@ -27,7 +28,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   }, [query, username]);
 
   if (isLoading) {
-    return null;
+    return <PageSpinner />;
   }
 
   return (
