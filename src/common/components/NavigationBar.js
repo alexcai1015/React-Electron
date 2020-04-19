@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   nav: {
-    backgroundColor: 'rgb(72, 34, 164)',
+    backgroundColor: theme.palette.mainPurple,
   },
   title: {
     marginRight: 24,
