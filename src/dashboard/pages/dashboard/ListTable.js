@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -44,8 +44,6 @@ export const ListTable = ({
   searchValue,
   loading,
   pageCount,
-  pageIndex: controlledPageIndex = 0,
-  pageSize: controlledPageSize = defaultRowsPerPage,
   disabledActions,
   onApproveClick,
   onDenyClick,
@@ -57,7 +55,9 @@ export const ListTable = ({
   const classes = listTableStyles();
 
   const { queryString, setQueryString } = useQueryString();
-  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  // https://stackoverflow.com/questions/53179075/with-useeffect-how-can-i-skip-applying-an-effect-upon-the-initial-render
+  const isFirstRender = useRef(true);
 
   const {
     headerGroups,
@@ -84,15 +84,17 @@ export const ListTable = ({
       ),
       data,
       initialState: {
-        // ! TODO: get from query string
-        pageIndex: controlledPageIndex,
-        pageSize: controlledPageSize,
-        filters: [
-          {
-            id: 'status',
-            value: (queryString && queryString.status) || 'show_all',
-          },
-        ],
+        pageIndex: (queryString && +queryString.page - 1) || 0,
+        pageSize: (queryString && +queryString.pageSize) || defaultRowsPerPage,
+        filters: useMemo(
+          () => [
+            {
+              id: 'status',
+              value: (queryString && queryString.status) || filterStatus,
+            },
+          ],
+          [filterStatus, queryString]
+        ),
       },
       manualPagination: true,
       manualFilters: true,
@@ -112,21 +114,27 @@ export const ListTable = ({
 
   // Listen for changes in pagination and use the state to fetch our new data
   useEffect(() => {
-    if (isFirstRender) {
+    fetchData({ filters, pageIndex, pageSize, search: searchValue });
+  }, [fetchData, filters, pageIndex, pageSize, searchValue]);
+
+  useEffect(() => {
+    /**
+     * ! TODO: find a better solution on how to skip running effect on first
+     * render or a different approach to avoid this check.
+     */
+    if (isFirstRender.current) {
       return;
     }
 
-    fetchData({ filters, pageIndex, pageSize, search: searchValue });
-  }, [fetchData, filters, isFirstRender, pageIndex, pageSize, searchValue]);
-
-  useEffect(() => {
-    setIsFirstRender(false);
-  }, [setIsFirstRender]);
-
-  useEffect(() => {
-    gotoPage(controlledPageIndex);
+    gotoPage(0);
     setFilter('status', filterStatus);
-  }, [controlledPageIndex, filterStatus, gotoPage, setFilter]);
+  }, [filterStatus, gotoPage, setFilter]);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+    }
+  });
 
   const handleChangePage = (event, newPage) => {
     gotoPage(newPage);

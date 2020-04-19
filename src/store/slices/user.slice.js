@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -10,14 +11,13 @@ const { actions, reducer } = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    save: (_, { payload }) => ({
-      username: payload.username,
-      token: payload.token,
-    }),
-    saveAporTypes: (state, { payload }) => ({
-      ...state,
-      aporTypes: payload,
-    }),
+    save: (state, { payload }) => {
+      state.username = payload.username;
+      state.token = payload.token;
+    },
+    saveAporTypes: (state, { payload }) => {
+      state.aporTypes = payload;
+    },
     remove: () => initialState,
   },
 });
