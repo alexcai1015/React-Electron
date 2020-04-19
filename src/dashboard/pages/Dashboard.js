@@ -162,9 +162,7 @@ export const Dashboard = () => {
 
   const fetchData = useCallback(
     ({ filters, pageIndex, pageSize, search }) => {
-      const statusFilter = filters.find(({ id }) => id === 'status');
-
-      const statusFilterValue = statusFilter.value;
+      const { value: statusFilterValue } = filters.find(({ id }) => id === 'status');
 
       const status = statusFilterValue === 'show_all' ? undefined : statusFilterValue.toUpperCase();
 
@@ -235,8 +233,6 @@ export const Dashboard = () => {
                 isSuspendedAccessPassLoading
               }
               rowCount={totalRows}
-              pageIndex={queryString && +queryString.page - 1}
-              pageSize={queryString && +queryString.pageSize}
               onApproveClick={handleApproveAccessPassClicked}
               onDenyClick={handleDenyAccessPassClicked}
               onSuspendClick={handleSuspendAccessPassClicked}
