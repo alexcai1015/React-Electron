@@ -4,17 +4,14 @@ import { useApiMutation, HttpMethod } from '../api';
 
 export const useChangePassword = () => {
   const { httpResponse, execute: mutate, isLoading, ...others } = useApiMutation(
-    `/v1/users/{{username}}/activate`,
+    `/v1/users/change-password`,
     HttpMethod.Post
   );
 
   const execute = useCallback(
-    ({ username, password, activationCode }) => {
+    ({ currentPassword, password }) => {
       mutate({
-        urlPathParams: {
-          username,
-        },
-        requestData: { username, password, activationCode },
+        requestData: { currentPassword, password },
       });
     },
     [mutate]
