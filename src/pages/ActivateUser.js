@@ -91,7 +91,7 @@ export const ActivateUser = () => {
   }, []);
 
   return (
-    <CenteredForm>
+    <CenteredForm showLogo>
       <form onSubmit={handleSubmit} style={{ width: 367 }}>
         <FormFieldWrapper>
           <Typography component="label" htmlFor="password">

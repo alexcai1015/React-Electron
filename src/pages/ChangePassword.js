@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { TextField, Button, Box, Typography } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@material-ui/icons';
 import { styled } from '@material-ui/core/styles';
@@ -12,7 +12,6 @@ import { useChangePassword } from '../common/hooks/useChangePassword';
 const MIN_LENGTH = 12;
 
 /** At least 12, at least 1 upper, 1 lower, 1 symbol. */
-// TODO remove the 11 value - already checked by min()?
 const REGEX_UPPER_LOWER_ALPHANUMERIC = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).(?=.*[#$^+=!*()@%&]).{11,}$/;
 
 const validationSchema = yup.object({
@@ -32,7 +31,6 @@ const validationSchema = yup.object({
 });
 
 export const ChangePassword = () => {
-  const location = useLocation();
   const { push } = useHistory();
 
   const [isSomethingWentWrong, setIsSomethingWentWrong] = useState(false);
@@ -50,18 +48,6 @@ export const ChangePassword = () => {
     },
     validationSchema,
   });
-
-  useEffect(() => {
-    // const { username: parsedUsername, activationCode: parsedActivationCode } = qs.parse(
-    //   location.search
-    // );
-    // if (!parsedUsername || !parsedActivationCode) {
-    //   push('/page-not-found');
-    //   return;
-    // }
-    // setUsername(parsedUsername);
-    // setActivationCode(parsedActivationCode);
-  }, [location, push]);
 
   useEffect(() => {
     if (httpResponse && httpResponse.status === 200) {
