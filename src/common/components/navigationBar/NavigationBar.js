@@ -10,9 +10,11 @@ import {
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 
-import logo from '../../assets/rapidpass.svg';
-import { PROTECTED_ROUTES } from '../../AppRoutes';
-import { useLogout } from '../hooks';
+import logo from '../../../assets/rapidpass.svg';
+import UserMenu from './UserMenu';
+import { PROTECTED_ROUTES } from '../../../AppRoutes';
+import { useLogout } from '../../hooks';
+
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -36,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function NavigationBar() {
+export function NavigationBar({ username }) {
   const classes = useStyles();
   const history = useHistory();
   const { execute: executeLogout } = useLogout();
@@ -73,10 +75,14 @@ export function NavigationBar() {
           ))}
 
           <div className={classes.grow} />
-
-          <Button edge="end" color="inherit" onClick={handleLogout}>
-            Log Out
-          </Button>
+          <UserMenu username={username}>
+            <Button edge="end" color="inherit" href="/change-password">
+              Change Password
+            </Button>
+            <Button edge="end" color="inherit" onClick={handleLogout}>
+              Log out
+            </Button>
+          </UserMenu>
         </Toolbar>
       </Container>
     </AppBar>
