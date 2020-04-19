@@ -1,9 +1,6 @@
 import React from 'react';
 import { Grid, CircularProgress } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
-import { theme } from '../../theme';
-
-import spinner from '../../assets/rapidpass_v1.gif';
 
 const CenteredWrapper = styled(Grid)(({ theme }) => ({
   height: '100vh',
