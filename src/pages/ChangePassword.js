@@ -132,14 +132,14 @@ export const ChangePassword = () => {
         {httpResponse && httpResponse.status === 200 && (
           <SuccessMessage>
             <CheckCircleIcon />
-            <span>Successfuly Activated!</span>
+            <span>Password change successful.</span>
           </SuccessMessage>
         )}
 
         {isSomethingWentWrong && (
           <ErrorMessage>
             <ErrorIcon />
-            <span>Something went wrong. Please Try Again.</span>
+            <span>Password change failed.</span>
           </ErrorMessage>
         )}
 
