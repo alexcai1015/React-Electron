@@ -16,6 +16,7 @@ const MIN_LENGTH = 12;
 const REGEX_UPPER_LOWER_ALPHANUMERIC = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).(?=.*[#$^+=!*()@%&]).{11,}$/;
 
 const validationSchema = yup.object({
+  currentPassword: yup.string().required('Please provide your old password.'),
   password: yup
     .string()
     .required('Please provide your password.')
@@ -34,18 +35,18 @@ export const ChangePassword = () => {
   const location = useLocation();
   const { push } = useHistory();
 
-  const [username, setUsername] = useState(null);
   const [isSomethingWentWrong, setIsSomethingWentWrong] = useState(false);
 
   const { execute, isLoading, error, httpResponse } = useChangePassword();
 
   const { handleSubmit, handleChange, values, errors } = useFormik({
     initialValues: {
+      currentPassword: '',
       password: '',
       confirmPassword: '',
     },
-    onSubmit: ({ password }) => {
-      execute({ username, password });
+    onSubmit: ({ currentPassword, password }) => {
+      execute({ currentPassword, password });
     },
     validationSchema,
   });
@@ -80,7 +81,6 @@ export const ChangePassword = () => {
 
   useEffect(() => {
     return () => {
-      setUsername('');
       setIsSomethingWentWrong(false);
     };
   }, []);
@@ -98,9 +98,10 @@ export const ChangePassword = () => {
             label=""
             type="password"
             variant="outlined"
-            value={values.currentPassoword}
-            helperText={errors.currentPassoword}
-            error={!!errors.currentPassoword}
+            onChange={handleChange}
+            value={values.currentPassword}
+            helperText={errors.currentPassword}
+            error={!!errors.currentPassword}
             disabled={isLoading}
           />
         </FormFieldWrapper>
@@ -122,7 +123,7 @@ export const ChangePassword = () => {
           />
         </FormFieldWrapper>
         <FormFieldWrapper>
-          <Typography component="label" htmlFor="confirmPaslsword">
+          <Typography component="label" htmlFor="confirmPassword">
             Confirm Password
           </Typography>
           <FormField
