@@ -7,6 +7,7 @@ import { Dashboard } from './dashboard/pages/Dashboard';
 import { BulkUpload } from './bulkUpload/BulkUpload';
 import { Login } from './pages/Login';
 import { ActivateUser } from './pages/ActivateUser';
+import { ChangePassword } from './pages/ChangePassword';
 import { getUserToken, getUsername } from './store/slices';
 import { useGetUserAporTypes } from './common/hooks';
 import PageSpinner from './common/components/PageSpinner';
@@ -41,15 +42,15 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
             <Component {...props} />
           </>
         ) : (
-            <Redirect
-              to={{
-                pathname: '/login',
-                state: {
-                  from: props.location,
-                },
-              }}
-            />
-          )
+          <Redirect
+            to={{
+              pathname: '/login',
+              state: {
+                from: props.location,
+              },
+            }}
+          />
+        )
       }
     />
   );
@@ -60,13 +61,22 @@ export const PROTECTED_ROUTES = [
     path: '/access-passes',
     exact: true,
     title: 'Approvals',
+    showInNavigation: true,
     component: Dashboard,
   },
   {
     path: '/bulk-upload',
     exact: true,
     title: 'Bulk Upload',
+    showInNavigation: true,
     component: BulkUpload,
+  },
+  {
+    path: '/change-password',
+    exact: true,
+    title: 'Change Password',
+    showInNavigation: false,
+    component: ChangePassword,
   },
 ];
 

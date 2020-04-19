@@ -62,17 +62,20 @@ export function NavigationBar({ username }) {
             <sup>{`v${process.env.REACT_APP_VERSION}`}</sup>
           </div>
 
-          {PROTECTED_ROUTES.map(({ path, title }) => (
-            <Button
-              key={path}
-              edge="start"
-              color="inherit"
-              onClick={() => history.push(path)}
-              className={`${isActive(path)} ${classes.navButtons}`}
-            >
-              {title}
-            </Button>
-          ))}
+          {PROTECTED_ROUTES.map(
+            ({ path, title, showInNavigation }) =>
+              showInNavigation && (
+                <Button
+                  key={path}
+                  edge="start"
+                  color="inherit"
+                  onClick={() => history.push(path)}
+                  className={`${isActive(path)} ${classes.navButtons}`}
+                >
+                  {title}
+                </Button>
+              )
+          )}
 
           <div className={classes.grow} />
           <UserMenu username={username}>
