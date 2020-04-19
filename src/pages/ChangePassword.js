@@ -16,7 +16,7 @@ const MIN_LENGTH = 12;
 const REGEX_UPPER_LOWER_ALPHANUMERIC = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).(?=.*[#$^+=!*()@%&]).{11,}$/;
 
 const validationSchema = yup.object({
-  currentPassword: yup.string().required('Please provide your password.'),
+  currentPassword: yup.string().required('Please provide your old password.'),
   password: yup
     .string()
     .required('Please provide your password.')
@@ -98,11 +98,11 @@ export const ChangePassword = () => {
             label=""
             type="password"
             variant="outlined"
+            onChange={handleChange}
             value={values.currentPassword}
             helperText={errors.currentPassword}
             error={!!errors.currentPassword}
-
-            // disabled={isLoading}
+            disabled={isLoading}
           />
         </FormFieldWrapper>
         <FormFieldWrapper>
