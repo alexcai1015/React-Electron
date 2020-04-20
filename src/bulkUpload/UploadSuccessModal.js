@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   uploadMessage: {
-    padding: 30,
+    padding: theme.spacing(2),
   },
   checkIcon: {
     color: theme.palette.approvalGreen,
@@ -42,7 +42,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const UploadSuccessModal = ({ open, handleClose }) => {
+const renderMessage = (message) => {
+  return message.split('\n').map((item, i) => {
+    const key = `${i}_key`;
+    return <p key={key}>{item}</p>;
+  });
+};
+
+export const UploadSuccessModal = ({ open, handleClose, message }) => {
   const classes = useStyles();
   const history = useHistory();
 
@@ -58,7 +65,7 @@ export const UploadSuccessModal = ({ open, handleClose }) => {
           <CheckCircle className={classes.checkIcon} />
           <h2>Upload Successful</h2>
         </div>
-        We will send bulk upload results to individuals via SMS and email.
+        {renderMessage(message)}
       </DialogContent>
       <DialogActions className={classes.buttonGroup}>
         <Button variant="contained" className={classes.returnButton} onClick={returnToHome}>
@@ -72,9 +79,11 @@ export const UploadSuccessModal = ({ open, handleClose }) => {
 UploadSuccessModal.propTypes = {
   handleClose: PropTypes.func,
   open: PropTypes.bool,
+  message: PropTypes.string,
 };
 
 UploadSuccessModal.defaultProps = {
   handleClose: () => {},
   open: false,
+  message: '',
 };
