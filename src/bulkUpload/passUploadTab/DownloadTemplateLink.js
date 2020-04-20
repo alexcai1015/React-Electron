@@ -16,7 +16,7 @@ export const DownloadTemplateLink = ({ sourceURL = '', type = '' }) => {
   return (
     <Typography>
       Download
-      {type && PassTypeLabel[type] ? PassTypeLabel[type].templateLabel : 'template'}
+      {type && PassTypeLabel[type] ? ` ${PassTypeLabel[type].templateLabel}` : ' template'}
       <a
         href={type && `${sourceURL}/templates/Bulk_Upload_Template_${type.toUpperCase()}.xlsx`}
         download
