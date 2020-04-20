@@ -27,9 +27,15 @@ export const useUploadFile = (url) => {
     if (isSuccess) {
       setResponse(xhr.response);
     } else {
-      const errorMessage = maybe(`There's an error uploading your file. Please try again.`)(
+      let errorMessage = maybe(`There's an error uploading your file. Please try again.`)(
         xhr.statusText
       );
+
+      errorMessage +=
+        xhr.response && JSON.parse(xhr.response).message
+          ? `: ${JSON.parse(xhr.response).message}`
+          : '';
+
       setError(errorMessage);
     }
 
