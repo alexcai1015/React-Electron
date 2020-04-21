@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Typography, makeStyles } from '@material-ui/core';
 
-import { PassType } from '../../common/constants/PassType';
+import { PassType, PassTypeLabel } from '../../common/constants/PassType';
 
 // const GITLAB_PUBLIC_URL = `https://gitlab.com/dctx/rapidpass/rapidpass-dashboard/-/tree/master/public`;
 const useStyles = makeStyles({
@@ -15,7 +15,8 @@ export const DownloadTemplateLink = ({ sourceURL = '', type = '' }) => {
   const classes = useStyles();
   return (
     <Typography>
-      Download the template
+      Download
+      {type && PassTypeLabel[type] ? ` ${PassTypeLabel[type].templateLabel}` : ' template'}
       <a
         href={type && `${sourceURL}/templates/Bulk_Upload_Template_${type.toUpperCase()}.xlsx`}
         download

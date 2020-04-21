@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const ListRowActions = (props) => {
-  const { onViewDetailsClick, status, loading, onApproveClick, onDenyClick } = props;
+  const { onViewDetailsClick, status, loading, onApproveClick, onDenyClick, onSuspendClick } = props;
   const classes = useStyles();
   return (
     <div className={classes.container}>
@@ -39,6 +39,7 @@ export const ListRowActions = (props) => {
         loading={loading}
         onApproveClick={onApproveClick}
         onDenyClick={onDenyClick}
+        onSuspendClick={onSuspendClick}
       />
       <Button className={classes.view} onClick={(event) => onViewDetailsClick(event)}>
         View Details
@@ -60,6 +61,7 @@ ListRowActions.propTypes = {
   disabledActions: PropTypes.bool,
   onApproveClick: PropTypes.func.isRequired,
   onDenyClick: PropTypes.func.isRequired,
+  onSuspendClick: PropTypes.func.isRequired,
   onViewDetailsClick: PropTypes.func.isRequired,
 };
 

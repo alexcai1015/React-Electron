@@ -22,11 +22,13 @@ export const theme = createMuiTheme({
     info: {
       main: '#2E2E2E',
     },
+    mainPurple: 'rgb(72, 34, 164)',
     white: '#FFFFFF',
     softBlack: '#444444',
     approvalGreen: '#81C784',
     denialRed: '#EB5757',
     denialDarkRed: '#C4495E',
+    suspendOrange: '#FF8C00',
     linkBlue: '#04AFD4',
     sectionTitleBlue: '#5E35B1',
     rowStripeGray: 'rgb(246,246,246)',

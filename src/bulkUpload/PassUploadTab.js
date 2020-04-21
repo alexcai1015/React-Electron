@@ -63,7 +63,7 @@ const acceptedFile = ['.csv', 'text/csv'];
 
 export const PassUploadTab = () => {
   const classes = useStyles();
-  const { error, isLoading, isCompleted, execute, reset: resetUpload } = useUploadFile(
+  const { error, isLoading, response, isCompleted, execute, reset: resetUpload } = useUploadFile(
     '/v1/batch/access-passes'
   );
   const [value, setValue] = useState(0);
@@ -71,6 +71,9 @@ export const PassUploadTab = () => {
   const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = useState(UPLOAD_TEXT);
   const [uploadBoxTextVehicle, setUploadBoxTextVehicle] = useState(UPLOAD_TEXT);
   const [isUploadSuccessModalOpen, setIsUploadSuccessModalOpen] = useState(false);
+  const [uploadSuccessModalMessage, setUploadSuccessModalMessage] = useState(
+    'We will send bulk upload results to individuals via SMS and email.'
+  );
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
@@ -91,8 +94,24 @@ export const PassUploadTab = () => {
   useEffect(() => {
     if (isCompleted && !error) {
       setIsUploadSuccessModalOpen(true);
+
+      if (response && JSON.parse(response)) {
+        const records = JSON.parse(response);
+        const recordsCount = records.length;
+
+        if (recordsCount > 0) {
+          const successRecordsCount = records.filter((r) => r.indexOf('Success') > 0).length;
+          const message =
+            `${successRecordsCount} out of ${recordsCount} records were successfully approved.\n\n` +
+            `${successRecordsCount} approved applicants will be notified via SMS/email to access their QR codes.\n` +
+            `${
+              recordsCount - successRecordsCount
+            } applicants with incomplete or invalid data will also be notified so they can manually register through RapidPass.PH.`;
+          setUploadSuccessModalMessage(message);
+        }
+      }
     }
-  }, [isCompleted, error]);
+  }, [isCompleted, error, response]);
 
   useEffect(() => {
     if (isCompleted && error) {
@@ -165,6 +184,7 @@ export const PassUploadTab = () => {
 
       <UploadSuccessModal
         open={isUploadSuccessModalOpen}
+        message={uploadSuccessModalMessage}
         handleClose={() => {
           setIsUploadSuccessModalOpen(false);
         }}

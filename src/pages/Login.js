@@ -38,7 +38,7 @@ export const Login = () => {
     <FormWrapper container direction="column" justify="center" alignItems="center">
       <form onSubmit={handleSubmit} style={{ width: 367 }} autoComplete="off">
         <ImageWrapper>
-          <img src={logo} height="250px" width="310px" alt="Logo" title="Logo" />
+          <img src={logo} height="250px" width="310px" alt="Logo" title={`v${process.env.REACT_APP_VERSION}`} />
         </ImageWrapper>
 
         <Box>

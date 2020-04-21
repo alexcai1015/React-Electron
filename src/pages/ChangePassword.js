@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { TextField, Button, Box, Typography } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@material-ui/icons';
 import { styled } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import qs from 'query-string';
 
+import { getUsername } from '../store/slices';
 import { CenteredForm } from '../common/components/CenteredForm';
-import { useActivateApprover } from '../common/hooks/useActivateApprover';
+import { useChangePassword } from '../common/hooks/useChangePassword';
 
 const MIN_LENGTH = 12;
 
 /** At least 12, at least 1 upper, 1 lower, 1 symbol. */
-// TODO remove the 11 value - already checked by min()?
 const REGEX_UPPER_LOWER_ALPHANUMERIC = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).(?=.*[#$^+=!*()@%&]).{11,}$/;
 
 const validationSchema = yup.object({
+  currentPassword: yup.string().required('Please provide your old password.'),
   password: yup
     .string()
     .required('Please provide your password.')
@@ -31,40 +32,25 @@ const validationSchema = yup.object({
   }),
 });
 
-export const ActivateUser = () => {
-  const location = useLocation();
+export const ChangePassword = () => {
   const { push } = useHistory();
+  const username = useSelector(getUsername);
 
-  const [username, setUsername] = useState(null);
-  const [activationCode, setActivationCode] = useState(null);
   const [isSomethingWentWrong, setIsSomethingWentWrong] = useState(false);
 
-  const { execute, isLoading, error, httpResponse } = useActivateApprover();
+  const { execute, isLoading, error, httpResponse } = useChangePassword();
 
   const { handleSubmit, handleChange, values, errors } = useFormik({
     initialValues: {
+      currentPassword: '',
       password: '',
       confirmPassword: '',
     },
-    onSubmit: ({ password }) => {
-      execute({ username, password, activationCode });
+    onSubmit: ({ currentPassword, password }) => {
+      execute({ username, currentPassword, newPassword: password });
     },
     validationSchema,
   });
-
-  useEffect(() => {
-    const { username: parsedUsername, activationCode: parsedActivationCode } = qs.parse(
-      location.search
-    );
-
-    if (!parsedUsername || !parsedActivationCode) {
-      push('/page-not-found');
-      return;
-    }
-
-    setUsername(parsedUsername);
-    setActivationCode(parsedActivationCode);
-  }, [activationCode, location, push]);
 
   useEffect(() => {
     if (httpResponse && httpResponse.status === 200) {
@@ -84,15 +70,30 @@ export const ActivateUser = () => {
 
   useEffect(() => {
     return () => {
-      setUsername('');
-      setActivationCode('');
       setIsSomethingWentWrong(false);
     };
   }, []);
 
   return (
-    <CenteredForm showLogo>
+    <CenteredForm>
       <form onSubmit={handleSubmit} style={{ width: 367 }}>
+        <FormFieldWrapper>
+          <Typography component="label" htmlFor="currentPassword">
+            Old Password
+          </Typography>
+          <FormField
+            name="currentPassword"
+            placeholder="Set Old Password"
+            label=""
+            type="password"
+            variant="outlined"
+            onChange={handleChange}
+            value={values.currentPassword}
+            helperText={errors.currentPassword}
+            error={!!errors.currentPassword}
+            disabled={isLoading}
+          />
+        </FormFieldWrapper>
         <FormFieldWrapper>
           <Typography component="label" htmlFor="password">
             Set Password
@@ -111,7 +112,7 @@ export const ActivateUser = () => {
           />
         </FormFieldWrapper>
         <FormFieldWrapper>
-          <Typography component="label" htmlFor="confirmPaslsword">
+          <Typography component="label" htmlFor="confirmPassword">
             Confirm Password
           </Typography>
           <FormField
@@ -131,14 +132,14 @@ export const ActivateUser = () => {
         {httpResponse && httpResponse.status === 200 && (
           <SuccessMessage>
             <CheckCircleIcon />
-            <span>Successfuly Activated!</span>
+            <span>Password change successful.</span>
           </SuccessMessage>
         )}
 
         {isSomethingWentWrong && (
           <ErrorMessage>
             <ErrorIcon />
-            <span>Something went wrong. Please Try Again.</span>
+            <span>Password change failed.</span>
           </ErrorMessage>
         )}
 
@@ -149,7 +150,7 @@ export const ActivateUser = () => {
           disabled={isLoading}
           fullWidth
         >
-          Activate Account
+          Change Password
         </SubmitButton>
       </form>
     </CenteredForm>
