@@ -106,7 +106,7 @@ export const PassUploadTab = () => {
             `${successRecordsCount} approved applicants will be notified via SMS/email to access their QR codes.\n` +
             `${
               recordsCount - successRecordsCount
-            } applicants with incomplete or invalid data will also be notified so they can manually register through RapidPass.PH.`;
+            } applicants with incomplete or invalid data will also be notified.`;
           setUploadSuccessModalMessage(message);
         }
       }
