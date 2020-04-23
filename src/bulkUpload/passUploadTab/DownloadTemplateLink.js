@@ -24,8 +24,12 @@ export const DownloadTemplateLink = ({ sourceURL = '', type = '' }) => {
         target="_blank"
         rel="noopener noreferrer"
       >
-        here.
+        here
       </a>
+      &nbsp;and attestation-form&nbsp;
+      <a href={sourceURL + '/templates/RapidPass_Attestation_Form.pdf'} target="_blank" rel="noopener noreferrer">
+        here
+      </a>.
     </Typography>
   );
 };

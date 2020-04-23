@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, Tabs, Tab, Typography, LinearProgress, styled } from '@material-ui/core';
-import { People, LocalShipping } from '@material-ui/icons';
+import { People } from '@material-ui/icons';
 import { DropzoneArea } from 'material-ui-dropzone';
 
 import { useUploadFile } from '../common/hooks/useUploadFile';
@@ -69,7 +69,6 @@ export const PassUploadTab = () => {
   const [value, setValue] = useState(0);
   const { showSnackbar } = useSnackbar();
   const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = useState(UPLOAD_TEXT);
-  const [uploadBoxTextVehicle, setUploadBoxTextVehicle] = useState(UPLOAD_TEXT);
   const [isUploadSuccessModalOpen, setIsUploadSuccessModalOpen] = useState(false);
   const [uploadSuccessModalMessage, setUploadSuccessModalMessage] = useState(
     'We will send bulk upload results to individuals via SMS and email.'
@@ -84,32 +83,44 @@ export const PassUploadTab = () => {
     execute(files[0]);
   };
 
-  const handleFileChangeVehicle = (files) => {
-    setUploadBoxTextVehicle(files[0].name);
-    execute(files[0]);
-  };
-
   const handleFileAddedMessage = (fileName) => `${fileName} selected.`;
+
+  const getBulkUploadStats = (results) => {
+    let stats = {
+      approved: 0,
+      declined: 0,
+      existing: 0,
+      approvedExisting: 0
+    };
+
+    results.forEach((result) => {
+      if (result.indexOf('Success') > 0) stats.approved += 1;
+      else if (result.indexOf('declined') > 0) stats.declined += 1;
+      else if (result.indexOf('No change.') > 0) stats.existing += 1;
+    });
+
+    return stats;
+  }
 
   useEffect(() => {
     if (isCompleted && !error) {
       setIsUploadSuccessModalOpen(true);
 
-      if (response && JSON.parse(response)) {
+      try {
         const records = JSON.parse(response);
         const recordsCount = records.length;
 
         if (recordsCount > 0) {
-          const successRecordsCount = records.filter((r) => r.indexOf('Success') > 0).length;
+          const recordsStats = getBulkUploadStats(records);
           const message =
-            `${successRecordsCount} out of ${recordsCount} records were successfully approved.\n\n` +
-            `${successRecordsCount} approved applicants will be notified via SMS/email to access their QR codes.\n` +
-            `${
-              recordsCount - successRecordsCount
-            } applicants with incomplete or invalid data will also be notified.`;
+            `${recordsStats.approved} out of ${recordsCount} records were successfully approved.\n\n` +
+            `${recordsStats.approved} approved applicants will be notified via SMS/email to access their QR codes.\n` +
+            `${recordsStats.existing} of existing approved records from the file. No change done.\n` +
+            `${recordsStats.declined} applicants with incomplete or invalid data will also be notified via SMS/email.`;
           setUploadSuccessModalMessage(message);
         }
       }
+      catch(e) {}
     }
   }, [isCompleted, error, response]);
 
@@ -134,7 +145,6 @@ export const PassUploadTab = () => {
         textColor="primary"
       >
         <Tab icon={<People />} label="FOR INDIVIDUALS" />
-        <Tab icon={<LocalShipping />} label="FOR VEHICLES" />
       </Tabs>
 
       <TabPanel value={value} index={0} className={classes.tabPanel}>
@@ -148,25 +158,6 @@ export const PassUploadTab = () => {
             acceptedFiles={acceptedFile}
             filesLimit={1}
             dropzoneText={uploadBoxTextIndividual}
-            showPreviewsInDropzone={false}
-            dropzoneParagraphClass={classes.uploadBoxText}
-            getFileAddedMessage={handleFileAddedMessage}
-            showAlerts
-          />
-        </div>
-      </TabPanel>
-
-      <TabPanel value={value} index={1} className={classes.tabPanel}>
-        <h3>Bulk Upload File for Vehicles</h3>
-        Please follow the fields format to avoid data error upon uploading.
-        <br />
-        <DownloadTemplateLink type={PassType.VEHICLE} />
-        <div className={classes.uploadBox}>
-          <DropzoneArea
-            onChange={handleFileChangeVehicle}
-            acceptedFiles={acceptedFile}
-            filesLimit={1}
-            dropzoneText={uploadBoxTextVehicle}
             showPreviewsInDropzone={false}
             dropzoneParagraphClass={classes.uploadBoxText}
             getFileAddedMessage={handleFileAddedMessage}
