@@ -1,20 +1,24 @@
 image: docker:latest
 
 stages:
-  - develop
-  - stage
+  - build
+  - test
   - deploy
+  - production
 
 services:
   - docker:dind
 
 variables:
-  STAGE_IMAGE: "dctx/rapidpass-approver-staging"
   DEVELOP_IMAGE: "dctx/rapidpass-approver-develop"
+  TEST_IMAGE: "dctx/rapidpass-approver-test"
+  STAGE_IMAGE: "dctx/rapidpass-approver-staging"
   PROD_IMAGE: "dctx/rapidpass-approver"
 
-docker-build-develop:
-  stage: develop
+docker-build:
+  stage: build
+  only:
+    - develop
   before_script:
     - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
   script:
@@ -28,11 +32,31 @@ docker-build-develop:
   environment:
     name: development
     url: https://rapidpass-approver-dev.azurewebsites.net
+
+
+# We have no automated tests, so for test stage, just redeploy to test env for manual testing.
+docker-test:
+  stage: test
   only:
     - develop
+  before_script:
+    - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
+  script:
+    - docker pull "$ACR_REGISTRY/$TEST_IMAGE:latest" || true
+    - docker build --cache-from "$ACR_REGISTRY/$TEST_IMAGE:latest"
+                    --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_TEST
+                    --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_TEST
+                    -t "$ACR_REGISTRY/$TEST_IMAGE:latest" -t "$ACR_REGISTRY/$TEST_IMAGE:$CI_BUILD_ID" .
+    - docker push "$ACR_REGISTRY/$TEST_IMAGE:latest"
+    - docker push "$ACR_REGISTRY/$TEST_IMAGE:$CI_BUILD_ID"
+  environment:
+    name: test
+    url: https://rapidpass-approver-test.azurewebsites.net
 
-docker-build-stage:
-  stage: stage
+docker-stage:
+  stage: deploy
+  only:
+    - /^release\/.*$/
   before_script:
     - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
   script:
@@ -47,22 +71,23 @@ docker-build-stage:
     name: staging
     url: https://rapidpass-approver-staging.azurewebsites.net
   only:
-    - staging
+    - /^release\/.*$/
 
-docker-build-prod:
-  stage: deploy
+docker-deploy:
+  stage: production
+  only:
+    - master
+  when: manual
   before_script:
     - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
   script:
     - docker pull "$ACR_REGISTRY/$PROD_IMAGE:latest" || true
     - docker build --cache-from "$ACR_REGISTRY/$PROD_IMAGE:latest"
-                   --build-arg REACT_APP_API_URL=$REACT_APP_API_URL
-                   --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY
-                   -t "$ACR_REGISTRY/$PROD_IMAGE:latest" -t "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID" .
+                    --build-arg REACT_APP_API_URL=$REACT_APP_API_URL
+                    --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY
+                    -t "$ACR_REGISTRY/$PROD_IMAGE:latest" -t "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID" .
     - docker push "$ACR_REGISTRY/$PROD_IMAGE:latest"
     - docker push "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID"
   environment:
     name: production
     url: https://dashboard.rapidpass.ph
-  only:
-    - master
