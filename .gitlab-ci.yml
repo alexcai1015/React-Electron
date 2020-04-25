@@ -35,7 +35,7 @@ docker-build:
 
 
 # We have no automated tests, so for test stage, just redeploy to test env for manual testing.
-docker-build:
+docker-test:
   stage: test
   only:
     - develop
