@@ -5,9 +5,16 @@ import { styled } from '@material-ui/core/styles';
 
 import MainLogo from './MainLogo';
 
-export const CenteredForm = ({ showLogo, children }) => {
+export const CenteredForm = ({ formTitle, showLogo, children }) => {
   return (
-    <FormWrapper container direction="column" justify="center" alignItems="center">
+
+    <FormWrapper container direction="column" justify="center" alignItems="center"
+    >
+      {formTitle && (
+        <h2>
+          {formTitle}
+        </h2>
+      )}
       {showLogo && (
         <ImageWrapper>
           <MainLogo />
@@ -15,10 +22,12 @@ export const CenteredForm = ({ showLogo, children }) => {
       )}
       {children}
     </FormWrapper>
+
   );
 };
 
 CenteredForm.propTypes = {
+  formTitle: PropTypes.string,
   showLogo: PropTypes.bool,
   children: PropTypes.node.isRequired,
 };
