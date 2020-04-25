@@ -10,15 +10,15 @@ export const CenteredForm = ({ formTitle, showLogo, children }) => {
 
     <FormWrapper container direction="column" justify="center" alignItems="center"
     >
-      {formTitle && (
-        <h2>
-          {formTitle}
-        </h2>
-      )}
       {showLogo && (
         <ImageWrapper>
           <MainLogo />
         </ImageWrapper>
+      )}
+      {formTitle && (
+        <h2>
+          {formTitle}
+        </h2>
       )}
       {children}
     </FormWrapper>

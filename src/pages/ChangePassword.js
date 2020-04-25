@@ -48,7 +48,7 @@ export const ChangePassword = () => {
       confirmPassword: '',
       showCurrentPassword: false,
       showPassword: false,
-      showConfirmPassword: false,
+      showConfirmPassword: false
     },
     onSubmit: ({ currentPassword, password }) => {
       execute({ username, currentPassword, newPassword: password });
