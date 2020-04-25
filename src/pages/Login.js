@@ -30,7 +30,7 @@ export const Login = () => {
     validationSchema: schema,
   });
 
-  const handleClickShowPassword = (toggle) => {
+  const handleShowPassword = (toggle) => {
     setValues({ ...values, showPassword: toggle });
   };
 
@@ -74,12 +74,12 @@ export const Login = () => {
           <FormField
             name="password"
             placeholder="Enter Password"
-            type={values.showPassword ? 'text' : 'password'}
             value={values.password}
             onChange={handleChange}
             disabled={isLoading}
+            type={values.showPassword ? 'text' : 'password'}
             endAdornment={
-              <PasswordPeeker onPressHold={handleClickShowPassword} value={values.showPassword} />
+              <PasswordPeeker onPressHold={handleShowPassword} value={values.showPassword} />
             }
           />
         </Box>
