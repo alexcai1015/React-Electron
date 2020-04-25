@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
-import { TextField, Button, Grid, Box, Typography } from '@material-ui/core';
+import { Button, Grid, Box, Typography, Input, InputAdornment, IconButton, Tooltip } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import logo from '../assets/logo_purple_title.svg';
 import { useLogin } from '../common/hooks';
@@ -17,16 +19,22 @@ export const Login = () => {
   const { push } = useHistory();
   const { execute, httpResponse, error, data, isLoading } = useLogin();
 
-  const { handleSubmit, handleChange, values } = useFormik({
+  const { handleSubmit, handleChange, values, setValues } = useFormik({
     initialValues: {
       username: '',
       password: '',
+      showPassword: false
     },
     onSubmit: ({ username, password }) => {
       execute({ username, password });
     },
     validationSchema: schema,
   });
+
+  const handleClickShowPassword = (toggle) => {
+    setValues({ ...values, showPassword: toggle });
+  };
+
 
   useEffect(() => {
     if (httpResponse && httpResponse.status === 200) {
@@ -62,12 +70,18 @@ export const Login = () => {
           <FormField
             name="password"
             placeholder="Enter Password"
-            type="password"
-            variant="outlined"
+            type={values.showPassword ? 'text' : 'password'}
             value={values.password}
             onChange={handleChange}
             disabled={isLoading}
+            endAdornment={
+              <PasswordPeeker
+                hint="Press and hold to peek password"
+                onPressHold={handleClickShowPassword}
+                value={values.showPassword} />
+            }
           />
+
         </Box>
 
         {error && (
@@ -98,7 +112,7 @@ const ImageWrapper = styled(Box)({
   marginBottom: 74,
 });
 
-const FormField = styled(TextField)({
+const FormField = styled(Input)({
   width: '100%',
   marginBottom: 22,
 });
@@ -117,3 +131,17 @@ const SubmitButton = styled(Button)(({ theme }) => ({
 const TypographyError = styled(Typography)({
   color: 'red',
 });
+
+const PasswordPeeker = ({ hint, onPressHold, value }) => (
+  <InputAdornment position="end">
+    <Tooltip title={hint}>
+      <IconButton
+        aria-label="toggle password visibility"
+        onMouseDown={() => onPressHold(true)}
+        onMouseUp={() => onPressHold(false)}
+      >
+        {value ? <Visibility /> : <VisibilityOff />}
+      </IconButton>
+    </Tooltip>
+  </InputAdornment>
+)
