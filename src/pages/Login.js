@@ -1,14 +1,13 @@
 import React, { useEffect } from 'react';
-import { Button, Grid, Box, Typography, Input, InputAdornment, IconButton, Tooltip } from '@material-ui/core';
+import { Button, Grid, Box, Typography, Input } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
 import { useFormik } from 'formik';
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
 
 import logo from '../assets/logo_purple_title.svg';
 import { useLogin } from '../common/hooks';
+import { PasswordPeeker } from '../common/components/PasswordPeeker';
 
 const schema = yup.object({
   username: yup.string().required('Email is required'),
@@ -23,7 +22,7 @@ export const Login = () => {
     initialValues: {
       username: '',
       password: '',
-      showPassword: false
+      showPassword: false,
     },
     onSubmit: ({ username, password }) => {
       execute({ username, password });
@@ -35,7 +34,6 @@ export const Login = () => {
     setValues({ ...values, showPassword: toggle });
   };
 
-
   useEffect(() => {
     if (httpResponse && httpResponse.status === 200) {
       push('/');
@@ -46,7 +44,13 @@ export const Login = () => {
     <FormWrapper container direction="column" justify="center" alignItems="center">
       <form onSubmit={handleSubmit} style={{ width: 367 }} autoComplete="off">
         <ImageWrapper>
-          <img src={logo} height="250px" width="310px" alt="Logo" title={`v${process.env.REACT_APP_VERSION}`} />
+          <img
+            src={logo}
+            height="250px"
+            width="310px"
+            alt="Logo"
+            title={`v${process.env.REACT_APP_VERSION}`}
+          />
         </ImageWrapper>
 
         <Box>
@@ -75,13 +79,9 @@ export const Login = () => {
             onChange={handleChange}
             disabled={isLoading}
             endAdornment={
-              <PasswordPeeker
-                hint="Press and hold to peek password"
-                onPressHold={handleClickShowPassword}
-                value={values.showPassword} />
+              <PasswordPeeker onPressHold={handleClickShowPassword} value={values.showPassword} />
             }
           />
-
         </Box>
 
         {error && (
@@ -131,17 +131,3 @@ const SubmitButton = styled(Button)(({ theme }) => ({
 const TypographyError = styled(Typography)({
   color: 'red',
 });
-
-const PasswordPeeker = ({ hint, onPressHold, value }) => (
-  <InputAdornment position="end">
-    <Tooltip title={hint}>
-      <IconButton
-        aria-label="toggle password visibility"
-        onMouseDown={() => onPressHold(true)}
-        onMouseUp={() => onPressHold(false)}
-      >
-        {value ? <Visibility /> : <VisibilityOff />}
-      </IconButton>
-    </Tooltip>
-  </InputAdornment>
-)
