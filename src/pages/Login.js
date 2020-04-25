@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { TextField, Button, Grid, Box, Typography } from '@material-ui/core';
+import { Button, Grid, Box, Typography, Input } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
@@ -7,6 +7,7 @@ import { useFormik } from 'formik';
 
 import logo from '../assets/logo_purple_title.svg';
 import { useLogin } from '../common/hooks';
+import { PasswordPeeker } from '../common/components/PasswordPeeker';
 
 const schema = yup.object({
   username: yup.string().required('Email is required'),
@@ -17,16 +18,21 @@ export const Login = () => {
   const { push } = useHistory();
   const { execute, httpResponse, error, data, isLoading } = useLogin();
 
-  const { handleSubmit, handleChange, values } = useFormik({
+  const { handleSubmit, handleChange, values, setValues } = useFormik({
     initialValues: {
       username: '',
       password: '',
+      showPassword: false,
     },
     onSubmit: ({ username, password }) => {
       execute({ username, password });
     },
     validationSchema: schema,
   });
+
+  const handleShowPassword = (toggle) => {
+    setValues({ ...values, showPassword: toggle });
+  };
 
   useEffect(() => {
     if (httpResponse && httpResponse.status === 200) {
@@ -38,7 +44,13 @@ export const Login = () => {
     <FormWrapper container direction="column" justify="center" alignItems="center">
       <form onSubmit={handleSubmit} style={{ width: 367 }} autoComplete="off">
         <ImageWrapper>
-          <img src={logo} height="250px" width="310px" alt="Logo" title={`v${process.env.REACT_APP_VERSION}`} />
+          <img
+            src={logo}
+            height="250px"
+            width="310px"
+            alt="Logo"
+            title={`v${process.env.REACT_APP_VERSION}`}
+          />
         </ImageWrapper>
 
         <Box>
@@ -62,11 +74,13 @@ export const Login = () => {
           <FormField
             name="password"
             placeholder="Enter Password"
-            type="password"
-            variant="outlined"
             value={values.password}
             onChange={handleChange}
             disabled={isLoading}
+            type={values.showPassword ? 'text' : 'password'}
+            endAdornment={
+              <PasswordPeeker onPressHold={handleShowPassword} value={values.showPassword} />
+            }
           />
         </Box>
 
@@ -98,7 +112,7 @@ const ImageWrapper = styled(Box)({
   marginBottom: 74,
 });
 
-const FormField = styled(TextField)({
+const FormField = styled(Input)({
   width: '100%',
   marginBottom: 22,
 });
