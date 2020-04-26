@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { Switch, Route, Redirect as ReactRouterRedirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import { useKeycloak } from '@react-keycloak/web';
 
 import { Login } from './pages/Login';
 import { ActivateUser } from './pages/ActivateUser';
@@ -10,6 +11,7 @@ import { NavigationBar } from './common/components/navigationBar/NavigationBar';
 import { getUserToken, getUsername } from './store/slices';
 import { useGetUserAporTypes } from './common/hooks';
 import PageSpinner from './common/components/PageSpinner';
+import { Auth } from './pages/Auth';
 
 /* catch-all */
 const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
@@ -20,8 +22,17 @@ NotFoundRoute.propTypes = {
 
 function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   const username = useSelector(getUsername);
-  const authenticated = !!accessCode;
+  const { keycloak } = useKeycloak();
+  const { authenticated } = keycloak;
   const { query, isLoading } = useGetUserAporTypes();
+
+  useEffect(() => {
+    if (authenticated === false) {
+      keycloak.login({
+        redirectUri: 'http://localhost:3000/auth',
+      });
+    }
+  }, [authenticated, keycloak]);
 
   useEffect(() => {
     query(username);
@@ -32,17 +43,11 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   }
 
   const getElement = ({ ...props }) =>
-    authenticated ? (
+    authenticated && (
       <>
         <NavigationBar username={username} />
         <Component {...props} />
       </>
-    ) : (
-      <ReactRouterRedirect
-        to={{
-          pathname: '/login',
-        }}
-      />
     );
 
   return <Route {...rest} render={getElement} />;
@@ -55,6 +60,7 @@ ProtectedRoute.propTypes = {
 
 export function AppRoutes() {
   const token = useSelector(getUserToken);
+  console.log('token ', token);
   return (
     <Switch>
       <Route
@@ -64,6 +70,7 @@ export function AppRoutes() {
       />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
       <Route exact path="/activate-user" render={() => <ActivateUser />} />
+      <Route exact path="/auth" render={() => <Auth />} />
 
       {PROTECTED_ROUTES.map(({ path, component, exact }) => (
         <ProtectedRoute
