@@ -18,7 +18,7 @@ export function App() {
   const history = createHistory();
 
   return (
-    <FeatureToggle featureKey="maintenance" fallback={<Maintenance />} environment={serverEnv}>
+    <FeatureToggle environment={serverEnv} featureKey="maintenance" fallback={
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <Router history={history}>
@@ -31,6 +31,8 @@ export function App() {
           </Router>
         </PersistGate>
       </Provider>
+    } >
+      <Maintenance />
     </FeatureToggle>
   );
 }

@@ -6,7 +6,7 @@ export const serverEnv = process.env.REACT_APP_ENV || process.env.NODE_ENV;
 export const flagConfig = {
   appName: serverEnv,
   url: 'https://gitlab.com/api/v4/feature_flags/unleash/17749136',
-  instanceId: 'ruL9XsszeoKcFRbAwz9S',
+  instanceId: 'swfN4v8HT29sNLj9Z2mK',
 };
 
 /**
