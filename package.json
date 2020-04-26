@@ -1,6 +1,6 @@
 {
   "name": "rapidpass-dashboard",
-  "version": "0.19.2",
+  "version": "0.19.3",
   "private": true,
   "engines": {
     "node": ">=12"
@@ -30,6 +30,7 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
     "react-table": "^7.0.0",
+    "react-unleash-flags": "^1.0.2",
     "redux": "^4.0.5",
     "redux-devtools-extension": "^2.13.8",
     "redux-persist": "^6.0.0",
