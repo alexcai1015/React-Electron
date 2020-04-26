@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { TextField, Button, Box, Typography } from '@material-ui/core';
+import { Input, Button, Box, Typography } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@material-ui/icons';
 import { styled } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
@@ -9,6 +9,7 @@ import qs from 'query-string';
 
 import { CenteredForm } from '../common/components/CenteredForm';
 import { useActivateApprover } from '../common/hooks/useActivateApprover';
+import { PasswordPeeker } from '../common/components/PasswordPeeker';
 
 const MIN_LENGTH = 12;
 
@@ -41,16 +42,27 @@ export const ActivateUser = () => {
 
   const { execute, isLoading, error, httpResponse } = useActivateApprover();
 
-  const { handleSubmit, handleChange, values, errors } = useFormik({
+  const { handleSubmit, handleChange, setValues, values, errors } = useFormik({
     initialValues: {
       password: '',
       confirmPassword: '',
+      showPassword: false,
+      showConfirmPassword: false
     },
     onSubmit: ({ password }) => {
       execute({ username, password, activationCode });
     },
     validationSchema,
   });
+
+  const handleShowPassword = (toggle) => {
+    setValues({ ...values, showPassword: toggle });
+  };
+
+  const handleShowConfirmPassword = (toggle) => {
+    setValues({ ...values, showConfirmPassword: toggle });
+  };
+
 
   useEffect(() => {
     const { username: parsedUsername, activationCode: parsedActivationCode } = qs.parse(
@@ -91,7 +103,7 @@ export const ActivateUser = () => {
   }, []);
 
   return (
-    <CenteredForm showLogo>
+    <CenteredForm showLogo formTitle="Activate User">
       <form onSubmit={handleSubmit} style={{ width: 367 }}>
         <FormFieldWrapper>
           <Typography component="label" htmlFor="password">
@@ -101,13 +113,16 @@ export const ActivateUser = () => {
             name="password"
             placeholder="Set Password"
             label=""
-            type="password"
             variant="outlined"
             value={values.password}
             onChange={handleChange}
             helperText={errors.password}
             error={!!errors.password}
             disabled={isLoading}
+            type={values.showPassword ? 'text' : 'password'}
+            endAdornment={
+              <PasswordPeeker onPressHold={handleShowPassword} value={values.showPassword} />
+            }
           />
         </FormFieldWrapper>
         <FormFieldWrapper>
@@ -118,13 +133,16 @@ export const ActivateUser = () => {
             name="confirmPassword"
             placeholder="Confirm Password"
             label=""
-            type="password"
             variant="outlined"
             value={values.confirmPassword}
             onChange={handleChange}
             helperText={errors.confirmPassword}
             error={!!errors.confirmPassword}
             disabled={isLoading}
+            type={values.showConfirmPassword ? 'text' : 'password'}
+            endAdornment={
+              <PasswordPeeker onPressHold={handleShowConfirmPassword} value={values.showConfirmPassword} />
+            }
           />
         </FormFieldWrapper>
 
@@ -156,7 +174,7 @@ export const ActivateUser = () => {
   );
 };
 
-const FormField = styled(TextField)({
+const FormField = styled(Input)({
   width: '100%',
   marginTop: 5,
 });

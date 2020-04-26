@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { App } from './App';
+import { FeatureFlagsProvider } from './common/components/FeatureToggle';
 import * as serviceWorker from './serviceWorker';
+import { App } from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <FeatureFlagsProvider>
+      <App />
+    </FeatureFlagsProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
