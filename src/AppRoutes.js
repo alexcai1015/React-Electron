@@ -60,7 +60,6 @@ ProtectedRoute.propTypes = {
 
 export function AppRoutes() {
   const token = useSelector(getUserToken);
-  console.log('token ', token);
   return (
     <Switch>
       <Route
