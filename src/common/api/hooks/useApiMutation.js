@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useKeycloak } from '@react-keycloak/web';
 
 import { httpPost, httpPut, httpPatch, httpDelete } from '../api';
 import { HttpMethod } from '../constants';
 import { objToEncodedURI, applyPathParams, getConfig } from '../utils';
 import { maybe } from '../../utils/monads';
-import { getUserToken } from '../../../store/slices';
 
 const getMutationMethod = (method) => {
   return (
@@ -25,7 +24,8 @@ export const useApiMutation = (url, method, httpConfig) => {
   const [data, setData] = useState({ httpResponse: null, data: null });
   const [error, setError] = useState(null);
   const unmounted = useRef(false);
-  const token = useSelector(getUserToken);
+  const { keycloak } = useKeycloak();
+  const { token } = keycloak;
   const baseConfig = maybeObject(httpConfig);
 
   useEffect(() => {
