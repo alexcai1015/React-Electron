@@ -60,7 +60,7 @@ export function NavigationBar({ username }) {
 
           <div className={classes.title}>
             <Typography variant="h6">RapidPass.PH Dashboard</Typography>
-            <sup>{`v${process.env.REACT_APP_VERSION}`}</sup>
+            <sup title={process.env.REACT_APP_ENV}>{`v${process.env.REACT_APP_VERSION}`}</sup>
           </div>
 
           {PROTECTED_ROUTES.filter(({ show }) => show).map(({ path, title }) => (
