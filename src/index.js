@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { FlagsProvider } from 'react-unleash-flags';
 
-import { App } from './App';
-import { flagConfig } from "./common/components/FeatureToggle";
+import { FeatureFlagsProvider } from "./common/components/FeatureToggle";
 import * as serviceWorker from './serviceWorker';
+import { App } from './App';
 
 ReactDOM.render(
   <React.StrictMode>
-    <FlagsProvider config={flagConfig}>
+    <FeatureFlagsProvider>
       <App />
-    </FlagsProvider>
+    </FeatureFlagsProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
