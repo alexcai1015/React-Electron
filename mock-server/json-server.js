@@ -1,16 +1,16 @@
-const jsonServer = require('json-server');
-const { Router } = require('express');
+const fs = require('fs');
+
+const express = require('express');
 const cors = require('cors');
 
-const server = jsonServer.create();
-const router = jsonServer.router('db.json');
-const middlewares = jsonServer.defaults();
+const server = express();
 
 // server configurations
 const RP_API_KEY = 'XXXX';
 const BASEPATH = '/api/v1';
 const PORT = 3001;
-const privateRoutes = ['/api/v1/registry/access-passes'];
+const ENABLE_AUTH_CHECK = false;
+const CORS_ORIGIN = 'http://localhost:3000';
 
 let currentSession = '';
 
@@ -27,90 +27,62 @@ function validateRpApikey(authString) {
 }
 
 function authenticateRequest(req, res, next) {
+  if (ENABLE_AUTH_CHECK === false) {
+    return next();
+  }
+
   const authString = req.get('authorization');
   const rpApiKey = req.get('rp-api-key');
 
-  // remove all private routes that don't match
-  // or are properly authenticated
-  const remaining = privateRoutes.filter((privateRoute) => {
-    if (req.path.startsWith(privateRoute)) {
-      console.log(`running auth for ${req.path}`);
-
-      if (!authString || !rpApiKey) {
-        return false;
-      }
-
-      return !(validateSession(authString) && validateRpApikey(rpApiKey));
-    }
-
-    // remove this from our list
-    return false;
-  });
-
-  if (remaining.length > 0) {
-    return res.send(401).end();
+  if (validateSession(authString) && validateRpApikey(rpApiKey)) {
+    return next();
   }
 
-  return next();
+  return res.send(401).end();
 }
 
-const customRouter = new Router();
+const customRouter = express.Router();
 
-// override authentication
-customRouter.post(`${BASEPATH}/users/auth`, (req, res) => {
+customRouter.get(`${BASEPATH}/users/:erwinatuli/apor-types`, (req, res) => {
   currentSession = generateSession();
 
-  res.json({
-    accessCode: currentSession,
-  });
+  res.json(['AB', 'CD']);
 });
 
-// customRouter.get(`${BASEPATH}/registry/access-passes`, (req, res, next) => {
-//   const request = req;
-//   const auth = request.get('authorization');
+customRouter.get(`${BASEPATH}/users//apor-types`, (req, res) => {
+  currentSession = generateSession();
 
-//   if (validateSession(auth) === false) {
-
-//     return res.end();
-//   }
-
-//   return next();
-// });
+  res.json(['AB', 'CD']);
+});
 
 // modify the default response
-router.render = (req, res) => {
-  res.jsonp({
+customRouter.get(`${BASEPATH}/registry/access-passes`, (req, res) => {
+  const accessPasses = JSON.parse(fs.readFileSync(`${__dirname}/db.json`).toString());
+  console.log(accessPasses);
+
+  res.send({
     currentPage: 0,
     currentPageRows: 15,
     totalPages: 1,
     totalRows: 15,
     hasNext: true,
     hasPrevious: false,
-    rapidPassList: res.locals.data,
+    rapidPassList: accessPasses['access-passes'],
     firstPage: true,
     lastPage: false,
   });
-};
-
-// use a different Id
-router.db._.id = 'referenceId';
-
-// console.log("id", router.db._.id);
+});
 
 server.use(
-  jsonServer.rewriter({
-    // '/access-passes/:id': '/access-passes?',
+  cors({
+    credentials: true,
+    origin: CORS_ORIGIN,
   })
 );
 
-server.use(cors());
 server.use(authenticateRequest);
 server.use(customRouter);
-server.use(`${BASEPATH}/registry`, router);
-server.use(middlewares);
-server.use(jsonServer.bodyParser);
-server.use(router);
 
 server.listen(PORT, () => {
-  console.log(`SON Server is running on port ${PORT}`);
+  console.log(`JSON Server is running on port ${PORT}`);
 });

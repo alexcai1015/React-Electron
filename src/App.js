@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 import { PersistGate } from 'redux-persist/integration/react';
+import { KeycloakProvider } from '@react-keycloak/web';
 
 import { theme } from './theme';
 import createHistory from './history';
@@ -18,6 +19,7 @@ export function App() {
   const history = createHistory();
 
   return (
+  <KeycloakProvider keycloak={keycloak}>
     <FeatureToggle
       environment={serverEnv}
       featureKey="maintenance"
@@ -37,6 +39,7 @@ export function App() {
         </PersistGate>
       </Provider>
     </FeatureToggle>
+    </KeycloakProvider>
   );
 }
 
