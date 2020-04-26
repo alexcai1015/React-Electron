@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 
 import logo from '../../../assets/rapidpass.svg';
 import { useLogout } from '../../hooks';
-import { serverEnv } from "../FeatureToggle";
+import { serverEnv } from "../FeatureToggle"
 import UserMenu from './UserMenu';
 import { PROTECTED_ROUTES } from './ProtectedRoutes';
 
