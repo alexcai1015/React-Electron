@@ -13,6 +13,7 @@ import { AppRoutes } from './AppRoutes';
 import { SnackbarProvider } from './context';
 import { Maintenance } from './pages/Maintenance';
 import { FeatureToggle, serverEnv } from './common/components/FeatureToggle';
+import keycloak from './keycloak';
 
 export function App() {
 
