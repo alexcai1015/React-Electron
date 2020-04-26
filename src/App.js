@@ -11,27 +11,32 @@ import { store, persistor } from './store';
 import { AppRoutes } from './AppRoutes';
 import { SnackbarProvider } from './context';
 import { Maintenance } from './pages/Maintenance';
+import { FeatureToggle, serverEnv } from './common/components/FeatureToggle';
 
 export function App() {
+
   const history = createHistory();
 
-  if (Number(process.env.REACT_APP_MAINTENANCE)) {
-    return <Maintenance />;
-  }
-
   return (
-    <Provider store={store}>
-      <PersistGate persistor={persistor}>
-        <Router history={history}>
-          <MuiThemeProvider theme={theme}>
-            <SnackbarProvider>
-              <AppRoutes history={history} />
-            </SnackbarProvider>
-            <CssBaseline />
-          </MuiThemeProvider>
-        </Router>
-      </PersistGate>
-    </Provider>
+    <FeatureToggle
+      environment={serverEnv}
+      featureKey="maintenance"
+      fallback={<Maintenance />}
+      invert={true}
+    >
+      <Provider store={store}>
+        <PersistGate persistor={persistor}>
+          <Router history={history}>
+            <MuiThemeProvider theme={theme}>
+              <SnackbarProvider>
+                <AppRoutes history={history} />
+              </SnackbarProvider>
+              <CssBaseline />
+            </MuiThemeProvider>
+          </Router>
+        </PersistGate>
+      </Provider>
+    </FeatureToggle>
   );
 }
 
