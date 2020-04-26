@@ -18,7 +18,8 @@ export const Auth = () => {
       const { token } = keycloak;
       const xsrfToken = keycloak.sessionId;
       const user = { ...profile, token, xsrfToken };
-      console.log('saving user', user);
+
+      // console.log('saving user', user);
 
       dispatch(
         saveUser({
@@ -32,7 +33,7 @@ export const Auth = () => {
     if (authenticated === true) {
       loadProfile();
     } else {
-      console.log('redirect out');
+      // console.log('redirect out');
     }
   }, [push, authenticated, keycloak, dispatch]);
 
