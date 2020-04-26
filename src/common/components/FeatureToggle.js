@@ -16,8 +16,8 @@ export const FeatureFlagsProvider = ({ children }) => {
   return isFeatureFlagUsable ? (
     <FlagsProvider config={flagConfig}>{children}</FlagsProvider>
   ) : (
-    <>{children}</>
-  );
+      <>{children}</>
+    );
 };
 
 FeatureFlagsProvider.propTypes = {
@@ -29,17 +29,19 @@ FeatureFlagsProvider.propTypes = {
  * Toggles two nodes (children, fallback) depending on the toggle
  * in Gitlab > Operations > Feature Flags
  */
-export const FeatureToggle = ({ featureKey, environment: env, children, fallback }) => {
+export const FeatureToggle = ({ featureKey, environment: env, invert, children, fallback }) => {
+  if (!isFeatureFlagUsable) {
+    return (<>{children}</>);
+  }
+
   const feature = featureKey + (env ? `-${env}` : ''); // naming convention
   // when env is not provided, this feature key will affect all servers at once.
-  return !isFeatureFlagUsable ? (
-    <>{children}</>
-  ) : (
+  return (
     <>
-      <FeatureFlag name={feature}>{children}</FeatureFlag>
+      <FeatureFlag name={feature} invert={invert}>{children}</FeatureFlag>
 
       {fallback && (
-        <FeatureFlag name={feature} invert>
+        <FeatureFlag name={feature} invert={!invert}>
           {fallback}
         </FeatureFlag>
       )}
@@ -52,4 +54,5 @@ FeatureToggle.propTypes = {
   children: PropTypes.node.isRequired,
   fallback: PropTypes.node,
   environment: PropTypes.string,
+  invert: PropTypes.bool
 };
