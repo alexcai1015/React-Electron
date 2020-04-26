@@ -2,6 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FeatureFlag } from 'react-unleash-flags';
 
+export const serverEnv = process.env.REACT_APP_ENV || process.env.NODE_ENV;
+export const flagConfig = {
+  appName: serverEnv,
+  url: 'https://gitlab.com/api/v4/feature_flags/unleash/17749136',
+  instanceId: 'ruL9XsszeoKcFRbAwz9S',
+};
+
 /**
  * Powered by Gitlab CI Feature Flags
  * Toggles two nodes (children, fallback) depending on the toggle

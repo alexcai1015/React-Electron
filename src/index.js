@@ -3,15 +3,8 @@ import ReactDOM from 'react-dom';
 import { FlagsProvider } from 'react-unleash-flags';
 
 import { App } from './App';
+import { flagConfig } from "./common/components/FeatureToggle";
 import * as serviceWorker from './serviceWorker';
-
-// we can also define the config in code instead of using env vars
-const flagConfig = {
-  appName: process.env.NODE_ENV,
-  url: 'https://gitlab.com/api/v4/feature_flags/unleash/17749136',
-  instanceId: 'ruL9XsszeoKcFRbAwz9S',
-};
-
 
 ReactDOM.render(
   <React.StrictMode>

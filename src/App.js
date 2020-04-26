@@ -11,14 +11,14 @@ import { store, persistor } from './store';
 import { AppRoutes } from './AppRoutes';
 import { SnackbarProvider } from './context';
 import { Maintenance } from './pages/Maintenance';
-import { FeatureToggle } from './common/components/FeatureToggle';
+import { FeatureToggle, serverEnv } from './common/components/FeatureToggle';
 
 export function App() {
-  const env = process.env.REACT_APP_ENV || process.env.NODE_ENV;
+
   const history = createHistory();
 
   return (
-    <FeatureToggle featureKey="maintenance" fallback={<Maintenance />} environment={env}>
+    <FeatureToggle featureKey="maintenance" fallback={<Maintenance />} environment={serverEnv}>
       <Provider store={store}>
         <PersistGate persistor={persistor}>
           <Router history={history}>
