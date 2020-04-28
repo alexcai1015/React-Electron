@@ -19,11 +19,7 @@ export const SnackbarProvider = ({ children }) => {
       }}
     >
       {children}
-      <Snackbar
-        open={isSnackbarOpen}
-        autoHideDuration={3000}
-        onClose={() => setIsSnackbarOpen(false)}
-      >
+      <Snackbar open={isSnackbarOpen} onClose={() => setIsSnackbarOpen(false)}>
         <Alert onClose={() => setIsSnackbarOpen(false)} severity={severity}>
           {message}
         </Alert>
