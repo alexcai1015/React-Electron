@@ -61,6 +61,9 @@ const UPLOAD_TEXT = 'Click Here or Drag and Drop to Upload (.csv) file';
 
 const acceptedFile = ['.csv', 'text/csv'];
 
+const UPLOAD_SUCCESS_MODAL_MESSAGE_INITIAL_STATE =
+  'We will send bulk upload results to individuals via SMS and email.';
+
 export const PassUploadTab = () => {
   const classes = useStyles();
   const { error, isLoading, response, isCompleted, execute, reset: resetUpload } = useUploadFile(
@@ -71,8 +74,13 @@ export const PassUploadTab = () => {
   const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = useState(UPLOAD_TEXT);
   const [isUploadSuccessModalOpen, setIsUploadSuccessModalOpen] = useState(false);
   const [uploadSuccessModalMessage, setUploadSuccessModalMessage] = useState(
-    'We will send bulk upload results to individuals via SMS and email.'
+    UPLOAD_SUCCESS_MODAL_MESSAGE_INITIAL_STATE
   );
+
+  // ! TODO: put other upload success modal state cleanup here
+  const resetUploadSuccessModal = () => {
+    setUploadSuccessModalMessage(UPLOAD_SUCCESS_MODAL_MESSAGE_INITIAL_STATE);
+  };
 
   const handleTabChange = (event, newValue) => {
     setValue(newValue);
@@ -86,21 +94,33 @@ export const PassUploadTab = () => {
   const handleFileAddedMessage = (fileName) => `${fileName} selected.`;
 
   const getBulkUploadStats = (results) => {
-    let stats = {
-      approved: 0,
-      declined: 0,
-      existing: 0,
-      approvedExisting: 0
-    };
+    const stats = results.reduce(
+      (acc, result) => {
+        const nextAcc = {
+          ...acc,
+        };
 
-    results.forEach((result) => {
-      if (result.indexOf('Success') > 0) stats.approved += 1;
-      else if (result.indexOf('declined') > 0) stats.declined += 1;
-      else if (result.indexOf('No change.') > 0) stats.existing += 1;
-    });
+        // ! TODO: express declaratively
+        // ! TODO: is there a more reliable to classify the result?
+        if (result.includes('Success')) {
+          nextAcc.approved += 1;
+        } else if (result.includes('declined')) {
+          nextAcc.declined += 1;
+        } else if (result.includes('No change.')) {
+          nextAcc.existing += 1;
+        }
+
+        return nextAcc;
+      },
+      {
+        approved: 0,
+        declined: 0,
+        existing: 0,
+      }
+    );
 
     return stats;
-  }
+  };
 
   useEffect(() => {
     if (isCompleted && !error) {
@@ -110,17 +130,22 @@ export const PassUploadTab = () => {
         const records = JSON.parse(response);
         const recordsCount = records.length;
 
-        if (recordsCount > 0) {
-          const recordsStats = getBulkUploadStats(records);
-          const message =
-            `${recordsStats.approved} out of ${recordsCount} records were successfully approved.\n\n` +
-            `${recordsStats.approved} approved applicants will be notified via SMS/email to access their QR codes.\n` +
-            `${recordsStats.existing} of existing approved records from the file. No change done.\n` +
-            `${recordsStats.declined} applicants with incomplete or invalid data will also be notified via SMS/email.`;
-          setUploadSuccessModalMessage(message);
+        // ? TODO: remove this if guard clause?
+        if (!recordsCount) {
+          return;
         }
+
+        const recordsStats = getBulkUploadStats(records);
+        const message =
+          `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved.\n\n` +
+          `${recordsStats.approved} approved applicant/s will be notified via SMS/email to access their QR codes.\n` +
+          `${recordsStats.existing} existing approved record/s from the file. No change done.\n` +
+          `${recordsStats.declined} applicant/s with incomplete or invalid data will also be notified via SMS/email.`;
+        setUploadSuccessModalMessage(message);
+      } catch (e) {
+        // ? TODO: error logging service?
+        console.error(e);
       }
-      catch(e) {}
     }
   }, [isCompleted, error, response]);
 
@@ -178,6 +203,7 @@ export const PassUploadTab = () => {
         message={uploadSuccessModalMessage}
         handleClose={() => {
           setIsUploadSuccessModalOpen(false);
+          resetUploadSuccessModal();
         }}
       />
     </>
