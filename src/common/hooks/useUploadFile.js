@@ -25,7 +25,11 @@ export const useUploadFile = (url) => {
     const isSuccess = isRequestSuccess(status);
 
     if (isSuccess) {
-      setResponse(xhr.response);
+      if (xhr.response === '' || xhr.response === '[]') {
+        setError(`There's an error uploading your file. File may be invalid or incomplete.`);
+      } else {
+        setResponse(xhr.response);
+      }
     } else {
       let errorMessage = maybe(`There's an error uploading your file. Please try again.`)(
         xhr.statusText

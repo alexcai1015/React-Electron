@@ -137,10 +137,10 @@ export const PassUploadTab = () => {
 
         const recordsStats = getBulkUploadStats(records);
         const message =
-          `${recordsStats.approved} out of ${recordsCount} records were successfully approved.\n\n` +
-          `${recordsStats.approved} approved applicants will be notified via SMS/email to access their QR codes.\n` +
-          `${recordsStats.existing} of existing approved records from the file. No change done.\n` +
-          `${recordsStats.declined} applicants with incomplete or invalid data will also be notified via SMS/email.`;
+          `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved.\n\n` +
+          `${recordsStats.approved} approved applicant/s will be notified via SMS/email to access their QR codes.\n` +
+          `${recordsStats.existing} existing approved record/s from the file. No change done.\n` +
+          `${recordsStats.declined} applicant/s with incomplete or invalid data will also be notified via SMS/email.`;
         setUploadSuccessModalMessage(message);
       } catch (e) {
         // ? TODO: error logging service?
