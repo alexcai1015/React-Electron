@@ -27,7 +27,6 @@ export const Auth = () => {
         dispatch(saveUser({ username, token, xsrfToken, aporTypes }));
 
         // @todo This should redirect to ?next=
-
         push(queryString.next);
       } else {
         push('/login', {
