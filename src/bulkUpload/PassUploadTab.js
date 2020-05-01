@@ -41,11 +41,11 @@ TabPanel.propTypes = {
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
-    paddingTop: 40,
+    paddingTop: 10,
     paddingLeft: 70,
   },
   tabPanel: {
-    paddingTop: 20,
+    paddingTop: 10,
     paddingLeft: 70,
     paddingRight: 70,
   },
@@ -93,36 +93,50 @@ export const PassUploadTab = () => {
 
   const handleFileAddedMessage = (fileName) => `${fileName} selected.`;
 
-  const getBulkUploadStats = (results) => {
-    const stats = results.reduce(
-      (acc, result) => {
-        const nextAcc = {
-          ...acc,
-        };
-
-        // ! TODO: express declaratively
-        // ! TODO: is there a more reliable to classify the result?
-        if (result.includes('Success')) {
-          nextAcc.approved += 1;
-        } else if (result.includes('declined')) {
-          nextAcc.declined += 1;
-        } else if (result.includes('No change.')) {
-          nextAcc.existing += 1;
-        }
-
-        return nextAcc;
-      },
-      {
-        approved: 0,
-        declined: 0,
-        existing: 0,
-      }
-    );
-
-    return stats;
+  const getDeclinedLineError = (message) => {
+    const [, messageLine, messageError] = message.match(/Record\s(\d+):\swas\sdeclined.\s(.+)\./);
+    return {
+      line: messageLine,
+      error: messageError,
+    };
   };
 
   useEffect(() => {
+    const getBulkUploadStats = (results) => {
+      const lineError = {};
+      const stats = results.reduce(
+        (acc, result) => {
+          const nextAcc = {
+            ...acc,
+          };
+
+          // ! TODO: express declaratively
+          // ! TODO: is there a more reliable to classify the result?
+          if (result.includes('Success')) {
+            nextAcc.approved += 1;
+          } else if (result.includes('declined')) {
+            nextAcc.declined += 1;
+            const declinedLineError = getDeclinedLineError(result);
+            const line = parseInt(declinedLineError.line, 10) + 1;
+            if (lineError[declinedLineError.error]) lineError[declinedLineError.error].push(line);
+            else lineError[declinedLineError.error] = [line];
+          } else if (result.includes('No change.')) {
+            nextAcc.existing += 1;
+          }
+
+          return nextAcc;
+        },
+        {
+          approved: 0,
+          declined: 0,
+          existing: 0,
+          declinedLineError: lineError,
+        }
+      );
+
+      return stats;
+    };
+
     if (isCompleted && !error) {
       setIsUploadSuccessModalOpen(true);
 
@@ -136,15 +150,21 @@ export const PassUploadTab = () => {
         }
 
         const recordsStats = getBulkUploadStats(records);
-        const message =
+        let message =
           `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved.\n\n` +
           `${recordsStats.approved} approved applicant/s will be notified via SMS/email to access their QR codes.\n` +
           `${recordsStats.existing} existing approved record/s from the file. No change done.\n` +
-          `${recordsStats.declined} applicant/s with incomplete or invalid data will also be notified via SMS/email.`;
+          `${recordsStats.declined} applicant/s with incomplete or invalid data will also be notified via SMS/email.\n\n`;
+
+        Object.keys(recordsStats.declinedLineError).forEach((declinedError) => {
+          message += `${declinedError}: Line records ${recordsStats.declinedLineError[
+            declinedError
+          ].join(', ')}\n`;
+        });
+
         setUploadSuccessModalMessage(message);
       } catch (e) {
         // ? TODO: error logging service?
-        console.error(e);
       }
     }
   }, [isCompleted, error, response]);
@@ -169,11 +189,11 @@ export const PassUploadTab = () => {
         indicatorColor="primary"
         textColor="primary"
       >
-        <Tab icon={<People />} label="FOR INDIVIDUALS" />
+        <Tab icon={<People />} label="INDIVIDUALS" />
       </Tabs>
 
       <TabPanel value={value} index={0} className={classes.tabPanel}>
-        <h3>Bulk Upload File for Individuals</h3>
+        <h3>Bulk Upload CSV File</h3>
         Please follow the fields format to avoid data error upon uploading.
         <br />
         <DownloadTemplateLink type={PassType.INDIVIDUAL} />
@@ -214,7 +234,7 @@ const StyledBox = styled(Box)({
   display: 'block',
   margin: '0 auto',
   width: 500,
-  marginTop: 50,
+  marginTop: 30,
   textAlign: 'center',
 });
 
