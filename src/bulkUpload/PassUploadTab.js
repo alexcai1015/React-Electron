@@ -41,11 +41,11 @@ TabPanel.propTypes = {
 const useStyles = makeStyles({
   root: {
     flexGrow: 1,
-    paddingTop: 40,
+    paddingTop: 10,
     paddingLeft: 70,
   },
   tabPanel: {
-    paddingTop: 20,
+    paddingTop: 10,
     paddingLeft: 70,
     paddingRight: 70,
   },
@@ -189,11 +189,11 @@ export const PassUploadTab = () => {
         indicatorColor="primary"
         textColor="primary"
       >
-        <Tab icon={<People />} label="FOR INDIVIDUALS" />
+        <Tab icon={<People />} label="INDIVIDUALS" />
       </Tabs>
 
       <TabPanel value={value} index={0} className={classes.tabPanel}>
-        <h3>Bulk Upload File for Individuals</h3>
+        <h3>Bulk Upload CSV File</h3>
         Please follow the fields format to avoid data error upon uploading.
         <br />
         <DownloadTemplateLink type={PassType.INDIVIDUAL} />
@@ -234,7 +234,7 @@ const StyledBox = styled(Box)({
   display: 'block',
   margin: '0 auto',
   width: 500,
-  marginTop: 50,
+  marginTop: 30,
   textAlign: 'center',
 });
 
