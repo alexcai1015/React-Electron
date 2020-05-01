@@ -1,21 +1,18 @@
 import React, { useEffect } from 'react';
 import { useKeycloak } from '@react-keycloak/web';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
 import PageSpinner from '../common/components/PageSpinner';
 import { saveUser } from '../store/slices';
+import { useQueryString } from '../hooks';
 
-export const Auth = ({ match }) => {
+export const Auth = () => {
   const [keycloak] = useKeycloak();
   const { authenticated } = keycloak;
-  const { push } = useHistory();
+  const { push, location } = useHistory();
+  const { authAction } = useParams();
   const dispatch = useDispatch();
-  const { location } = match;
-
-  // const location = this.props.location;
-  // console.log('match', match);
-  console.log('props', match);
+  const { queryString } = useQueryString();
 
   useEffect(() => {
     async function loadProfile() {
@@ -23,43 +20,54 @@ export const Auth = ({ match }) => {
       const { token } = keycloak;
       const xsrfToken = keycloak.sessionId;
       const { username, attributes } = profile;
-      const [strAportypes] = attributes.APORTYPES;
-      const aporTypes = strAportypes.split(',').map((a) => a.trim());
-      console.log('tokenparsed', keycloak.tokenParsed);
-      console.log('profile', profile);
-      console.log('idtoken', keycloak.idTokenParsed);
 
-      dispatch(saveUser({ username, token, xsrfToken, aporTypes }));
+      if (attributes.APORTYPES) {
+        const [strAportypes] = attributes.APORTYPES;
+        const aporTypes = strAportypes.split(',').map((a) => a.trim());
+        dispatch(saveUser({ username, token, xsrfToken, aporTypes }));
 
-      // @todo This should redirect to ?next=
-      push('/');
+        // @todo This should redirect to ?next=
+
+        push(queryString.next);
+      } else {
+        push('/login', {
+          error: true,
+        });
+      }
     }
 
-    switch (match.match.params.authAction) {
-      case 'login':
-        keycloak.login({
-          redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/verify?next=`,
-        });
-        break;
+    const next = location.state ? location.state.from : '/';
+    switch (authAction) {
       case 'verify':
         if (authenticated === true) {
           loadProfile();
         } else {
-          // console.log('redirect out');
+          console.log('redirect out');
         }
         break;
       case 'register':
         keycloak.register({
-          redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/verify?next=`,
+          redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/verify?next=${next}`,
         });
         break;
       case 'logout':
         keycloak.logout({
-          redirectUri: `${process.env.REACT_APP_BASE_URL}/login?next=`,
+          redirectUri: `${process.env.REACT_APP_BASE_URL}/login`,
+        });
+        break;
+
+      case 'login':
+        keycloak.login({
+          redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/verify?next=${next}`,
+        });
+        break;
+      default:
+        keycloak.login({
+          redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/verify?next=${next}`,
         });
         break;
     }
-  }, [push, authenticated, keycloak, dispatch, match]);
+  }, [push, authenticated, keycloak, dispatch, authAction, location, queryString]);
 
   return <PageSpinner />;
 };
