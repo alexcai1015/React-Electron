@@ -93,7 +93,16 @@ export const PassUploadTab = () => {
 
   const handleFileAddedMessage = (fileName) => `${fileName} selected.`;
 
+  const getDeclinedLineError = (message) => {
+    const [, messageLine, messageError] = message.match(/Record\s(\d+):\swas\sdeclined.\s(.+)\./);
+    return {
+      line: messageLine,
+      error: messageError,
+    };
+  };
+
   const getBulkUploadStats = (results) => {
+    const lineError = {};
     const stats = results.reduce(
       (acc, result) => {
         const nextAcc = {
@@ -106,6 +115,11 @@ export const PassUploadTab = () => {
           nextAcc.approved += 1;
         } else if (result.includes('declined')) {
           nextAcc.declined += 1;
+          const declinedLineError = getDeclinedLineError(result);
+          const declinedLine = parseInt(declinedLineError.line, 10) + 1;
+          if (lineError[declinedLineError.error])
+            lineError[declinedLineError.error].push(declinedLine);
+          else lineError[declinedLineError.error] = [declinedLine];
         } else if (result.includes('No change.')) {
           nextAcc.existing += 1;
         }
@@ -116,6 +130,7 @@ export const PassUploadTab = () => {
         approved: 0,
         declined: 0,
         existing: 0,
+        declinedLineError: lineError,
       }
     );
 
@@ -136,15 +151,21 @@ export const PassUploadTab = () => {
         }
 
         const recordsStats = getBulkUploadStats(records);
-        const message =
+        let message =
           `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved.\n\n` +
           `${recordsStats.approved} approved applicant/s will be notified via SMS/email to access their QR codes.\n` +
           `${recordsStats.existing} existing approved record/s from the file. No change done.\n` +
-          `${recordsStats.declined} applicant/s with incomplete or invalid data will also be notified via SMS/email.`;
+          `${recordsStats.declined} applicant/s with incomplete or invalid data will also be notified via SMS/email.\n\n`;
+
+        Object.keys(recordsStats.declinedLineError).forEach((declinedError) => {
+          message += `${declinedError}: Line records ${recordsStats.declinedLineError[
+            declinedError
+          ].join(', ')}\n`;
+        });
+
         setUploadSuccessModalMessage(message);
       } catch (e) {
         // ? TODO: error logging service?
-        console.error(e);
       }
     }
   }, [isCompleted, error, response]);
