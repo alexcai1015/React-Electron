@@ -18,7 +18,7 @@ export const PROTECTED_ROUTES = [
     title: 'Bulk Upload',
     component: BulkUpload,
     show: true,
-    role: Roles.HAS_VIEW_RECORD_STATUS,
+    role: Roles.HAS_BULK_UPLOAD_ACCESS,
   },
   {
     path: '/change-password',

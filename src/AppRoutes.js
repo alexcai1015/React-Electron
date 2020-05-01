@@ -9,9 +9,8 @@ import { ActivateUser } from './pages/ActivateUser';
 import { PROTECTED_ROUTES } from './common/components/navigationBar/ProtectedRoutes';
 import { NavigationBar } from './common/components/navigationBar/NavigationBar';
 import { getUserToken, getUsername } from './store/slices';
-import { useGetUserAporTypes } from './common/hooks';
-import PageSpinner from './common/components/PageSpinner';
 import { Auth } from './pages/Auth';
+import { useEffect } from 'react';
 
 /* catch-all */
 const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
@@ -20,16 +19,20 @@ NotFoundRoute.propTypes = {
   fallback: PropTypes.string,
 };
 
-function ProtectedRoute({ component: Component, accessCode, ...rest }) {
+function ProtectedRoute({ component: Component, accessCode, role, ...rest }) {
   const username = useSelector(getUsername);
   const { keycloak } = useKeycloak();
   const { authenticated } = keycloak;
-  const { isLoading } = useGetUserAporTypes();
-  const { location } = useHistory();
+  const { location, push } = useHistory();
+  const hasRole = keycloak.hasRealmRole(role);
 
-  if (isLoading) {
-    return <PageSpinner />;
-  }
+  useEffect(() => {
+    // user is authenticated but does not have the correct user role,
+    // throw out
+    if (authenticated && hasRole !== true) {
+      push('/login');
+    }
+  }, [hasRole, authenticated, push]);
 
   const getElement = ({ ...props }) =>
     authenticated ? (
@@ -69,13 +72,14 @@ export function AppRoutes() {
       <Route exact path="/activate-user" render={() => <ActivateUser />} />
       <Route exact path="/auth/:authAction" render={() => <Auth />} />
 
-      {PROTECTED_ROUTES.map(({ path, component, exact }) => (
+      {PROTECTED_ROUTES.map(({ path, component, exact, role }) => (
         <ProtectedRoute
           accessCode={token}
           key="path"
           path={path}
           component={component}
           exact={exact}
+          role={role}
         />
       ))}
       <Route component={NotFoundRoute} />
