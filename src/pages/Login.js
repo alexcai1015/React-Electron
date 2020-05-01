@@ -10,8 +10,8 @@ import { useLogin } from '../common/hooks';
 import { PasswordPeeker } from '../common/components/PasswordPeeker';
 
 const schema = yup.object({
-  username: yup.string().required('Email is required'),
-  password: yup.string().required('Password is required'),
+  username: yup.string(),
+  password: yup.string(),
 });
 
 export const Login = () => {
@@ -25,7 +25,7 @@ export const Login = () => {
       showPassword: false,
     },
     onSubmit: ({ username, password }) => {
-      execute({ username, password });
+      push('/auth/login');
     },
     validationSchema: schema,
   });
@@ -53,42 +53,6 @@ export const Login = () => {
           />
         </ImageWrapper>
 
-        <Box>
-          <Typography component="label" htmlFor="username">
-            Username
-          </Typography>
-          <FormField
-            name="username"
-            placeholder="Enter Username"
-            type="text"
-            variant="outlined"
-            value={values.username}
-            onChange={handleChange}
-            disabled={isLoading}
-          />
-        </Box>
-        <Box>
-          <Typography component="label" htmlFor="password">
-            Password
-          </Typography>
-          <FormField
-            name="password"
-            placeholder="Enter Password"
-            value={values.password}
-            onChange={handleChange}
-            disabled={isLoading}
-            type={values.showPassword ? 'text' : 'password'}
-            endAdornment={
-              <PasswordPeeker onPressHold={handleShowPassword} value={values.showPassword} />
-            }
-          />
-        </Box>
-
-        {error && (
-          <Box>
-            <TypographyError>Incorrect username & password. Please try again.</TypographyError>
-          </Box>
-        )}
         <SubmitButton
           type="submit"
           variant="contained"
@@ -96,7 +60,7 @@ export const Login = () => {
           fullWidth
           disabled={isLoading}
         >
-          Sign In
+          Please sign in to continue
         </SubmitButton>
       </form>
     </FormWrapper>

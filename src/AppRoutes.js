@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Switch, Route, Redirect as ReactRouterRedirect } from 'react-router-dom';
+import React from 'react';
+import { Switch, Route, Redirect as ReactRouterRedirect, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { useKeycloak } from '@react-keycloak/web';
@@ -24,30 +24,24 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   const username = useSelector(getUsername);
   const { keycloak } = useKeycloak();
   const { authenticated } = keycloak;
-  const { query, isLoading } = useGetUserAporTypes();
-
-  useEffect(() => {
-    if (authenticated === false) {
-      keycloak.login({
-        redirectUri: 'http://localhost:3000/auth',
-      });
-    }
-  }, [authenticated, keycloak]);
-
-  useEffect(() => {
-    query(username);
-  }, [query, username]);
+  const { isLoading } = useGetUserAporTypes();
 
   if (isLoading) {
     return <PageSpinner />;
   }
 
   const getElement = ({ ...props }) =>
-    authenticated && (
+    authenticated ? (
       <>
         <NavigationBar username={username} />
         <Component {...props} />
       </>
+    ) : (
+      <ReactRouterRedirect
+        to={{
+          pathname: '/auth/login',
+        }}
+      />
     );
 
   return <Route {...rest} render={getElement} />;
@@ -69,7 +63,7 @@ export function AppRoutes() {
       />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
       <Route exact path="/activate-user" render={() => <ActivateUser />} />
-      <Route exact path="/auth" render={() => <Auth />} />
+      <Route exact path="/auth/:authAction" render={(match) => <Auth match={match} />} />
 
       {PROTECTED_ROUTES.map(({ path, component, exact }) => (
         <ProtectedRoute
