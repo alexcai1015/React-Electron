@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ApprovalStatus } from '../../../../common/constants';
+import { ApprovalStatus, Roles } from '../../../../common/constants';
+import { RoleBasedComponent } from '../../../../common/components/RoleBasedComponent';
 
 import { AccessPassTableStatus } from './AccessPassTableStatus';
 
@@ -30,8 +31,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const ListRowActions = (props) => {
-  const { onViewDetailsClick, status, loading, onApproveClick, onDenyClick, onSuspendClick } = props;
+  const {
+    onViewDetailsClick,
+    status,
+    loading,
+    onApproveClick,
+    onDenyClick,
+    onSuspendClick,
+  } = props;
   const classes = useStyles();
+
   return (
     <div className={classes.container}>
       <AccessPassTableStatus
@@ -41,9 +50,11 @@ export const ListRowActions = (props) => {
         onDenyClick={onDenyClick}
         onSuspendClick={onSuspendClick}
       />
-      <Button className={classes.view} onClick={(event) => onViewDetailsClick(event)}>
-        View Details
-      </Button>
+      <RoleBasedComponent role={Roles.HAS_VIEW_DETAILS_ACCESS}>
+        <Button className={classes.view} onClick={(event) => onViewDetailsClick(event)}>
+          View Details
+        </Button>
+      </RoleBasedComponent>
     </div>
   );
 };

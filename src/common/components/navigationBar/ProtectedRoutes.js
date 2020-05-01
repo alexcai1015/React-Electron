@@ -28,3 +28,4 @@ export const PROTECTED_ROUTES = [
     show: false,
     role: Roles.HAS_VIEW_RECORD_STATUS,
   },
+];

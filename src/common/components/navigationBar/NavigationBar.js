@@ -58,7 +58,7 @@ export function NavigationBar({ username }) {
           </div>
 
           {PROTECTED_ROUTES.filter(({ show }) => show).map(({ path, title, role }) => (
-            <RoleBasedComponent role={role}>
+            <RoleBasedComponent key={title} role={role}>
               <Button
                 key={path}
                 edge="start"

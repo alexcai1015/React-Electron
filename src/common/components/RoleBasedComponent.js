@@ -1,7 +1,11 @@
+import React from 'react';
 import { useKeycloak } from '@react-keycloak/web';
-export const RoleBasedComponent = ({ role, children }) => {
+export const RoleBasedComponent = ({ role, children, deniedContent }) => {
   const { keycloak } = useKeycloak();
+
   const authenticated = keycloak.authenticated && keycloak.hasRealmRole(role);
-  keycloak.hasResourceRole();
-  return authenticated && children;
+  if (authenticated === false) {
+    return deniedContent ? deniedContent : <></>;
+  }
+  return children;
 };

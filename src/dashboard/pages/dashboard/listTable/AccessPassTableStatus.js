@@ -4,16 +4,25 @@ import { styled } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 import { theme } from '../../../../theme';
-import { ApprovalStatus } from '../../../../common/constants';
+import { ApprovalStatus, Roles } from '../../../../common/constants';
 import { RoleBasedComponent } from '../../../../common/components/RoleBasedComponent';
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
+
+const StatusDisplay = (status) => {
+  return (
+    <>
+      <CancelIcon color="inherit" />
+      <Typography variant="body1">{status}</Typography>
+    </>
+  );
+};
 
 const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendClick, loading) => {
   switch (status) {
     case ApprovalStatus.Pending:
       return (
         <>
-          <RoleBasedComponent role={'HAS_APPROVE_ACCESS'}>
+          <RoleBasedComponent role={Roles.HAS_APPROVE_ACCESS} deniedContent={StatusDisplay(status)}>
             <ApproveButton variant="contained" onClick={onApproveClick} disabled={loading}>
               Approve
             </ApproveButton>
@@ -26,11 +35,13 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
     case ApprovalStatus.Approved:
       return (
         <>
-          <CheckCircleIcon color="inherit" />
-          <Typography variant="body1">{status}</Typography>
-          <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
-            Suspend
-          </SuspendButton>
+          <RoleBasedComponent role={Roles.HAS_APPROVE_ACCESS}>
+            <CheckCircleIcon color="inherit" />
+            <Typography variant="body1">{status}</Typography>
+            <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
+              Suspend
+            </SuspendButton>
+          </RoleBasedComponent>
         </>
       );
     case ApprovalStatus.Declined:
