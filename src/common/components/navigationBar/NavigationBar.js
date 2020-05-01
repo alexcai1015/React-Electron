@@ -81,7 +81,7 @@ export function NavigationBar({ username }) {
             <Button edge="end" color="inherit" href="/change-password">
               Change Password
             </Button>
-            <Button edge="end" color="inherit" onClick={handleLogout}>
+            <Button edge="end" color="inherit" href="/auth/logout">
               Log out
             </Button>
           </UserMenu>

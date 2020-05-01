@@ -16,6 +16,7 @@ const { actions, reducer } = createSlice({
       state.username = payload.username;
       state.token = payload.token;
       state.xsrfToken = payload.xsrfToken;
+      state.aporTypes = payload.aporTypes ? payload.aporTypes : state.aporTypes;
     },
     saveAporTypes: (state, { payload }) => {
       state.aporTypes = payload;
