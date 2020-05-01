@@ -10,13 +10,11 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-
 import logo from '../../../assets/rapidpass.svg';
-import { useLogout } from '../../hooks';
 import { serverEnv } from '../FeatureToggle';
-
 import UserMenu from './UserMenu';
 import { PROTECTED_ROUTES } from './ProtectedRoutes';
+import { RoleBasedComponent } from '../../components/RoleBasedComponent';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -59,16 +57,18 @@ export function NavigationBar({ username }) {
             <sup title={serverEnv}>{`v${process.env.REACT_APP_VERSION}`}</sup>
           </div>
 
-          {PROTECTED_ROUTES.filter(({ show }) => show).map(({ path, title }) => (
-            <Button
-              key={path}
-              edge="start"
-              color="inherit"
-              onClick={() => history.push(path)}
-              className={`${isActive(path)} ${classes.navButtons}`}
-            >
-              {title}
-            </Button>
+          {PROTECTED_ROUTES.filter(({ show }) => show).map(({ path, title, role }) => (
+            <RoleBasedComponent role={role}>
+              <Button
+                key={path}
+                edge="start"
+                color="inherit"
+                onClick={() => history.push(path)}
+                className={`${isActive(path)} ${classes.navButtons}`}
+              >
+                {title}
+              </Button>
+            </RoleBasedComponent>
           ))}
 
           <div className={classes.grow} />
