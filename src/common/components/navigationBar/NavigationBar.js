@@ -43,11 +43,6 @@ const useStyles = makeStyles((theme) => ({
 export function NavigationBar({ username }) {
   const classes = useStyles();
   const history = useHistory();
-  const { execute: executeLogout } = useLogout();
-
-  const handleLogout = () => {
-    executeLogout();
-  };
 
   const isActive = (value) => (window.location.pathname === value ? 'active' : '');
 

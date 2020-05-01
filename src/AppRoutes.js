@@ -25,6 +25,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   const { keycloak } = useKeycloak();
   const { authenticated } = keycloak;
   const { isLoading } = useGetUserAporTypes();
+  const { location } = useHistory();
 
   if (isLoading) {
     return <PageSpinner />;
@@ -40,6 +41,9 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
       <ReactRouterRedirect
         to={{
           pathname: '/auth/login',
+          state: {
+            from: location.pathname,
+          },
         }}
       />
     );
@@ -63,7 +67,7 @@ export function AppRoutes() {
       />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
       <Route exact path="/activate-user" render={() => <ActivateUser />} />
-      <Route exact path="/auth/:authAction" render={(match) => <Auth match={match} />} />
+      <Route exact path="/auth/:authAction" render={() => <Auth />} />
 
       {PROTECTED_ROUTES.map(({ path, component, exact }) => (
         <ProtectedRoute
