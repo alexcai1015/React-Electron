@@ -117,10 +117,9 @@ export const PassUploadTab = () => {
           } else if (result.includes('declined')) {
             nextAcc.declined += 1;
             const declinedLineError = getDeclinedLineError(result);
-            const declinedLine = parseInt(declinedLineError.line, 10) + 1;
-            if (lineError[declinedLineError.error])
-              lineError[declinedLineError.error].push(declinedLine);
-            else lineError[declinedLineError.error] = [declinedLine];
+            const line = parseInt(declinedLineError.line, 10) + 1;
+            if (lineError[declinedLineError.error]) lineError[declinedLineError.error].push(line);
+            else lineError[declinedLineError.error] = [line];
           } else if (result.includes('No change.')) {
             nextAcc.existing += 1;
           }
