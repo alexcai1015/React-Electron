@@ -101,43 +101,43 @@ export const PassUploadTab = () => {
     };
   };
 
-  const getBulkUploadStats = (results) => {
-    const lineError = {};
-    const stats = results.reduce(
-      (acc, result) => {
-        const nextAcc = {
-          ...acc,
-        };
-
-        // ! TODO: express declaratively
-        // ! TODO: is there a more reliable to classify the result?
-        if (result.includes('Success')) {
-          nextAcc.approved += 1;
-        } else if (result.includes('declined')) {
-          nextAcc.declined += 1;
-          const declinedLineError = getDeclinedLineError(result);
-          const declinedLine = parseInt(declinedLineError.line, 10) + 1;
-          if (lineError[declinedLineError.error])
-            lineError[declinedLineError.error].push(declinedLine);
-          else lineError[declinedLineError.error] = [declinedLine];
-        } else if (result.includes('No change.')) {
-          nextAcc.existing += 1;
-        }
-
-        return nextAcc;
-      },
-      {
-        approved: 0,
-        declined: 0,
-        existing: 0,
-        declinedLineError: lineError,
-      }
-    );
-
-    return stats;
-  };
-
   useEffect(() => {
+    const getBulkUploadStats = (results) => {
+      const lineError = {};
+      const stats = results.reduce(
+        (acc, result) => {
+          const nextAcc = {
+            ...acc,
+          };
+
+          // ! TODO: express declaratively
+          // ! TODO: is there a more reliable to classify the result?
+          if (result.includes('Success')) {
+            nextAcc.approved += 1;
+          } else if (result.includes('declined')) {
+            nextAcc.declined += 1;
+            const declinedLineError = getDeclinedLineError(result);
+            const declinedLine = parseInt(declinedLineError.line, 10) + 1;
+            if (lineError[declinedLineError.error])
+              lineError[declinedLineError.error].push(declinedLine);
+            else lineError[declinedLineError.error] = [declinedLine];
+          } else if (result.includes('No change.')) {
+            nextAcc.existing += 1;
+          }
+
+          return nextAcc;
+        },
+        {
+          approved: 0,
+          declined: 0,
+          existing: 0,
+          declinedLineError: lineError,
+        }
+      );
+
+      return stats;
+    };
+
     if (isCompleted && !error) {
       setIsUploadSuccessModalOpen(true);
 
