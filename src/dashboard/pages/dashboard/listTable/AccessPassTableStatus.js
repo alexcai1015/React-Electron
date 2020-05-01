@@ -3,10 +3,9 @@ import { Typography, Button } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
-
 import { theme } from '../../../../theme';
 import { ApprovalStatus } from '../../../../common/constants';
-
+import { RoleBasedComponent } from '../../../../common/components/RoleBasedComponent';
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
 
 const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendClick, loading) => {
@@ -14,12 +13,14 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
     case ApprovalStatus.Pending:
       return (
         <>
-          <ApproveButton variant="contained" onClick={onApproveClick} disabled={loading}>
-            Approve
-          </ApproveButton>
-          <DenyButton variant="contained" onClick={() => onDenyClick()} disabled={loading}>
-            Deny
-          </DenyButton>
+          <RoleBasedComponent role={'HAS_APPROVE_ACCESS'}>
+            <ApproveButton variant="contained" onClick={onApproveClick} disabled={loading}>
+              Approve
+            </ApproveButton>
+            <DenyButton variant="contained" onClick={() => onDenyClick()} disabled={loading}>
+              Deny
+            </DenyButton>
+          </RoleBasedComponent>
         </>
       );
     case ApprovalStatus.Approved:

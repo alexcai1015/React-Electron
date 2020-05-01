@@ -25,14 +25,14 @@ export const Auth = ({ match }) => {
       const { username, attributes } = profile;
       const [strAportypes] = attributes.APORTYPES;
       const aporTypes = strAportypes.split(',').map((a) => a.trim());
-
       console.log('tokenparsed', keycloak.tokenParsed);
       console.log('profile', profile);
       console.log('idtoken', keycloak.idTokenParsed);
 
       dispatch(saveUser({ username, token, xsrfToken, aporTypes }));
 
-      push('/access-passes');
+      // @todo This should redirect to ?next=
+      push('/');
     }
 
     switch (match.match.params.authAction) {
