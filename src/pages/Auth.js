@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useKeycloak } from '@react-keycloak/web';
 import { useHistory, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+
 import PageSpinner from '../common/components/PageSpinner';
 import { saveUser } from '../store/slices';
 import { useQueryString } from '../hooks';
@@ -36,6 +37,7 @@ export const Auth = () => {
     }
 
     const next = location.state ? location.state.from : '/';
+
     switch (authAction) {
       case 'verify':
         if (authenticated === true) {
@@ -43,27 +45,31 @@ export const Auth = () => {
         } else {
           console.log('redirect out');
         }
+
         break;
       case 'register':
         keycloak.register({
           redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/verify?next=${next}`,
         });
+
         break;
       case 'logout':
         keycloak.logout({
           redirectUri: `${process.env.REACT_APP_BASE_URL}/login`,
         });
-        break;
 
+        break;
       case 'login':
         keycloak.login({
           redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/verify?next=${next}`,
         });
+
         break;
       default:
         keycloak.login({
           redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/verify?next=${next}`,
         });
+
         break;
     }
   }, [push, authenticated, keycloak, dispatch, authAction, location, queryString]);

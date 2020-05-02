@@ -1,12 +1,14 @@
 import React from 'react';
 import { Button, Grid, Box, Typography } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
-import logo from '../assets/logo_purple_title.svg';
 import { useHistory } from 'react-router-dom';
+
+import logo from '../assets/logo_purple_title.svg';
+
 export const Login = () => {
   const { location } = useHistory();
   const { state } = location;
-  const error = state?.error === true ? true : false;
+  const error = state?.error === true;
   return (
     <FormWrapper container direction="column" justify="center" alignItems="center">
       <form style={{ width: 367 }} autoComplete="off">
@@ -20,14 +22,15 @@ export const Login = () => {
           />
         </ImageWrapper>
 
+        {error && (
+          <Box>
+            <TypographyError>An error has occured, we could not log you in.</TypographyError>
+          </Box>
+        )}
+
         <SubmitButton type="submit" variant="contained" color="primary" fullWidth href="auth/login">
           Please sign in to continue
         </SubmitButton>
-        {error && (
-          <Box>
-            <TypographyError>We could not log you in.</TypographyError>
-          </Box>
-        )}
       </form>
     </FormWrapper>
   );

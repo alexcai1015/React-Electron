@@ -10,11 +10,13 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
+
 import logo from '../../../assets/rapidpass.svg';
 import { serverEnv } from '../FeatureToggle';
+import { RoleBasedComponent } from '../RoleBasedComponent';
+
 import UserMenu from './UserMenu';
 import { PROTECTED_ROUTES } from './ProtectedRoutes';
-import { RoleBasedComponent } from '../../components/RoleBasedComponent';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -73,7 +75,7 @@ export function NavigationBar({ username }) {
 
           <div className={classes.grow} />
           <UserMenu username={username}>
-            <Button edge="end" color="inherit" href="/change-password">
+            <Button edge="end" color="inherit" href="/auth/logout">
               Change Password
             </Button>
             <Button edge="end" color="inherit" href="/auth/logout">
