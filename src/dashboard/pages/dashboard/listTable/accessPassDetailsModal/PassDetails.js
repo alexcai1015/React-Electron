@@ -10,7 +10,7 @@ import Header from './Header';
 import Field from './Field';
 import SectionTitle from './SectionTitle';
 import AporType from './AporType';
-import { ApprovalStatus } from '../../../../../common/constants';
+import { ApprovalStatus, ApprovalStatusLabel } from '../../../../../common/constants';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -59,7 +59,7 @@ export const PassDetails = ({ handleClose, details }) => {
 
   return (
     <Box className={classes.container}>
-      <Header handleClose={handleClose} text={`Application ${details.status}`} />
+      <Header handleClose={handleClose} text={`Application ${ApprovalStatusLabel[details.status.toLowerCase()]}`} />
       <Box className={classes.content}>
         <AporType aporType={details.aporType || 'N/A'} />
         <SectionTitle title="Personal Details" />
