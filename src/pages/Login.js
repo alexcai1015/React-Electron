@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Grid, Box, Typography, Input } from '@material-ui/core';
+import { Button, Grid, Box, Typography, TextField } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
 import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
@@ -78,9 +78,11 @@ export const Login = () => {
             onChange={handleChange}
             disabled={isLoading}
             type={values.showPassword ? 'text' : 'password'}
-            endAdornment={
-              <PasswordPeeker onPressHold={handleShowPassword} value={values.showPassword} />
-            }
+            variant="outlined"
+            InputProps={{
+              endAdornment:
+                <PasswordPeeker onPressHold={handleShowPassword} value={values.showPassword} />
+            }}
           />
         </Box>
 
@@ -112,7 +114,7 @@ const ImageWrapper = styled(Box)({
   marginBottom: 74,
 });
 
-const FormField = styled(Input)({
+const FormField = styled(TextField)({
   width: '100%',
   marginBottom: 22,
 });
