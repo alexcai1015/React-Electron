@@ -28,7 +28,7 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
           <CheckCircleIcon color="inherit" />
           <Typography variant="body1">{status}</Typography>
           <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
-            Revoke
+            Suspend
           </SuspendButton>
         </>
       );
@@ -77,7 +77,6 @@ AccessPassTableStatus.defaultProps = {
   loading: false,
 };
 
-// eslint-disable-next-line no-shadow
 const ApproveButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.approvalGreen,
   '&:hover': {
@@ -85,7 +84,6 @@ const ApproveButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// eslint-disable-next-line no-shadow
 const DenyButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.denialRed,
   '&:hover': {
