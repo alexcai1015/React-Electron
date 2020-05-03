@@ -62,6 +62,7 @@ export const PassDetails = ({ handleClose, details }) => {
       <Header handleClose={handleClose} text={`Application ${ApprovalStatusLabel[details.status.toLowerCase()]}`} />
       <Box className={classes.content}>
         <AporType aporType={details.aporType || 'N/A'} />
+        <Field label="Control Code" value={details.controlCode || 'N/A'} />
         <SectionTitle title="Personal Details" />
         <Grid item xs={12} container>
           <Grid item xs={4}>
