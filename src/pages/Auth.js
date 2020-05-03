@@ -65,12 +65,6 @@ export const Auth = () => {
 
         break;
       case 'change-password':
-        keycloak.logout({
-          redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/do-change-password`,
-        });
-
-        break;
-      case 'do-change-password':
         changePassword();
         break;
       case 'login':
