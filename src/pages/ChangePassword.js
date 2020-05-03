@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Button, Box, Typography, Input } from '@material-ui/core';
+import { Button, Box, Typography, TextField } from '@material-ui/core';
 import { CheckCircle as CheckCircleIcon, Error as ErrorIcon } from '@material-ui/icons';
 import { styled } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
@@ -109,9 +109,10 @@ export const ChangePassword = () => {
             error={!!errors.currentPassword}
             disabled={isLoading}
             type={values.showCurrentPassword ? 'text' : 'password'}
-            endAdornment={
-              <PasswordPeeker onPressHold={handleShowCurrentPassword} value={values.showCurrentPassword} />
-            }
+            InputProps={{
+              endAdornment:
+                <PasswordPeeker onPressHold={handleShowCurrentPassword} value={values.showCurrentPassword} />
+            }}
 
           />
         </FormFieldWrapper>
@@ -130,9 +131,10 @@ export const ChangePassword = () => {
             error={!!errors.password}
             disabled={isLoading}
             type={values.showPassword ? 'text' : 'password'}
-            endAdornment={
-              <PasswordPeeker onPressHold={handleShowPassword} value={values.showPassword} />
-            }
+            InputProps={{
+              endAdornment:
+                <PasswordPeeker onPressHold={handleShowPassword} value={values.showPassword} />
+            }}
           />
         </FormFieldWrapper>
         <FormFieldWrapper>
@@ -150,9 +152,10 @@ export const ChangePassword = () => {
             error={!!errors.confirmPassword}
             disabled={isLoading}
             type={values.showConfirmPassword ? 'text' : 'password'}
-            endAdornment={
-              <PasswordPeeker onPressHold={handleShowConfirmPassword} value={values.showConfirmPassword} />
-            }
+            InputProps={{
+              endAdornment:
+                <PasswordPeeker onPressHold={handleShowConfirmPassword} value={values.showConfirmPassword} />
+            }}
           />
         </FormFieldWrapper>
 
@@ -184,7 +187,7 @@ export const ChangePassword = () => {
   );
 };
 
-const FormField = styled(Input)({
+const FormField = styled(TextField)({
   width: '100%',
   marginTop: 5,
 });
