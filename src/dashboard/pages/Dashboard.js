@@ -4,7 +4,7 @@ import { DebounceInput } from 'react-debounce-input';
 import { useSelector } from 'react-redux';
 
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
-import { ApprovalStatus, Source } from '../../common/constants';
+import { ApprovalStatus, PassType } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
 import { useSuspendAccessPass } from '../../common/hooks/useSuspendAccessPass';
 import { useQueryString } from '../../hooks';
@@ -16,7 +16,7 @@ import { AccessPassDetailsModal } from './dashboard/listTable/AccessPassDetailsM
 
 /** use this to init any new queryparams */
 const DefaultQueryParams = Object.freeze({
-  source: Source.Online,
+  passType: PassType.INDIVIDUAL.toUpperCase()
 });
 
 const StatusFilterOption = {

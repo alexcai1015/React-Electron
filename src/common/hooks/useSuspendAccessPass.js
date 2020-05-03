@@ -16,7 +16,7 @@ export const useSuspendAccessPass = (accessPass) => {
       const { key, referenceId } = accessPass;
 
       showSnackbar({
-        message: `Suspended application with Reference ID: ${referenceId}`,
+        message: `Revoked application with Reference ID: ${referenceId}`,
         severity: 'success',
       });
 
