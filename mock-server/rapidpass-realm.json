@@ -21,7 +21,7 @@
   "enabled": true,
   "sslRequired": "external",
   "registrationAllowed": true,
-  "registrationEmailAsUsername": true,
+  "registrationEmailAsUsername": false,
   "rememberMe": false,
   "verifyEmail": false,
   "loginWithEmailAllowed": true,
@@ -402,7 +402,49 @@
       "rapidpass-dashboard": []
     }
   },
-  "groups": [],
+  "groups": [
+    {
+      "id": "170ed3f3-86ee-490f-9a1f-6dbe35838723",
+      "name": "ADMINISTRATOR",
+      "path": "/ADMINISTRATOR",
+      "attributes": {},
+      "realmRoles": [
+        "HAS_APPROVE_ACCESS",
+        "HAS_BULK_UPLOAD_ACCESS",
+        "HAS_VIEW_ALL_RECORDS",
+        "HAS_VIEW_DETAILS_ACCESS",
+        "HAS_VIEW_RECORD_STATUS"
+      ],
+      "clientRoles": {},
+      "subGroups": []
+    },
+    {
+      "id": "fba58497-44d3-4380-9d37-c444291ba7e9",
+      "name": "APPROVER",
+      "path": "/APPROVER",
+      "attributes": {},
+      "realmRoles": [
+        "HAS_APPROVE_ACCESS",
+        "HAS_VIEW_DETAILS_ACCESS",
+        "HAS_BULK_UPLOAD_ACCESS"
+      ],
+      "clientRoles": {},
+      "subGroups": []
+    },
+    {
+      "id": "0a502c2a-e560-4dc5-9d7f-2d66809c9bb9",
+      "name": "SUPPORT",
+      "path": "/SUPPORT",
+      "attributes": {},
+      "realmRoles": [
+        "HAS_VIEW_DETAILS_ACCESS",
+        "HAS_VIEW_RECORD_STATUS",
+        "HAS_VIEW_ALL_RECORDS"
+      ],
+      "clientRoles": {},
+      "subGroups": []
+    }
+  ],
   "defaultRoles": [
     "uma_authorization",
     "offline_access"
