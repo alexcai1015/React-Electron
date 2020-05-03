@@ -14,6 +14,7 @@ variables:
   TEST_IMAGE: "dctx/rapidpass-approver-test"
   STAGE_IMAGE: "dctx/rapidpass-approver-staging"
   PROD_IMAGE: "dctx/rapidpass-approver"
+  KEYCLOAK_SERVER: "https://auth.rapidpass.ph"
 
 docker-build:
   stage: build
@@ -27,6 +28,9 @@ docker-build:
                    --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_DEVELOP
                    --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_DEVELOP
                    --build-arg REACT_APP_ENV=develop
+                   --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
+                   --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM_DEVELOP
+                   --build-arg REACT_APP_KEYCLOAK_CLIENTID=$REACT_APP_KEYCLOAK_CLIENTID_DEVELOP
                    -t "$ACR_REGISTRY/$DEVELOP_IMAGE:latest" -t "$ACR_REGISTRY/$DEVELOP_IMAGE:$CI_BUILD_ID" .
     - docker push "$ACR_REGISTRY/$DEVELOP_IMAGE:latest"
     - docker push "$ACR_REGISTRY/$DEVELOP_IMAGE:$CI_BUILD_ID"
@@ -48,6 +52,9 @@ docker-test:
                     --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_TEST
                     --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_TEST
                     --build-arg REACT_APP_ENV=test
+                    --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
+                    --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM_TEST
+                    --build-arg REACT_APP_KEYCLOAK_CLIENTID=$REACT_APP_KEYCLOAK_CLIENTID_TEST
                     -t "$ACR_REGISTRY/$TEST_IMAGE:latest" -t "$ACR_REGISTRY/$TEST_IMAGE:$CI_BUILD_ID" .
     - docker push "$ACR_REGISTRY/$TEST_IMAGE:latest"
     - docker push "$ACR_REGISTRY/$TEST_IMAGE:$CI_BUILD_ID"
@@ -67,6 +74,9 @@ docker-stage:
                    --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_STAGING
                    --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_STAGING
                    --build-arg REACT_APP_ENV=staging
+                   --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
+                   --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM_STAGING
+                   --build-arg REACT_APP_KEYCLOAK_CLIENTID=$REACT_APP_KEYCLOAK_CLIENTID_STAGING
                    -t "$ACR_REGISTRY/$STAGE_IMAGE:latest" -t "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID" .
     - docker push "$ACR_REGISTRY/$STAGE_IMAGE:latest"
     - docker push "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID"
@@ -89,6 +99,9 @@ docker-deploy:
                     --build-arg REACT_APP_API_URL=$REACT_APP_API_URL
                     --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY
                     --build-arg REACT_APP_ENV=production
+                    --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
+                    --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM
+                    --build-arg REACT_APP_KEYCLOAK_CLIENTID=$REACT_APP_KEYCLOAK_CLIENTID
                     -t "$ACR_REGISTRY/$PROD_IMAGE:latest" -t "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID" .
     - docker push "$ACR_REGISTRY/$PROD_IMAGE:latest"
     - docker push "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID"
