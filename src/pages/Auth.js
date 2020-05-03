@@ -16,6 +16,11 @@ export const Auth = () => {
   const { queryString } = useQueryString();
 
   useEffect(() => {
+    async function changePassword() {
+      const redirectLink = `${process.env.REACT_APP_KEYCLOAK_URL}/realms/${process.env.REACT_APP_KEYCLOAK_REALM}/login-actions/reset-credentials?client_id=${process.env.REACT_APP_KEYCLOAK_CLIENTID}`;
+      window.location = redirectLink;
+    }
+
     async function loadProfile() {
       const profile = await keycloak.loadUserProfile();
       const { token } = keycloak;
@@ -61,9 +66,12 @@ export const Auth = () => {
         break;
       case 'change-password':
         keycloak.logout({
-          redirectUri: `${process.env.REACT_APP_BASE_URL}/login`,
+          redirectUri: `${process.env.REACT_APP_BASE_URL}/auth/do-change-password`,
         });
 
+        break;
+      case 'do-change-password':
+        changePassword();
         break;
       case 'login':
         keycloak.login({

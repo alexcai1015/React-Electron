@@ -10,7 +10,7 @@ export const PROTECTED_ROUTES = [
     title: 'Applications',
     component: Dashboard,
     show: true,
-    role: Roles.HAS_VIEW_RECORD_STATUS,
+    role: Roles.HAS_VIEW_DETAILS_ACCESS,
   },
   {
     path: '/bulk-upload',
@@ -26,6 +26,6 @@ export const PROTECTED_ROUTES = [
     title: 'Change Password',
     component: ChangePassword,
     show: false,
-    role: Roles.HAS_VIEW_RECORD_STATUS,
+    role: Roles.HAS_VIEW_DETAILS_ACCESS,
   },
 ];

@@ -75,7 +75,7 @@ export function NavigationBar({ username }) {
 
           <div className={classes.grow} />
           <UserMenu username={username}>
-            <Button edge="end" color="inherit" href="/change-password">
+            <Button edge="end" color="inherit" href="/auth/change-password">
               Change Password
             </Button>
             <Button edge="end" color="inherit" href="/auth/logout">
