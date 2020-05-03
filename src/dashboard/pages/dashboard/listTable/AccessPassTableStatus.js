@@ -4,15 +4,14 @@ import { styled } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 import { theme } from '../../../../theme';
-import { ApprovalStatus, Roles } from '../../../../common/constants';
-import { RoleBasedComponent } from '../../../../common/components/RoleBasedComponent';
+import { ApprovalStatus, KeycloakRoles } from '../../../../common/constants';
+import { RoleToggle } from '../../../../common/components/RoleBasedComponent';
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
 
 const StatusDisplay = (status) => {
   return (
     <>
-      <CancelIcon color="inherit" />
-      <Typography variant="body1">{status}</Typography>
+      <Typography variant="body1">{status.toUpperCase()}</Typography>
     </>
   );
 };
@@ -22,26 +21,26 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
     case ApprovalStatus.Pending:
       return (
         <>
-          <RoleBasedComponent role={Roles.HAS_APPROVE_ACCESS} deniedContent={StatusDisplay(status)}>
+          <RoleToggle role={KeycloakRoles.HAS_APPROVE_ACCESS} deniedContent={StatusDisplay(status)}>
             <ApproveButton variant="contained" onClick={onApproveClick} disabled={loading}>
               Approve
             </ApproveButton>
             <DenyButton variant="contained" onClick={() => onDenyClick()} disabled={loading}>
               Deny
             </DenyButton>
-          </RoleBasedComponent>
+          </RoleToggle>
         </>
       );
     case ApprovalStatus.Approved:
       return (
         <>
-          <RoleBasedComponent role={Roles.HAS_APPROVE_ACCESS}>
+          <RoleToggle role={KeycloakRoles.HAS_APPROVE_ACCESS}>
             <CheckCircleIcon color="inherit" />
             <Typography variant="body1">{status}</Typography>
             <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
               Suspend
             </SuspendButton>
-          </RoleBasedComponent>
+          </RoleToggle>
         </>
       );
     case ApprovalStatus.Declined:

@@ -48,7 +48,6 @@ export const Auth = () => {
         if (authenticated === true) {
           loadProfile();
         } else {
-          console.log('redirect out');
         }
 
         break;
