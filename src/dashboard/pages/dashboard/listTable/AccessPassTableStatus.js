@@ -4,7 +4,8 @@ import { styled } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 
-import { ApprovalStatus } from '../../../../common/constants';
+import { theme } from '../../../../theme';
+import { ApprovalStatus, ApprovalStatusLabel } from '../../../../common/constants';
 
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
 
@@ -25,7 +26,7 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
       return (
         <>
           <CheckCircleIcon color="inherit" />
-          <Typography variant="body1">{status}</Typography>
+          <Typography variant="body1">{ApprovalStatusLabel[status]}</Typography>
           {/* <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
             Revoke
           </SuspendButton> */}
@@ -35,14 +36,14 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
       return (
         <>
           <CancelIcon color="inherit" />
-          <Typography variant="body1">{status}</Typography>
+          <Typography variant="body1">{ApprovalStatusLabel[status]}</Typography>
         </>
       );
     case ApprovalStatus.Suspended:
       return (
         <>
           <CancelIcon color="inherit" />
-          <Typography variant="body1">{status}</Typography>
+          <Typography variant="body1">{ApprovalStatusLabel[status]}</Typography>
         </>
       );
     default:
@@ -76,7 +77,6 @@ AccessPassTableStatus.defaultProps = {
   loading: false,
 };
 
-// eslint-disable-next-line no-shadow
 const ApproveButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.approvalGreen,
   '&:hover': {
@@ -84,10 +84,16 @@ const ApproveButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// eslint-disable-next-line no-shadow
 const DenyButton = styled(Button)(({ theme }) => ({
   backgroundColor: theme.palette.denialRed,
   '&:hover': {
     backgroundColor: theme.palette.denialRed,
   },
 }));
+
+const SuspendButton = styled(Button)({
+  backgroundColor: theme.palette.suspendOrange,
+  '&:hover': {
+    backgroundColor: theme.palette.suspendOrange,
+  },
+});
