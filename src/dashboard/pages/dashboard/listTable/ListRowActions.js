@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { ApprovalStatus, Roles } from '../../../../common/constants';
-import { RoleBasedComponent } from '../../../../common/components/RoleBasedComponent';
+import { ApprovalStatus, KeycloakRoles } from '../../../../common/constants';
+import { RoleToggle } from '../../../../common/components/RoleBasedComponent';
 
 import { AccessPassTableStatus } from './AccessPassTableStatus';
 
@@ -50,11 +50,11 @@ export const ListRowActions = (props) => {
         onDenyClick={onDenyClick}
         onSuspendClick={onSuspendClick}
       />
-      <RoleBasedComponent role={Roles.HAS_VIEW_DETAILS_ACCESS}>
+      <RoleToggle role={KeycloakRoles.HAS_VIEW_DETAILS_ACCESS}>
         <Button className={classes.view} onClick={(event) => onViewDetailsClick(event)}>
           View Details
         </Button>
-      </RoleBasedComponent>
+      </RoleToggle>
     </div>
   );
 };

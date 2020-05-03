@@ -1,4 +1,4 @@
-export const Roles = {
+export const KeycloakRoles = {
   HAS_VIEW_DETAILS_ACCESS: 'HAS_VIEW_DETAILS_ACCESS',
   HAS_VIEW_RECORD_STATUS: 'HAS_VIEW_RECORD_STATUS',
   HAS_APPROVE_ACCESS: 'HAS_APPROVE_ACCESS',
@@ -6,4 +6,4 @@ export const Roles = {
   HAS_VIEW_ALL_RECORDS: 'HAS_VIEW_ALL_RECORDS',
 };
 
-export default Roles;
+export default KeycloakRoles;

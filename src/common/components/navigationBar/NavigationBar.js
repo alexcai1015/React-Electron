@@ -13,7 +13,7 @@ import { useHistory } from 'react-router-dom';
 
 import logo from '../../../assets/rapidpass.svg';
 import { serverEnv } from '../FeatureToggle';
-import { RoleBasedComponent } from '../RoleBasedComponent';
+import { RoleToggle } from '../RoleBasedComponent';
 
 import UserMenu from './UserMenu';
 import { PROTECTED_ROUTES } from './ProtectedRoutes';
@@ -60,7 +60,7 @@ export function NavigationBar({ username }) {
           </div>
 
           {PROTECTED_ROUTES.filter(({ show }) => show).map(({ path, title, role }) => (
-            <RoleBasedComponent key={title} role={role}>
+            <RoleToggle key={title} role={role}>
               <Button
                 key={path}
                 edge="start"
@@ -70,7 +70,7 @@ export function NavigationBar({ username }) {
               >
                 {title}
               </Button>
-            </RoleBasedComponent>
+            </RoleToggle>
           ))}
 
           <div className={classes.grow} />

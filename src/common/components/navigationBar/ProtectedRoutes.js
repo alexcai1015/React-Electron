@@ -1,7 +1,7 @@
 import { Dashboard } from '../../../dashboard/pages/Dashboard';
 import { BulkUpload } from '../../../bulkUpload/BulkUpload';
 import { ChangePassword } from '../../../pages/ChangePassword';
-import { Roles } from '../../constants';
+import { KeycloakRoles } from '../../constants';
 
 export const PROTECTED_ROUTES = [
   {
@@ -10,7 +10,7 @@ export const PROTECTED_ROUTES = [
     title: 'Applications',
     component: Dashboard,
     show: true,
-    role: Roles.HAS_VIEW_DETAILS_ACCESS,
+    role: KeycloakRoles.HAS_VIEW_DETAILS_ACCESS, //permission
   },
   {
     path: '/bulk-upload',
@@ -18,7 +18,7 @@ export const PROTECTED_ROUTES = [
     title: 'Bulk Upload',
     component: BulkUpload,
     show: true,
-    role: Roles.HAS_BULK_UPLOAD_ACCESS,
+    role: KeycloakRoles.HAS_BULK_UPLOAD_ACCESS,
   },
   {
     path: '/change-password',
@@ -26,6 +26,6 @@ export const PROTECTED_ROUTES = [
     title: 'Change Password',
     component: ChangePassword,
     show: false,
-    role: Roles.HAS_VIEW_DETAILS_ACCESS,
+    role: KeycloakRoles.HAS_VIEW_DETAILS_ACCESS,
   },
 ];
