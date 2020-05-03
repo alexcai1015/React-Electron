@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionTitleContainer: {
     marginBottom: 14,
+    marginTop: 16,
   },
 }));
 
