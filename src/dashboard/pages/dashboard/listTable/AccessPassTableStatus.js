@@ -26,6 +26,9 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
         <>
           <CheckCircleIcon color="inherit" />
           <Typography variant="body1">{status}</Typography>
+          {/* <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
+            Revoke
+          </SuspendButton> */}
         </>
       );
     case ApprovalStatus.Declined:
@@ -36,7 +39,12 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
         </>
       );
     case ApprovalStatus.Suspended:
-      return null;
+      return (
+        <>
+          <CancelIcon color="inherit" />
+          <Typography variant="body1">{status}</Typography>
+        </>
+      );
     default:
       return null;
   }
