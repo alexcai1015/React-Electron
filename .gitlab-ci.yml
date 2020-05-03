@@ -10,11 +10,16 @@ services:
   - docker:dind
 
 variables:
-  DEVELOP_IMAGE: "dctx/rapidpass-approver-develop"
-  TEST_IMAGE: "dctx/rapidpass-approver-test"
-  STAGE_IMAGE: "dctx/rapidpass-approver-staging"
-  PROD_IMAGE: "dctx/rapidpass-approver"
   KEYCLOAK_SERVER: "https://auth.rapidpass.ph"
+  DEVELOP_IMAGE: "dctx/rapidpass-approver-develop"
+  DEVELOP_BASE_URL: "https://rapidpass-approver-dev.azurewebsites.net"
+  TEST_IMAGE: "dctx/rapidpass-approver-test"
+  TEST_BASE_URL: "https://rapidpass-approver-test.azurewebsites.net"
+  STAGE_IMAGE: "dctx/rapidpass-approver-staging"
+  STAGE_BASE_URL: "https://rapidpass-approver-staging.azurewebsites.net"
+  PROD_IMAGE: "dctx/rapidpass-approver"
+  PROD_BASE_URL: "https://dashboard.rapidpass.ph"
+
 
 docker-build:
   stage: build
@@ -28,6 +33,7 @@ docker-build:
                    --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_DEVELOP
                    --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_DEVELOP
                    --build-arg REACT_APP_ENV=develop
+                   --build-arg REACT_APP_BASE_URL=$DEVELOP_BASE_URL
                    --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
                    --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM_DEVELOP
                    --build-arg REACT_APP_KEYCLOAK_CLIENTID=$REACT_APP_KEYCLOAK_CLIENTID_DEVELOP
@@ -36,7 +42,7 @@ docker-build:
     - docker push "$ACR_REGISTRY/$DEVELOP_IMAGE:$CI_BUILD_ID"
   environment:
     name: development
-    url: https://rapidpass-approver-dev.azurewebsites.net
+    url: $DEVELOP_BASE_URL
 
 
 # We have no automated tests, so for test stage, just redeploy to test env for manual testing.
@@ -52,6 +58,7 @@ docker-test:
                     --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_TEST
                     --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_TEST
                     --build-arg REACT_APP_ENV=test
+                    --build-arg REACT_APP_BASE_URL=$TEST_BASE_URL
                     --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
                     --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM_TEST
                     --build-arg REACT_APP_KEYCLOAK_CLIENTID=$REACT_APP_KEYCLOAK_CLIENTID_TEST
@@ -60,7 +67,7 @@ docker-test:
     - docker push "$ACR_REGISTRY/$TEST_IMAGE:$CI_BUILD_ID"
   environment:
     name: test
-    url: https://rapidpass-approver-test.azurewebsites.net
+    url: $TEST_BASE_URL
 
 docker-stage:
   stage: deploy
@@ -74,6 +81,7 @@ docker-stage:
                    --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_STAGING
                    --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_STAGING
                    --build-arg REACT_APP_ENV=staging
+                   --build-arg REACT_APP_BASE_URL=$STAGE_BASE_URL
                    --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
                    --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM_STAGING
                    --build-arg REACT_APP_KEYCLOAK_CLIENTID=$REACT_APP_KEYCLOAK_CLIENTID_STAGING
@@ -82,7 +90,7 @@ docker-stage:
     - docker push "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID"
   environment:
     name: staging
-    url: https://rapidpass-approver-staging.azurewebsites.net
+    url: STAGE_BASE_URL
   only:
     - /^release\/.*$/
 
@@ -99,6 +107,7 @@ docker-deploy:
                     --build-arg REACT_APP_API_URL=$REACT_APP_API_URL
                     --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY
                     --build-arg REACT_APP_ENV=production
+                    --build-arg REACT_APP_BASE_URL=$PROD_BASE_URL
                     --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
                     --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM
                     --build-arg REACT_APP_KEYCLOAK_CLIENTID=$REACT_APP_KEYCLOAK_CLIENTID
@@ -107,4 +116,4 @@ docker-deploy:
     - docker push "$ACR_REGISTRY/$PROD_IMAGE:$CI_BUILD_ID"
   environment:
     name: production
-    url: https://dashboard.rapidpass.ph
+    url: $PROD_BASE_URL
