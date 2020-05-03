@@ -7,9 +7,9 @@ export const ApprovalStatus = {
 };
 
 export const ApprovalStatusLabel = {
-  pending: 'pending',
-  approved: 'approved',
-  declined: 'declined',
-  expired: 'expired',
-  suspended: 'revoked',
+  [ApprovalStatus.Pending]: 'pending',
+  [ApprovalStatus.Approved]: 'approved',
+  [ApprovalStatus.Declined]: 'declined',
+  [ApprovalStatus.Expired]: 'expired',
+  [ApprovalStatus.Suspended]: 'revoked', // TODO: restore to suspended on rollout of Suspend.
 };
