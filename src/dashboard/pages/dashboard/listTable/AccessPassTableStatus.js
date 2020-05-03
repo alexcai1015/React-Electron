@@ -4,7 +4,6 @@ import { styled } from '@material-ui/core/styles';
 import PropTypes from 'prop-types';
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 
-import { theme } from '../../../../theme';
 import { ApprovalStatus } from '../../../../common/constants';
 
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
@@ -27,9 +26,6 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
         <>
           <CheckCircleIcon color="inherit" />
           <Typography variant="body1">{status}</Typography>
-          <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
-            Revoke
-          </SuspendButton>
         </>
       );
     case ApprovalStatus.Declined:
@@ -40,12 +36,7 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
         </>
       );
     case ApprovalStatus.Suspended:
-      return (
-        <>
-          <CancelIcon color="inherit" />
-          <Typography variant="body1">{status}</Typography>
-        </>
-      );
+      return null;
     default:
       return null;
   }
@@ -92,10 +83,3 @@ const DenyButton = styled(Button)(({ theme }) => ({
     backgroundColor: theme.palette.denialRed,
   },
 }));
-
-const SuspendButton = styled(Button)({
-  backgroundColor: theme.palette.suspendOrange,
-  '&:hover': {
-    backgroundColor: theme.palette.suspendOrange,
-  },
-});
