@@ -25,7 +25,7 @@ export const CheckApplicationStatus = () => {
   };
 
   const handleCheckApplicationStatusClicked = () => {
-    query({ referenceId: searchValue });
+    query({ referenceId: searchValue.trim() });
   };
 
   return (
@@ -36,11 +36,11 @@ export const CheckApplicationStatus = () => {
             {isEmpty(applicationStatusData) && (
               <Grid container direction="column" justify="center" alignItems="center">
                 <Typography align="justify">
-                  Please provide your Plate Number or Contact Number used in your RapidPass
-                  registration below to see the details about your application status.
+                  Check the application status of the requestor’s RapidPass by typing the mobile
+                  number below.
                 </Typography>
                 <FormControlWrapper fullWidth>
-                  <Typography variant="subtitle1">Plate Number/Contact Number</Typography>
+                  <Typography variant="subtitle1">Contact Number</Typography>
                   <TextField size="small" variant="outlined" onChange={handleSearchChange} />
                   {error && error.response.data && (
                     <Typography variant="body1" gutterBottom color="error">
@@ -67,6 +67,7 @@ export const CheckApplicationStatus = () => {
                 <ApplicationStatusResult
                   controlNumber={applicationStatusData.controlCode}
                   status={applicationStatusData.status}
+                  updatesData={applicationStatusData.updates}
                 />
                 <Container>
                   <BackButton

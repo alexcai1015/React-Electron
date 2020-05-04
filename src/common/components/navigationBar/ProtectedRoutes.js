@@ -11,7 +11,8 @@ export const PROTECTED_ROUTES = [
     title: 'Applications',
     component: Dashboard,
     show: true,
-    allowedRole: Roles.APPROVER,
+
+    // allowedRole: Roles.APPROVER,
   },
   {
     path: '/bulk-upload',

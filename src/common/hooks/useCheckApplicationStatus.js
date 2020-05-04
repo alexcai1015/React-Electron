@@ -19,21 +19,21 @@ export const useCheckApplicationStatus = () => {
 
   const { execute: executeLogout } = useLogout();
 
-  const { status, controlCode } = maybeObject({ ...data });
+  const { status, controlCode, updates } = maybeObject({ ...data });
 
   const httpResponse = maybe({})(others.httpResponse);
   const isSuccess = isRequestSuccess(httpResponse.status) || false;
 
   useEffect(() => {
     if (isSuccess) {
-      setApplicationStatus({ status, controlCode });
+      setApplicationStatus({ status, controlCode, updates });
       apiDataReset();
     }
 
     if (error && isUnauthorized(error)) {
       executeLogout();
     }
-  }, [status, controlCode, isSuccess, error, apiDataReset, executeLogout]);
+  }, [status, controlCode, updates, isSuccess, error, apiDataReset, executeLogout]);
 
   const query = useCallback(
     ({ referenceId }) => {

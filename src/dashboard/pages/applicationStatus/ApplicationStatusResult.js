@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import ApplicationStatusIcon from '../../../common/components/ApplicationStatusIcon';
 
-export const ApplicationStatusResult = ({ status, controlNumber }) => {
+export const ApplicationStatusResult = ({ status, controlNumber, updatesData }) => {
   const resultGenerator = () => {
     switch (status.toUpperCase()) {
       case 'PENDING':
@@ -28,12 +28,14 @@ export const ApplicationStatusResult = ({ status, controlNumber }) => {
                   <RapidPassIDStyled>{controlNumber}</RapidPassIDStyled>
                 </Typography>
               </ControlNumberWrapper>
-              <Typography align="left" variant="body1">
-                To access the RapidPass QR, go to
+              <Typography align="justify" variant="body1">
+                To download the RapidPass QR pdf, you may go to &nbsp;
                 <a href={`https://rapidpass.ph/qr/${controlNumber}`}>
                   https://rapidpass.ph/qr/
                   {controlNumber}
                 </a>
+                .
+                <br />
                 <br />
                 Control Number should STRICTLY be shared only to the requestor owner.
               </Typography>
@@ -54,6 +56,9 @@ export const ApplicationStatusResult = ({ status, controlNumber }) => {
                   <RapidPassIDStyled>{controlNumber}</RapidPassIDStyled>
                 </Typography>
               </ControlNumberWrapper>
+              <Typography align="center" variant="body1">
+                {updatesData}
+              </Typography>
             </Container>
           </>
         );
@@ -86,6 +91,9 @@ export const ApplicationStatusResult = ({ status, controlNumber }) => {
                   <RapidPassIDStyled>{controlNumber}</RapidPassIDStyled>
                 </Typography>
               </RapidPassIDWrapper>
+              <Typography align="center" variant="body1">
+                {updatesData}
+              </Typography>
             </Container>
           </>
         );
@@ -100,6 +108,7 @@ export const ApplicationStatusResult = ({ status, controlNumber }) => {
 ApplicationStatusResult.propTypes = {
   status: PropTypes.string,
   controlNumber: PropTypes.string,
+  updatesData: PropTypes.string,
 };
 
 const ControlNumberWrapper = styled(Box)(({ theme }) => ({

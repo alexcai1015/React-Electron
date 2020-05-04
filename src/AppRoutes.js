@@ -9,7 +9,6 @@ import { PROTECTED_ROUTES } from './common/components/navigationBar/ProtectedRou
 import { NavigationBar } from './common/components/navigationBar/NavigationBar';
 import { getUserToken, getUsername } from './store/slices';
 import { useGetUserAporTypes, useGetRole } from './common/hooks';
-import { Roles } from './common/constants';
 import PageSpinner from './common/components/PageSpinner';
 
 /* catch-all */
@@ -58,7 +57,6 @@ ProtectedRoute.propTypes = {
 
 export function AppRoutes() {
   const token = useSelector(getUserToken);
-  const userRole = useGetRole();
 
   return (
     <Switch>
@@ -68,7 +66,7 @@ export function AppRoutes() {
         render={() => (
           <ReactRouterRedirect
             to={{
-              pathname: userRole === Roles.APPROVER ? '/access-passes' : '/application-status',
+              pathname: '/access-passes',
             }}
           />
         )}
