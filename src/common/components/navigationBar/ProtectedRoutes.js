@@ -1,6 +1,8 @@
 import { Dashboard } from '../../../dashboard/pages/Dashboard';
 import { BulkUpload } from '../../../bulkUpload/BulkUpload';
 import { ChangePassword } from '../../../pages/ChangePassword';
+import { CheckApplicationStatus } from '../../../dashboard/pages/CheckApplicationStatus';
+import { Roles } from '../../constants';
 
 export const PROTECTED_ROUTES = [
   {
@@ -9,6 +11,7 @@ export const PROTECTED_ROUTES = [
     title: 'Applications',
     component: Dashboard,
     show: true,
+    allowedRole: Roles.APPROVER,
   },
   {
     path: '/bulk-upload',
@@ -16,6 +19,15 @@ export const PROTECTED_ROUTES = [
     title: 'Bulk Upload',
     component: BulkUpload,
     show: true,
+    allowedRole: Roles.APPROVER,
+  },
+  {
+    path: '/application-status',
+    exact: true,
+    title: 'Application Status',
+    component: CheckApplicationStatus,
+    show: true,
+    allowedRole: Roles.SUPPORT,
   },
   {
     path: '/change-password',
