@@ -29,7 +29,12 @@ export const ApplicationStatusResult = ({ status, controlNumber }) => {
                 </Typography>
               </ControlNumberWrapper>
               <Typography align="left" variant="body1">
-                {/* To access the RapidPass QR, go to <a href={`https://rapidpass.ph/qr/${controlNumber}`}>https://rapidpass.ph/qr/{controlNumber}</a> <br /> */}
+                To access the RapidPass QR, go to
+                <a href={`https://rapidpass.ph/qr/${controlNumber}`}>
+                  https://rapidpass.ph/qr/
+                  {controlNumber}
+                </a>
+                <br />
                 Control Number should STRICTLY be shared only to the requestor owner.
               </Typography>
             </Container>
