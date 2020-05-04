@@ -8,7 +8,7 @@ import { ActivateUser } from './pages/ActivateUser';
 import { PROTECTED_ROUTES } from './common/components/navigationBar/ProtectedRoutes';
 import { NavigationBar } from './common/components/navigationBar/NavigationBar';
 import { getUserToken, getUsername } from './store/slices';
-import { useGetUserAporTypes } from './common/hooks';
+import { useGetUserAporTypes, useGetRole } from './common/hooks';
 import PageSpinner from './common/components/PageSpinner';
 
 /* catch-all */
@@ -18,10 +18,11 @@ NotFoundRoute.propTypes = {
   fallback: PropTypes.string,
 };
 
-function ProtectedRoute({ component: Component, accessCode, ...rest }) {
+function ProtectedRoute({ component: Component, accessCode, allowedRole, ...rest }) {
   const username = useSelector(getUsername);
   const authenticated = !!accessCode;
   const { query, isLoading } = useGetUserAporTypes();
+  const userRole = useGetRole();
 
   useEffect(() => {
     query(username);
@@ -32,7 +33,7 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
   }
 
   const getElement = ({ ...props }) =>
-    authenticated ? (
+    authenticated && (!allowedRole || allowedRole === userRole) ? (
       <>
         <NavigationBar username={username} />
         <Component {...props} />
@@ -51,27 +52,36 @@ function ProtectedRoute({ component: Component, accessCode, ...rest }) {
 ProtectedRoute.propTypes = {
   component: PropTypes.elementType,
   accessCode: PropTypes.string.isRequired,
+  allowedRole: PropTypes.string,
 };
 
 export function AppRoutes() {
   const token = useSelector(getUserToken);
+
   return (
     <Switch>
       <Route
         exact
         path="/"
-        render={() => <ReactRouterRedirect to={{ pathname: '/access-passes' }} />}
+        render={() => (
+          <ReactRouterRedirect
+            to={{
+              pathname: '/access-passes',
+            }}
+          />
+        )}
       />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
       <Route exact path="/activate-user" render={() => <ActivateUser />} />
 
-      {PROTECTED_ROUTES.map(({ path, component, exact }) => (
+      {PROTECTED_ROUTES.map(({ path, component, exact, allowedRole = null }) => (
         <ProtectedRoute
           accessCode={token}
           key="path"
           path={path}
           component={component}
           exact={exact}
+          allowedRole={allowedRole}
         />
       ))}
       <Route component={NotFoundRoute} />

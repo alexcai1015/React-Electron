@@ -12,7 +12,7 @@ import {
 import { useHistory } from 'react-router-dom';
 
 import logo from '../../../assets/rapidpass.svg';
-import { useLogout } from '../../hooks';
+import { useLogout, useGetRole } from '../../hooks';
 import { serverEnv } from '../FeatureToggle';
 
 import UserMenu from './UserMenu';
@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 export function NavigationBar({ username }) {
   const classes = useStyles();
   const history = useHistory();
+  const userRole = useGetRole();
   const { execute: executeLogout } = useLogout();
 
   const handleLogout = () => {
@@ -64,17 +65,20 @@ export function NavigationBar({ username }) {
             <sup title={serverEnv}>{`v${process.env.REACT_APP_VERSION}`}</sup>
           </div>
 
-          {PROTECTED_ROUTES.filter(({ show }) => show).map(({ path, title }) => (
-            <Button
-              key={path}
-              edge="start"
-              color="inherit"
-              onClick={() => history.push(path)}
-              className={`${isActive(path)} ${classes.navButtons}`}
-            >
-              {title}
-            </Button>
-          ))}
+          {PROTECTED_ROUTES.filter(({ show }) => show).map(
+            ({ path, title, allowedRole = null }) =>
+              (userRole === allowedRole || !allowedRole) && (
+                <Button
+                  key={path}
+                  edge="start"
+                  color="inherit"
+                  onClick={() => history.push(path)}
+                  className={`${isActive(path)} ${classes.navButtons}`}
+                >
+                  {title}
+                </Button>
+              )
+          )}
 
           <div className={classes.grow} />
           <UserMenu username={username}>
