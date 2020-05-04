@@ -38,9 +38,7 @@ export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose }) => {
 
 AccessPassDetailsModal.propTypes = {
   isOpen: PropTypes.bool,
-
-  // ! TODO - shape this to access pass
-  value: PropTypes.shape({}),
+  value: PropTypes.shape(AccessPass),
   onClose: PropTypes.func.isRequired,
 };
 
