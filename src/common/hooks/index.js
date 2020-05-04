@@ -8,3 +8,5 @@ export * from './useActivateApprover';
 export * from './useDenyAccessPass';
 export * from './useLogout';
 export * from './useGetUserAporTypes';
+export * from './useCheckApplicationStatus';
+export * from './useGetRole';
