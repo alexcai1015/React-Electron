@@ -169,10 +169,10 @@ export const Dashboard = () => {
       getAccessPassesQuery({
         urlQueryParams: {
           ...DefaultQueryParams,
-          pageNo: pageIndex,
+          search,
+          pageNo: search ? 0 : pageIndex,
           maxPageRows: pageSize,
           status,
-          search,
           aporType: aporTypes.join(','),
         },
       });
