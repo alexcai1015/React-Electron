@@ -2,12 +2,13 @@ import React from 'react';
 import { Box, Container, Grid, styled, Typography } from '@material-ui/core';
 import PropTypes from 'prop-types';
 
+import { ApprovalStatus } from '../../../common/constants';
 import ApplicationStatusIcon from '../../../common/components/ApplicationStatusIcon';
 
 export const ApplicationStatusResult = ({ status, controlNumber, updatesData }) => {
   const resultGenerator = () => {
-    switch (status.toUpperCase()) {
-      case 'PENDING':
+    switch (status.toLowerCase()) {
+      case ApprovalStatus.Pending:
         return (
           <>
             <Grid container justify="center">
@@ -15,7 +16,7 @@ export const ApplicationStatusResult = ({ status, controlNumber, updatesData }) 
             </Grid>
           </>
         );
-      case 'APPROVED':
+      case ApprovalStatus.Approved:
         return (
           <>
             <Grid container justify="center">
@@ -42,8 +43,7 @@ export const ApplicationStatusResult = ({ status, controlNumber, updatesData }) 
             </Container>
           </>
         );
-      case 'DENIED':
-      case 'DECLINED':
+      case ApprovalStatus.Declined:
         return (
           <>
             <Grid container justify="center">
@@ -62,7 +62,7 @@ export const ApplicationStatusResult = ({ status, controlNumber, updatesData }) 
             </Container>
           </>
         );
-      case 'EXPIRED':
+      case ApprovalStatus.Expired:
         return (
           <>
             <Grid container justify="center">
@@ -78,7 +78,7 @@ export const ApplicationStatusResult = ({ status, controlNumber, updatesData }) 
             </Container>
           </>
         );
-      case 'SUSPENDED':
+      case ApprovalStatus.Suspended:
         return (
           <>
             <Grid container justify="center">

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { ApprovalStatus } from '../constants';
 import APROVED from '../../assets/application_approved.svg';
 import PENDING from '../../assets/application_pending.svg';
 import DENIED from '../../assets/application_denied.svg';
@@ -10,21 +11,20 @@ import EXPIRED from '../../assets/application_expired.svg';
 const ApplicationStatusIcon = ({ status }) => {
   let imgSrc = null;
 
-  switch (status.toUpperCase()) {
-    case 'APPROVED':
+  switch (status.toLowerCase()) {
+    case ApprovalStatus.Approved:
       imgSrc = APROVED;
       break;
-    case 'PENDING':
+    case ApprovalStatus.Pending:
       imgSrc = PENDING;
       break;
-    case 'DENIED':
-    case 'DECLINED':
+    case ApprovalStatus.Declined:
       imgSrc = DENIED;
       break;
-    case 'SUSPENDED':
+    case ApprovalStatus.Suspended:
       imgSrc = SUSPENDED;
       break;
-    case 'EXPIRED':
+    case ApprovalStatus.Expired:
       imgSrc = EXPIRED;
       break;
     default:
