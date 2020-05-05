@@ -78,11 +78,7 @@ export const PassUploadTab = () => {
   const [uploadModalMessage, setUploadModalMessage] = useState(UPLOAD_MODAL_MESSAGE_INITIAL_STATE);
 
   // ! TODO: put other upload success modal state cleanup here
-  const resetUploadSuccessModal = () => {
-    setUploadModalMessage(UPLOAD_MODAL_MESSAGE_INITIAL_STATE);
-  };
-
-  const resetUploadWarningModal = () => {
+  const resetUploadModal = () => {
     setUploadModalMessage(UPLOAD_MODAL_MESSAGE_INITIAL_STATE);
   };
 
@@ -233,7 +229,7 @@ export const PassUploadTab = () => {
         message={uploadModalMessage}
         handleClose={() => {
           setIsUploadSuccessModalOpen(false);
-          resetUploadSuccessModal();
+          resetUploadModal();
         }}
       />
 
@@ -242,7 +238,7 @@ export const PassUploadTab = () => {
         message={uploadModalMessage}
         handleClose={() => {
           setIsUploadWarningModalOpen(false);
-          resetUploadWarningModal();
+          resetUploadModal();
         }}
       />
     </>

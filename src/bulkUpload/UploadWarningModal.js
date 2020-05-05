@@ -60,8 +60,10 @@ export const UploadWarningModal = ({ open, handleClose, message }) => {
   return (
     <Dialog open={open} onClose={handleClose} className={classes.dialog} fullWidth maxWidth="xs">
       <DialogContent>
+        <h3>Your file contains invalid data.</h3>
         <div className={classes.uploadMessage}>
           <Error className={classes.checkIcon} />
+          <h2>Warning</h2>
         </div>
         {renderMessage(message)}
       </DialogContent>
