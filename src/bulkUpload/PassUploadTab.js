@@ -148,9 +148,11 @@ export const PassUploadTab = () => {
         }
 
         const recordsStats = getBulkUploadStats(records);
-        let message =
-          `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved.\n\n` +
-          `${recordsStats.approved} approved applicant/s will be notified via SMS/email to access their QR codes.\n`;
+        let message = `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved.\n\n`;
+
+        if (recordsStats.approved > 0) {
+          message += `${recordsStats.approved} approved applicant/s will be notified via SMS/email to access their QR codes.\n`;
+        }
 
         if (recordsStats.existing > 0) {
           message += `${recordsStats.existing} existing approved record/s from the file. No change done.\n`;
