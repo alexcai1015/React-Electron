@@ -38,9 +38,7 @@ export const ApplicationStatusResult = ({ status, controlNumber, updatesData }) 
                 .
                 <br />
                 <br />
-                Control Number should
-                <b>STRICTLY</b>
-                be shared only to the requestor owner.
+                Control Number should <b>STRICTLY</b> be shared only to the requestor owner.
               </Typography>
             </Container>
           </>
