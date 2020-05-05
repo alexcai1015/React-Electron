@@ -148,10 +148,10 @@ export const PassUploadTab = () => {
         }
 
         const recordsStats = getBulkUploadStats(records);
-        let message = `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved.\n\n`;
+        let message = `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved and notified.\n\n`;
 
         if (recordsStats.approved > 0) {
-          message += `${recordsStats.approved} approved applicant/s will be notified via SMS/email to access their QR codes.\n`;
+          message += `${recordsStats.approved} approved applicant/s will be notified via SMS/email.\n`;
         }
 
         if (recordsStats.existing > 0) {
@@ -159,10 +159,10 @@ export const PassUploadTab = () => {
         }
 
         if (recordsStats.declined > 0) {
-          message += `Found ${recordsStats.declined} applicant/s with WRONG DATA INPUT in the CSV file. Please fix the inputs in the file following the specific error lines below.\n\n`;
+          message += `${recordsStats.declined} applicant/s with INVALID DATA. Please fix the wrong input values and LOAD AGAIN the updated file to reflect in our system. See specific error line/s below:\n\n`;
 
           Object.keys(recordsStats.declinedLineError).forEach((declinedError) => {
-            message += `${declinedError}: Line record/s ${recordsStats.declinedLineError[
+            message += `\n${declinedError}: Line record/s ${recordsStats.declinedLineError[
               declinedError
             ].join(', ')}`;
           });
