@@ -159,7 +159,7 @@ export const PassUploadTab = () => {
         }
 
         if (recordsStats.declined > 0) {
-          message += `Found ${recordsStats.declined} applicant/s with WRONG DATA INPUT in the loaded file. Please fix the data and load the file here again. See specific error lines below:\n\n`;
+          message += `Found ${recordsStats.declined} applicant/s with WRONG DATA INPUT in the CSV file. Please fix the inputs in the file following the specific error lines below.\n\n`;
 
           Object.keys(recordsStats.declinedLineError).forEach((declinedError) => {
             message += `${declinedError}: Line record/s ${recordsStats.declinedLineError[
