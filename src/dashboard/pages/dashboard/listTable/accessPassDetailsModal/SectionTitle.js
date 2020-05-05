@@ -11,7 +11,8 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: '600',
   },
   sectionTitleContainer: {
-    marginBottom: 14,
+    marginBottom: 8,
+    marginTop: 12,
   },
 }));
 

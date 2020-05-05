@@ -78,7 +78,7 @@ export const ListTable = ({
           { Header: 'APOR type', accessor: 'aporType' },
           { Header: 'ID Type', accessor: 'idType' },
           { Header: 'ID Number', accessor: 'id' },
-          { Header: 'Approval Action', accessor: 'status' },
+          { Header: 'Status', accessor: 'status' },
         ],
         []
       ),
