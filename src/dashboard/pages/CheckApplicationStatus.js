@@ -17,7 +17,13 @@ import { ApplicationStatusResult } from './applicationStatus/ApplicationStatusRe
 
 export const CheckApplicationStatus = () => {
   const [searchValue, setSearchValue] = useState('');
-  const { data: applicationStatusData, query, reset, error = null } = useCheckApplicationStatus();
+  const {
+    data: applicationStatusData,
+    query,
+    reset,
+    error = null,
+    isLoading,
+  } = useCheckApplicationStatus();
 
   const handleSearchChange = (e) => {
     const searchQuery = e.target.value;
@@ -40,7 +46,9 @@ export const CheckApplicationStatus = () => {
                   number below.
                 </Typography>
                 <FormControlWrapper fullWidth>
-                  <Typography variant="subtitle1">Contact Number</Typography>
+                  <Typography variant="subtitle1">
+                    Contact Number (Input Format should be 09XXXXXXXXX)
+                  </Typography>
                   <TextField size="small" variant="outlined" onChange={handleSearchChange} />
                   {error && error.response.data && (
                     <Typography variant="body1" gutterBottom color="error">
@@ -54,7 +62,7 @@ export const CheckApplicationStatus = () => {
                     color="primary"
                     size="large"
                     onClick={handleCheckApplicationStatusClicked}
-                    disabled={!searchValue.length}
+                    disabled={!searchValue.length || isLoading}
                   >
                     Check Status
                   </SubmitButton>
@@ -95,7 +103,7 @@ const FormControlWrapper = styled(FormControl)(({ theme }) => ({
 
 const StyledContainer = styled(Container)(({ theme }) => ({
   width: 550,
-  paddingTop: theme.spacing(6),
+  paddingTop: theme.spacing(17),
   paddingBottom: theme.spacing(3),
 }));
 

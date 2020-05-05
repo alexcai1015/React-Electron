@@ -3,7 +3,6 @@ export const UserRoles = [
   { username: 'inspiro@rapidpass.ph', role: 'SUPPORT' },
   { username: 'zendesk@rapidpass.ph', role: 'SUPPORT' },
   { username: 'dict-support@rapidpass.ph', role: 'SUPPORT' },
-  { username: 'doh@doh.gov', role: 'APPROVER' },
 ];
 
 export const Roles = {
