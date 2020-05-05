@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   uploadMessage: {
     padding: theme.spacing(2),
   },
-  checkIcon: {
+  errorIcon: {
     color: theme.palette.suspendOrange,
     fontSize: 50,
   },
@@ -62,7 +62,7 @@ export const UploadWarningModal = ({ open, handleClose, message }) => {
       <DialogContent>
         <h3>Your file contains invalid data.</h3>
         <div className={classes.uploadMessage}>
-          <Error className={classes.checkIcon} />
+          <Error className={classes.errorIcon} />
           <h2>Warning</h2>
         </div>
         {renderMessage(message)}
