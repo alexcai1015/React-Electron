@@ -49,7 +49,7 @@ docker-build:
 docker-test:
   stage: test
   only:
-    - develop
+    - test
   before_script:
     - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
   script:
