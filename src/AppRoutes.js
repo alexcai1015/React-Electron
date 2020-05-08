@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Switch, Route, Redirect as ReactRouterRedirect, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -10,7 +10,6 @@ import { PROTECTED_ROUTES } from './common/components/navigationBar/ProtectedRou
 import { NavigationBar } from './common/components/navigationBar/NavigationBar';
 import { getUserToken, getUsername } from './store/slices';
 import { Auth } from './pages/Auth';
-import { useEffect } from 'react';
 
 /* catch-all */
 const NotFoundRoute = ({ fallback = '/' }) => <ReactRouterRedirect to={fallback} />;
@@ -57,16 +56,24 @@ function ProtectedRoute({ component: Component, accessCode, role, ...rest }) {
 ProtectedRoute.propTypes = {
   component: PropTypes.elementType,
   accessCode: PropTypes.string.isRequired,
+  role: PropTypes.string,
 };
 
 export function AppRoutes() {
   const token = useSelector(getUserToken);
+
   return (
     <Switch>
       <Route
         exact
         path="/"
-        render={() => <ReactRouterRedirect to={{ pathname: '/access-passes' }} />}
+        render={() => (
+          <ReactRouterRedirect
+            to={{
+              pathname: '/access-passes',
+            }}
+          />
+        )}
       />
       <Route exact path="/login" render={({ history }) => <Login history={history} />} />
       <Route exact path="/activate-user" render={() => <ActivateUser />} />

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   label: {
@@ -19,20 +20,30 @@ const useStyles = makeStyles((theme) => ({
   fieldContainer: { paddingBottom: 12 },
 }));
 
-const Field = ({ label, value }) => {
+const Field = ({ label, value, isLoading }) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.fieldContainer}>
       <Typography className={classes.label}>{label}</Typography>
-      <Typography className={classes.value}>{value}</Typography>
+      {isLoading ? (
+        <Skeleton variant="rect" width={100} height={14} />
+      ) : (
+        <Typography className={classes.value}>{value}</Typography>
+      )}
     </Box>
   );
 };
 
+Field.defaultProps = {
+  value: 'N/A',
+  isLoading: false,
+};
+
 Field.propTypes = {
   label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
+  isLoading: PropTypes.bool,
 };
 
 export default Field;

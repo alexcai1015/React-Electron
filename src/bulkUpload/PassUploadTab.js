@@ -10,6 +10,7 @@ import { useSnackbar } from '../hooks';
 import { PassType } from '../common/constants/PassType';
 
 import { UploadSuccessModal } from './UploadSuccessModal';
+import { UploadWarningModal } from './UploadWarningModal';
 import { DownloadTemplateLink } from './passUploadTab/DownloadTemplateLink';
 
 function TabPanel(props) {
@@ -61,7 +62,7 @@ const UPLOAD_TEXT = 'Click Here or Drag and Drop to Upload (.csv) file';
 
 const acceptedFile = ['.csv', 'text/csv'];
 
-const UPLOAD_SUCCESS_MODAL_MESSAGE_INITIAL_STATE =
+const UPLOAD_MODAL_MESSAGE_INITIAL_STATE =
   'We will send bulk upload results to individuals via SMS and email.';
 
 export const PassUploadTab = () => {
@@ -73,13 +74,12 @@ export const PassUploadTab = () => {
   const { showSnackbar } = useSnackbar();
   const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = useState(UPLOAD_TEXT);
   const [isUploadSuccessModalOpen, setIsUploadSuccessModalOpen] = useState(false);
-  const [uploadSuccessModalMessage, setUploadSuccessModalMessage] = useState(
-    UPLOAD_SUCCESS_MODAL_MESSAGE_INITIAL_STATE
-  );
+  const [isUploadWarningModalOpen, setIsUploadWarningModalOpen] = useState(false);
+  const [uploadModalMessage, setUploadModalMessage] = useState(UPLOAD_MODAL_MESSAGE_INITIAL_STATE);
 
   // ! TODO: put other upload success modal state cleanup here
-  const resetUploadSuccessModal = () => {
-    setUploadSuccessModalMessage(UPLOAD_SUCCESS_MODAL_MESSAGE_INITIAL_STATE);
+  const resetUploadModal = () => {
+    setUploadModalMessage(UPLOAD_MODAL_MESSAGE_INITIAL_STATE);
   };
 
   const handleTabChange = (event, newValue) => {
@@ -138,8 +138,6 @@ export const PassUploadTab = () => {
     };
 
     if (isCompleted && !error) {
-      setIsUploadSuccessModalOpen(true);
-
       try {
         const records = JSON.parse(response);
         const recordsCount = records.length;
@@ -150,19 +148,29 @@ export const PassUploadTab = () => {
         }
 
         const recordsStats = getBulkUploadStats(records);
-        let message =
-          `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved.\n\n` +
-          `${recordsStats.approved} approved applicant/s will be notified via SMS/email to access their QR codes.\n` +
-          `${recordsStats.existing} existing approved record/s from the file. No change done.\n` +
-          `${recordsStats.declined} applicant/s with incomplete or invalid data will also be notified via SMS/email.\n\n`;
+        let message = `${recordsStats.approved} out of ${recordsCount} record/s were successfully approved and notified.\n\n`;
 
-        Object.keys(recordsStats.declinedLineError).forEach((declinedError) => {
-          message += `${declinedError}: Line records ${recordsStats.declinedLineError[
-            declinedError
-          ].join(', ')}\n`;
-        });
+        if (recordsStats.approved > 0) {
+          message += `${recordsStats.approved} approved applicant/s will be notified via SMS/email.\n`;
+        }
 
-        setUploadSuccessModalMessage(message);
+        if (recordsStats.existing > 0) {
+          message += `${recordsStats.existing} existing approved record/s from the file. No change done.\n`;
+        }
+
+        if (recordsStats.declined > 0) {
+          message += `${recordsStats.declined} applicant/s with INVALID DATA. Please fix the wrong input values and LOAD AGAIN the updated file to reflect in our system. See specific error line/s below:\n\n`;
+
+          Object.keys(recordsStats.declinedLineError).forEach((declinedError) => {
+            message += `\n${declinedError}: Line record/s ${recordsStats.declinedLineError[
+              declinedError
+            ].join(', ')}`;
+          });
+        }
+
+        setUploadModalMessage(message);
+        if (recordsStats.declined > 0) setIsUploadWarningModalOpen(true);
+        else setIsUploadSuccessModalOpen(true);
       } catch (e) {
         // ? TODO: error logging service?
       }
@@ -220,10 +228,19 @@ export const PassUploadTab = () => {
 
       <UploadSuccessModal
         open={isUploadSuccessModalOpen}
-        message={uploadSuccessModalMessage}
+        message={uploadModalMessage}
         handleClose={() => {
           setIsUploadSuccessModalOpen(false);
-          resetUploadSuccessModal();
+          resetUploadModal();
+        }}
+      />
+
+      <UploadWarningModal
+        open={isUploadWarningModalOpen}
+        message={uploadModalMessage}
+        handleClose={() => {
+          setIsUploadWarningModalOpen(false);
+          resetUploadModal();
         }}
       />
     </>

@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import Dialog from '@material-ui/core/Dialog';
+import { Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+import { useGetAccessPass } from '../../../../common/hooks';
+import { AccessPass } from '../../../../common/constants/AccessPass';
 
 import { PassDetails } from './accessPassDetailsModal/PassDetails';
 
@@ -12,11 +15,19 @@ const useStyles = makeStyles(() => ({
 }));
 
 export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose }) => {
+  const classes = useStyles();
+  const { data, query, isLoading } = useGetAccessPass();
+
   const handleClose = () => {
     onClose();
   };
 
-  const classes = useStyles();
+  useEffect(() => {
+    query(value.referenceId);
+  }, [query, value]);
+
+  const details = isLoading ? value : data;
+
   return (
     <Dialog
       open={isOpen}
@@ -29,18 +40,14 @@ export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose }) => {
       }}
       fullWidth
     >
-      <div>
-        <PassDetails details={value} handleClose={handleClose} />
-      </div>
+      <PassDetails details={details} handleClose={handleClose} isLoading={isLoading} />
     </Dialog>
   );
 };
 
 AccessPassDetailsModal.propTypes = {
   isOpen: PropTypes.bool,
-
-  // ! TODO - shape this to access pass
-  value: PropTypes.shape({}),
+  value: PropTypes.shape(AccessPass),
   onClose: PropTypes.func.isRequired,
 };
 

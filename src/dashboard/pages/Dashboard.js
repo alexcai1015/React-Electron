@@ -16,7 +16,7 @@ import { AccessPassDetailsModal } from './dashboard/listTable/AccessPassDetailsM
 
 /** use this to init any new queryparams */
 const DefaultQueryParams = Object.freeze({
-  passType: PassType.INDIVIDUAL.toUpperCase()
+  passType: PassType.INDIVIDUAL.toUpperCase(),
 });
 
 const StatusFilterOption = {
@@ -169,10 +169,10 @@ export const Dashboard = () => {
       getAccessPassesQuery({
         urlQueryParams: {
           ...DefaultQueryParams,
-          pageNo: pageIndex,
+          search,
+          pageNo: search ? 0 : pageIndex,
           maxPageRows: pageSize,
           status,
-          search,
           aporType: aporTypes.join(','),
         },
       });
