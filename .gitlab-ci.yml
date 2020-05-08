@@ -10,7 +10,7 @@ services:
   - docker:dind
 
 variables:
-  KEYCLOAK_SERVER: "https://id.cxpass.org"
+  KEYCLOAK_SERVER: "https://id.cxpass.org/auth"
   DEVELOP_IMAGE: "dctx/rapidpass-approver-develop"
   DEVELOP_BASE_URL: "https://rapidpass-approver-dev.azurewebsites.net"
   TEST_IMAGE: "dctx/rapidpass-approver-test"
