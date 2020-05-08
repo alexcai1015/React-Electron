@@ -9,9 +9,9 @@ services:
       - '8082:8080'
     volumes:
       # Linux
-      # - /rapidpass-dashboard/rp-keycloak-theme/rapidpass-approver:/opt/jboss/keycloak/themes/rapidpass-approver
+      - ./rp-keycloak-theme/rapidpass-approver:/opt/jboss/keycloak/themes/rapidpass-approver
       # Windows
-      - d:\React\rapidpass-dashboard\rp-keycloak-theme\rapidpass-approver:/opt/jboss/keycloak/themes/rapidpass-approver
+      # - d:\React\rapidpass-dashboard\rp-keycloak-theme\rapidpass-approver:/opt/jboss/keycloak/themes/rapidpass-approver
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
