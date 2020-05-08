@@ -10,7 +10,7 @@ services:
   - docker:dind
 
 variables:
-  KEYCLOAK_SERVER: "https://id.cxpass.org"
+  KEYCLOAK_SERVER: "https://id.cxpass.org/auth"
   DEVELOP_IMAGE: "dctx/rapidpass-approver-develop"
   DEVELOP_BASE_URL: "https://rapidpass-approver-dev.azurewebsites.net"
   TEST_IMAGE: "dctx/rapidpass-approver-test"
@@ -49,7 +49,7 @@ docker-build:
 docker-test:
   stage: test
   only:
-    - develop
+    - test
   before_script:
     - docker login -u "$ACR_USERNAME" -p "$ACR_PASSWORD" "$ACR_REGISTRY"
   script:
