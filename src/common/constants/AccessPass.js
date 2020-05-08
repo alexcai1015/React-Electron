@@ -25,6 +25,4 @@ export const AccessPass = {
   remarks: PropTypes.string,
   status: PropTypes.string,
   updates: PropTypes.string,
-}
-
-
+};

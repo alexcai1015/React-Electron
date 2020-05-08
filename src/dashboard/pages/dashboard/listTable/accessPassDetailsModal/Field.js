@@ -26,22 +26,24 @@ const Field = ({ label, value, isLoading }) => {
   return (
     <Box className={classes.fieldContainer}>
       <Typography className={classes.label}>{label}</Typography>
-      {isLoading ?
-        <Skeleton variant="rect" width={100} height={14} /> :
-        <Typography className={classes.value}>{value}</Typography>}
+      {isLoading ? (
+        <Skeleton variant="rect" width={100} height={14} />
+      ) : (
+        <Typography className={classes.value}>{value}</Typography>
+      )}
     </Box>
   );
 };
 
 Field.defaultProps = {
   value: 'N/A',
-  isLoading: false
-}
+  isLoading: false,
+};
 
 Field.propTypes = {
   label: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  isLoading: PropTypes.bool
+  value: PropTypes.string,
+  isLoading: PropTypes.bool,
 };
 
 export default Field;

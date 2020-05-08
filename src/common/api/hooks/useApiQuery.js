@@ -1,10 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useKeycloak } from '@react-keycloak/web';
 
 import { httpGet } from '../api';
 import { objToEncodedURI, applyPathParams, getConfig } from '../utils';
 import { maybe } from '../../utils/monads';
-import { getUserToken } from '../../../store/slices';
 
 const maybeObject = maybe({});
 
@@ -12,8 +11,9 @@ export const useApiQuery = (url, httpConfig) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState({ httpResponse: null, data: null });
   const [error, setError] = useState(null);
+  const { keycloak } = useKeycloak();
   const unmounted = useRef(false);
-  const token = useSelector(getUserToken);
+  const { token } = keycloak;
   const baseConfig = maybeObject(httpConfig);
 
   useEffect(() => {

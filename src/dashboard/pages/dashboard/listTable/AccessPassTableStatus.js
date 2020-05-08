@@ -5,32 +5,44 @@ import PropTypes from 'prop-types';
 import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-ui/icons';
 
 // import { theme } from '../../../../theme';
-import { ApprovalStatus, ApprovalStatusLabel } from '../../../../common/constants';
-
+import { RoleToggle } from '../../../../common/components/RoleBasedComponent';
+import { ApprovalStatus, KeycloakRoles, ApprovalStatusLabel } from '../../../../common/constants';
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
+
+const StatusDisplay = (status) => {
+  return (
+    <>
+      <Typography variant="body1">{status.toUpperCase()}</Typography>
+    </>
+  );
+};
 
 const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendClick, loading) => {
   switch (status) {
     case ApprovalStatus.Pending:
       return (
         <>
-          <ApproveButton variant="contained" onClick={onApproveClick} disabled={loading}>
-            Approve
-          </ApproveButton>
-          <DenyButton variant="contained" onClick={() => onDenyClick()} disabled={loading}>
-            Deny
-          </DenyButton>
+          <RoleToggle role={KeycloakRoles.HAS_APPROVE_ACCESS} deniedContent={StatusDisplay(status)}>
+            <ApproveButton variant="contained" onClick={onApproveClick} disabled={loading}>
+              Approve
+            </ApproveButton>
+            <DenyButton variant="contained" onClick={() => onDenyClick()} disabled={loading}>
+              Deny
+            </DenyButton>
+          </RoleToggle>
         </>
       );
     case ApprovalStatus.Approved:
       return (
         <>
-          <CheckCircleIcon color="inherit" />
-          <Typography variant="body1">{ApprovalStatusLabel[status]}</Typography>
-          {/* // TODO: Suspend feature rollout
-          <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
-            Revoke
-          </SuspendButton> */}
+          <RoleToggle role={KeycloakRoles.HAS_APPROVE_ACCESS}>
+            <CheckCircleIcon color="inherit" />
+            <Typography variant="body1">{status}</Typography>
+            {/* // TODO: Suspend feature rollout
+            <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
+              Revoke
+            </SuspendButton> */}
+          </RoleToggle>
         </>
       );
     case ApprovalStatus.Declined:

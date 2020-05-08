@@ -12,8 +12,8 @@ import {
 import { useHistory } from 'react-router-dom';
 
 import logo from '../../../assets/rapidpass.svg';
-import { useLogout, useGetRole } from '../../hooks';
 import { serverEnv } from '../FeatureToggle';
+import { RoleToggle } from '../RoleBasedComponent';
 
 import UserMenu from './UserMenu';
 import { PROTECTED_ROUTES } from './ProtectedRoutes';
@@ -43,12 +43,6 @@ const useStyles = makeStyles((theme) => ({
 export function NavigationBar({ username }) {
   const classes = useStyles();
   const history = useHistory();
-  const userRole = useGetRole();
-  const { execute: executeLogout } = useLogout();
-
-  const handleLogout = () => {
-    executeLogout();
-  };
 
   const isActive = (value) => (window.location.pathname === value ? 'active' : '');
 
@@ -65,27 +59,26 @@ export function NavigationBar({ username }) {
             <sup title={serverEnv}>{`v${process.env.REACT_APP_VERSION}`}</sup>
           </div>
 
-          {PROTECTED_ROUTES.filter(({ show }) => show).map(
-            ({ path, title, allowedRole = null }) =>
-              (userRole === allowedRole || !allowedRole) && (
-                <Button
-                  key={path}
-                  edge="start"
-                  color="inherit"
-                  onClick={() => history.push(path)}
-                  className={`${isActive(path)} ${classes.navButtons}`}
-                >
-                  {title}
-                </Button>
-              )
-          )}
+          {PROTECTED_ROUTES.filter(({ show }) => show).map(({ path, title, role }) => (
+            <RoleToggle key={title} role={role}>
+              <Button
+                key={path}
+                edge="start"
+                color="inherit"
+                onClick={() => history.push(path)}
+                className={`${isActive(path)} ${classes.navButtons}`}
+              >
+                {title}
+              </Button>
+            </RoleToggle>
+          ))}
 
           <div className={classes.grow} />
           <UserMenu username={username}>
-            <Button edge="end" color="inherit" href="/change-password">
+            <Button edge="end" color="inherit" href="/auth/change-password">
               Change Password
             </Button>
-            <Button edge="end" color="inherit" onClick={handleLogout}>
+            <Button edge="end" color="inherit" href="/auth/logout">
               Log out
             </Button>
           </UserMenu>

@@ -1,11 +1,10 @@
-export const UserRoles = [
-  { username: 'support-desk@rapidpass.ph', role: 'SUPPORT' },
-  { username: 'inspiro@rapidpass.ph', role: 'SUPPORT' },
-  { username: 'zendesk@rapidpass.ph', role: 'SUPPORT' },
-  { username: 'dict-support@rapidpass.ph', role: 'SUPPORT' },
-];
-
-export const Roles = {
-  APPROVER: 'APPROVER',
-  SUPPORT: 'SUPPORT',
+export const KeycloakRoles = {
+  HAS_VIEW_DETAILS_ACCESS: 'HAS_VIEW_DETAILS_ACCESS',
+  HAS_VIEW_RECORD_STATUS: 'HAS_VIEW_RECORD_STATUS',
+  HAS_APPROVE_ACCESS: 'HAS_APPROVE_ACCESS',
+  HAS_BULK_UPLOAD_ACCESS: 'HAS_BULK_UPLOAD_ACCESS',
+  HAS_VIEW_ALL_RECORDS: 'HAS_VIEW_ALL_RECORDS',
+  HAS_CHECK_APPLICATION_STATUS: 'HAS_CHECK_APPLICATION_STATUS',
 };
+
+export default KeycloakRoles;

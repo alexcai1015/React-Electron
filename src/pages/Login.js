@@ -1,48 +1,17 @@
-import React, { useEffect } from 'react';
-import { Button, Grid, Box, Typography, TextField } from '@material-ui/core';
+import React from 'react';
+import { Button, Grid, Box, Typography } from '@material-ui/core';
 import { styled } from '@material-ui/core/styles';
-import * as yup from 'yup';
 import { useHistory } from 'react-router-dom';
-import { useFormik } from 'formik';
 
 import logo from '../assets/logo_purple_title.svg';
-import { useLogin } from '../common/hooks';
-import { PasswordPeeker } from '../common/components/PasswordPeeker';
-
-const schema = yup.object({
-  username: yup.string().required('Email is required'),
-  password: yup.string().required('Password is required'),
-});
 
 export const Login = () => {
-  const { push } = useHistory();
-  const { execute, httpResponse, error, data, isLoading } = useLogin();
-
-  const { handleSubmit, handleChange, values, setValues } = useFormik({
-    initialValues: {
-      username: '',
-      password: '',
-      showPassword: false,
-    },
-    onSubmit: ({ username, password }) => {
-      execute({ username, password });
-    },
-    validationSchema: schema,
-  });
-
-  const handleShowPassword = (toggle) => {
-    setValues({ ...values, showPassword: toggle });
-  };
-
-  useEffect(() => {
-    if (httpResponse && httpResponse.status === 200) {
-      push('/');
-    }
-  }, [data, push, httpResponse, isLoading]);
-
+  const { location } = useHistory();
+  const { state } = location;
+  const error = state?.error === true;
   return (
     <FormWrapper container direction="column" justify="center" alignItems="center">
-      <form onSubmit={handleSubmit} style={{ width: 367 }} autoComplete="off">
+      <form style={{ width: 367 }} autoComplete="off">
         <ImageWrapper>
           <img
             src={logo}
@@ -53,52 +22,14 @@ export const Login = () => {
           />
         </ImageWrapper>
 
-        <Box>
-          <Typography component="label" htmlFor="username">
-            Username
-          </Typography>
-          <FormField
-            name="username"
-            placeholder="Enter Username"
-            type="text"
-            variant="outlined"
-            value={values.username}
-            onChange={handleChange}
-            disabled={isLoading}
-          />
-        </Box>
-        <Box>
-          <Typography component="label" htmlFor="password">
-            Password
-          </Typography>
-          <FormField
-            name="password"
-            placeholder="Enter Password"
-            value={values.password}
-            onChange={handleChange}
-            disabled={isLoading}
-            type={values.showPassword ? 'text' : 'password'}
-            variant="outlined"
-            InputProps={{
-              endAdornment:
-                <PasswordPeeker onPressHold={handleShowPassword} value={values.showPassword} />
-            }}
-          />
-        </Box>
-
         {error && (
           <Box>
-            <TypographyError>Incorrect username & password. Please try again.</TypographyError>
+            <TypographyError>An error has occured, we could not log you in.</TypographyError>
           </Box>
         )}
-        <SubmitButton
-          type="submit"
-          variant="contained"
-          color="primary"
-          fullWidth
-          disabled={isLoading}
-        >
-          Sign In
+
+        <SubmitButton type="submit" variant="contained" color="primary" fullWidth href="auth/login">
+          Please sign in to continue
         </SubmitButton>
       </form>
     </FormWrapper>
@@ -112,11 +43,6 @@ const FormWrapper = styled(Grid)({
 const ImageWrapper = styled(Box)({
   textAlign: 'center',
   marginBottom: 74,
-});
-
-const FormField = styled(TextField)({
-  width: '100%',
-  marginBottom: 22,
 });
 
 const SubmitButton = styled(Button)(({ theme }) => ({

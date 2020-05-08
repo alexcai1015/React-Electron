@@ -3,16 +3,16 @@ import PropTypes from 'prop-types';
 import { Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
-import { PassDetails } from './accessPassDetailsModal/PassDetails';
 import { useGetAccessPass } from '../../../../common/hooks';
 import { AccessPass } from '../../../../common/constants/AccessPass';
+
+import { PassDetails } from './accessPassDetailsModal/PassDetails';
 
 const useStyles = makeStyles(() => ({
   rootStyle: {
     borderRadius: 8,
   },
 }));
-
 
 export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose }) => {
   const classes = useStyles();

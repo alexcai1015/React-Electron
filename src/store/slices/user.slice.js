@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   username: '',
   token: '',
+  xsrfToken: '',
   aporTypes: [],
 };
 
@@ -14,6 +15,8 @@ const { actions, reducer } = createSlice({
     save: (state, { payload }) => {
       state.username = payload.username;
       state.token = payload.token;
+      state.xsrfToken = payload.xsrfToken;
+      state.aporTypes = payload.aporTypes ? payload.aporTypes : state.aporTypes;
     },
     saveAporTypes: (state, { payload }) => {
       state.aporTypes = payload;
