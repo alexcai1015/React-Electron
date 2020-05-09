@@ -204,7 +204,14 @@ export const PassUploadTab = () => {
         <h3>Bulk Upload CSV File</h3>
         Please follow the fields format to avoid data error upon uploading.
         <br />
-        <DownloadTemplateLink type={PassType.INDIVIDUAL} />
+        <Typography>
+          Most updated forms for individual registration and attestation may be downloaded from
+          &nbsp;
+          <a href={'https://dict.gov.ph/rapidpass/'} target="_blank" rel="noopener noreferrer">
+            https://dict.gov.ph/rapidpass/
+          </a>
+          .
+        </Typography>
         <div className={classes.uploadBox}>
           <DropzoneArea
             onChange={handleFileChangeIndividual}
