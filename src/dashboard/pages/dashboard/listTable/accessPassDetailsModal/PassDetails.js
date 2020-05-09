@@ -58,6 +58,7 @@ export const PassDetails = ({ handleClose, details, isLoading }) => {
     province: details.originProvince,
   });
 
+  console.log(details);
   return (
     <Box className={classes.container}>
       <Header
