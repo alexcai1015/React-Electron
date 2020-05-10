@@ -1,5 +1,15 @@
 import React, { useCallback, useState, useEffect } from 'react';
-import { Box, Container, Grid, MenuItem, TextField, styled } from '@material-ui/core';
+import {
+  Box,
+  Container,
+  Grid,
+  MenuItem,
+  TextField,
+  styled,
+  Button,
+  Typography,
+} from '@material-ui/core';
+import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import { DebounceInput } from 'react-debounce-input';
 import { useSelector } from 'react-redux';
 
@@ -55,12 +65,14 @@ export const Dashboard = () => {
   const aporTypes = useSelector(getUserAporTypes);
 
   const [searchValue, setSearchValue] = useState('');
+  const [filterAporTypes, setFilterAporTypes] = useState([...aporTypes]);
   const [selectedFilterOption, setSelectedFilterOption] = useState(
     (queryString && queryString.status) || StatusFilterOption.ShowAll.value
   );
   const [selectedAcessPass, setSelectedAccesPass] = useState(undefined);
   const { on: isDenyAcessPassModalDisplayed, toggle: toggleDenyAccessPassModal } = useToggle();
   const { on: isAccessPassDetailModalDisplayed, toggle: toggleAccessPassDetailModal } = useToggle();
+
   const {
     data: { list: accessPasses, totalPages, totalRows },
     isLoading: isGetAccessPassesLoading,
@@ -173,12 +185,22 @@ export const Dashboard = () => {
           pageNo: search ? 0 : pageIndex,
           maxPageRows: pageSize,
           status,
-          aporType: aporTypes.join(','),
+          ...(filterAporTypes.length && { aporType: filterAporTypes.join(',') }), // aporTypes.join(','),
         },
       });
     },
-    [aporTypes, getAccessPassesQuery]
+    [/* aporTypes, */ getAccessPassesQuery, filterAporTypes]
   );
+
+  const HandleSelectFilterAporTypes = (selectedAporType) => {
+    let tmpfilterAporTypes = [...filterAporTypes];
+
+    if (tmpfilterAporTypes.includes(selectedAporType))
+      tmpfilterAporTypes = tmpfilterAporTypes.filter((ap) => ap !== selectedAporType);
+    else tmpfilterAporTypes.push(selectedAporType);
+
+    setFilterAporTypes(tmpfilterAporTypes);
+  };
 
   return (
     <Box>
@@ -186,17 +208,13 @@ export const Dashboard = () => {
         <StyledFiltersBlock>
           <Container>
             <Grid container spacing={2} justify="space-between">
-              <Grid item lg={8} md={6} sm={6} xs={12}>
-                <DebounceInput
-                  element={StyledSearchTextField}
-                  debounceTimeout={500}
-                  label="Search"
-                  type="search"
-                  onChange={handleSearchChange}
-                  variant="outlined"
-                />
+              <Grid item lg={12} md={12} sm={12} xs={12}>
+                <Typography variant="caption">
+                  You are viewing applications from the following APOR types: &nbsp;
+                  <b>{aporTypes.length && aporTypes.join(', ')}</b>
+                </Typography>
               </Grid>
-              <Grid item>
+              <Grid item lg={8} md={6} sm={6} xs={12}>
                 <StyledFilterSelectTextField
                   select
                   label="Filter by status:"
@@ -211,9 +229,40 @@ export const Dashboard = () => {
                   ))}
                 </StyledFilterSelectTextField>
               </Grid>
-              {/* <Grid container justify="flex-end" item lg={4} md={6} sm={12} xs={12}>
-
-              </Grid> */}
+              <Grid item>
+                <DebounceInput
+                  element={StyledSearchTextField}
+                  debounceTimeout={500}
+                  label="Search"
+                  type="search"
+                  onChange={handleSearchChange}
+                  variant="outlined"
+                />
+              </Grid>
+              <Grid container justify="flex-start" item lg={1} md={2} sm={12} xs={12}>
+                <Typography style={{ color: 'rgba(0, 0, 0, 0.54)' }} variant="caption">
+                  Filter by APOR:
+                </Typography>
+              </Grid>
+              <Grid container justify="flex-start" item lg={11} md={10} sm={12} xs={12}>
+                {aporTypes &&
+                  aporTypes.map((aporType) => (
+                    <AporTypesToggleButton
+                      key={aporType}
+                      style={{
+                        ...(!filterAporTypes.includes(aporType) && {
+                          backgroundColor: '#4822a4c7',
+                        }),
+                      }}
+                      onClick={() => {
+                        HandleSelectFilterAporTypes(aporType);
+                      }}
+                    >
+                      {aporType}
+                      {filterAporTypes.includes(aporType) && <ClearOutlinedIcon fontSize="small" />}
+                    </AporTypesToggleButton>
+                  ))}
+              </Grid>
             </Grid>
           </Container>
         </StyledFiltersBlock>
@@ -278,3 +327,14 @@ const StyledFilterSelectTextField = styled(TextField)({
 const StyledSearchTextField = styled(TextField)({
   minWidth: 350,
 });
+
+const AporTypesToggleButton = styled(Button)(({ theme }) => ({
+  margin: theme.spacing(1),
+  borderRadius: 20,
+  color: theme.palette.white,
+  backgroundColor: theme.palette.mainPurple,
+  '&:hover': {
+    backgroundColor: theme.palette.mainPurple,
+    boxShadow: 'none',
+  },
+}));
