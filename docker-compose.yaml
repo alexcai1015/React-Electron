@@ -35,5 +35,4 @@ services:
   #     CSP_SCRIPT_SRC: https://www.googletagmanager.com
   #     CSP_DEFAULT_SRC: https://www.google-analytics.com
   #     ALLOW_ORIGIN: '*'
-  #     REACT_APP_MAINTENANCE: 0
   #     REACT_APP_API_KEY: XXX
