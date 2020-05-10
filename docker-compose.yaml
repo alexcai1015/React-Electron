@@ -15,6 +15,8 @@ services:
     volumes:
       - ./keycloak/theme/rapidpass-approver:/opt/jboss/keycloak/themes/rapidpass-approver
       - ./keycloak/import/rapidpass-realm-dev.json:/tmp/rapidpass-realm.json
+      - ./keycloak/exports:/tmp/exports
+      - ./keycloak/export-realm.sh:/tmp/export-realm.sh
     networks:
       main:
         aliases:
