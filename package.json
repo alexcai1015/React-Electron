@@ -49,7 +49,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start:mock-server": "node mock-server/json-server.js",
-    "version": "auto-changelog -p && git add CHANGELOG.md"
+    "version": "auto-changelog -p && git add CHANGELOG.md",
+    "presetup:dev": "(docker-compose down --rmi local -v)",
+    "setup:dev": "(docker-compose up --build -d)",
+    "start:dev": "(npm run start:mock-server) & (npm start)"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -5,7 +5,7 @@ const cors = require('cors');
 const Keycloak = require('keycloak-connect');
 const dotenv = require('dotenv');
 
-const keycloakConfig = require('./keycloak.json');
+const keycloakConfig = require('./keycloak-dev.json');
 
 const server = express();
 dotenv.config();

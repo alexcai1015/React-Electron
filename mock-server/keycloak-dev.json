@@ -1,0 +1,12 @@
+{
+  "realm": "rapidpass",
+  "auth-server-url": "http://localhost:8082/auth/",
+  "ssl-required": "external",
+  "resource": "account",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "aa777510-7116-4e8e-a5e8-200fe2374a08"
+  },
+  "use-resource-role-mappings": true,
+  "confidential-port": 0
+}
