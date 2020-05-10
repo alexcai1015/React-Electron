@@ -33,6 +33,7 @@ No users are included by default.
 - Login with default credentials: **admin** / **admin**
 - Select __"Rapidpass"__ realm. Go to Users > Add User > and setup users for each group.
 - Remember to seta password by selecting the new user, going to __Credentials__ tab and setting a password.
+- Assign APORTYPES by assigning comma-separated APORs attribute in the __Attributes__ tab. (example: APORTYPES : MS,UT,GO)
 - Assign privileges by assigning a group in the __Groups__ tab.
 
 ### __* Initialize the mock server__
@@ -43,7 +44,7 @@ TROUBLESHOOTING: If you need to replace it:
 - from Keycloak, go to the Rapidpass realm, select **Clients > `account`**
 - go to the credentials tab, click on `Regenerate secret`
 - Copy the new secret.
-- Edit /mock-server/keycloak-dev.json > crendetials > secret with your new value.
+- Edit /mock-server/keycloak-dev.json > credentials.secret with your new value.
 
 ### __* Start the application__
 Note: your Keycloack instance should already be up before doing this.
