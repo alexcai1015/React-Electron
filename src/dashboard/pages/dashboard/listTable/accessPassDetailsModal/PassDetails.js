@@ -80,19 +80,6 @@ const getReferenceIdLabel = (details) => {
 
 export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handleEdits }) => {
   const classes = useStyles();
-  const addressOfDestination = formatAddress({
-    name: details.destName,
-    street: details.destStreet,
-    city: details.destCity,
-    province: details.destProvince,
-  });
-  const addressOfOrigin = formatAddress({
-    name: details.originName,
-    street: details.originStreet,
-    city: details.originCity,
-    province: details.originProvince,
-  });
-
   const [isEdit, setIsEdit] = useState(false);
   const handleEdit = () => { setIsEdit(true); }
 
@@ -109,6 +96,40 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
   });
 
   const source = isEdit ? values : details;
+
+  const AddressOfOrigin = ({ readonly }) => readonly ?
+    <Field label="Address of origin" value={formatAddress({
+      name: details.originName,
+      street: details.originStreet,
+      city: details.originCity,
+      province: details.originProvince,
+    })} />
+    : (
+      <>
+        <SectionTitle title="Origin" />
+        <Field label="Name" readonly={!isEdit} handleChange={handleChange} name="originName" value={source.originName} />
+        <Field label="Street" readonly={!isEdit} handleChange={handleChange} name="originStreet" value={source.originStreet} />
+        <Field label="City" readonly={!isEdit} handleChange={handleChange} name="originCity" value={source.originCity} />
+        <Field label="Province" readonly={!isEdit} handleChange={handleChange} name="originProvince" value={source.originProvince} />
+      </>
+    );
+
+  const AddressOfDestination = ({ readonly }) => readonly ?
+    <Field label="Address of origin" value={formatAddress({
+      name: details.destName,
+      street: details.destStreet,
+      city: details.destCity,
+      province: details.destProvince,
+    })} />
+    : (
+      <>
+        <SectionTitle title="Destination" />
+        <Field label="Name" readonly={!isEdit} handleChange={handleChange} name="destName" value={source.destName} />
+        <Field label="Street" readonly={!isEdit} handleChange={handleChange} name="destStreet" value={source.destStreet} />
+        <Field label="City" readonly={!isEdit} handleChange={handleChange} name="destCity" value={source.destCity} />
+        <Field label="Province" readonly={!isEdit} handleChange={handleChange} name="destProvince" value={source.destProvince} />
+      </>
+    );
 
   return (
     <Box className={classes.container}>
@@ -151,9 +172,8 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
               {ApprovalStatus.Declined === details.status && (
                 <Field label="⚠️ Reason for Decline" value={source.updates} />
               )}
-              <Field label="Address of origin" readonly={!isEdit} handleChange={handleChange} name=" />" value={addressOfOrigin} />
-              <Field label="Address of destination" readonly={!isEdit} handleChange={handleChange} name=" />" value={addressOfDestination} />
-
+              <AddressOfOrigin readonly={!isEdit} />
+              <AddressOfDestination readonly={!isEdit} />
             </Grid>
           </Grid>
         </Box>
