@@ -63,6 +63,7 @@ export const PassDetails = ({ handleClose, details, isLoading }) => {
       <Header
         handleClose={handleClose}
         text={`Application ${ApprovalStatusLabel[details.status.toLowerCase()]}`}
+        subText={`Issued By: ${details.issuedBy ? details.issuedBy : 'N/A'}`}
       />
       <Box className={classes.content}>
         <AporType aporType={details.aporType} />
