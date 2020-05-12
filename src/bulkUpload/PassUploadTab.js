@@ -7,11 +7,9 @@ import { DropzoneArea } from 'material-ui-dropzone';
 
 import { useUploadFile } from '../common/hooks/useUploadFile';
 import { useSnackbar } from '../hooks';
-import { PassType } from '../common/constants/PassType';
 
 import { UploadSuccessModal } from './UploadSuccessModal';
 import { UploadWarningModal } from './UploadWarningModal';
-import { DownloadTemplateLink } from './passUploadTab/DownloadTemplateLink';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -204,7 +202,14 @@ export const PassUploadTab = () => {
         <h3>Bulk Upload CSV File</h3>
         Please follow the fields format to avoid data error upon uploading.
         <br />
-        <DownloadTemplateLink type={PassType.INDIVIDUAL} />
+        <Typography>
+          Most updated forms for individual registration and attestation may be downloaded from
+          &nbsp;
+          <a href="https://dict.gov.ph/rapidpass/" target="_blank" rel="noopener noreferrer">
+            https://dict.gov.ph/rapidpass/
+          </a>
+          .
+        </Typography>
         <div className={classes.uploadBox}>
           <DropzoneArea
             onChange={handleFileChangeIndividual}

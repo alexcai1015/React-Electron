@@ -33,16 +33,27 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 18,
     },
   },
+  subHeaderText: {
+    fontWeight: '300',
+    fontSize: 18,
+    color: theme.palette.headerTextGray,
+    alignItems: 'center',
+    textTransform: 'capitalize',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 12,
+    },
+  },
   headerContainer: { flex: '1 1' },
 }));
 
-const Header = ({ handleClose, text }) => {
+const Header = ({ handleClose, text, subText }) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.header}>
       <Box className={classes.headerContainer}>
         <Typography className={classes.headerText}>{text}</Typography>
+        <Typography className={classes.subHeaderText}>{subText}</Typography>
       </Box>
       <Box className={classes.closeButtonWrapper} onClick={handleClose}>
         <Close />
@@ -53,6 +64,8 @@ const Header = ({ handleClose, text }) => {
 
 Header.propTypes = {
   handleClose: PropTypes.func.isRequired,
+  text: PropTypes.string,
+  subText: PropTypes.string,
 };
 
 export default Header;

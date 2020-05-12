@@ -120,6 +120,7 @@ export const Dashboard = () => {
     setQueryString({
       queryString: {
         ...queryString,
+        page: 1,
         search: searchQuery,
       },
     });
@@ -170,7 +171,7 @@ export const Dashboard = () => {
         urlQueryParams: {
           ...DefaultQueryParams,
           search,
-          pageNo: search ? 0 : pageIndex,
+          pageNo: pageIndex,
           maxPageRows: pageSize,
           status,
           aporType: aporTypes.join(','),
