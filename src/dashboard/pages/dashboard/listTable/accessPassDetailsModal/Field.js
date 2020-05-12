@@ -4,8 +4,6 @@ import { Box, TextField, Typography } from '@material-ui/core';
 import { styled, makeStyles } from '@material-ui/core/styles';
 import { Skeleton } from '@material-ui/lab';
 
-import { AccessPass } from '../../../../../common/constants/AccessPass';
-
 const useStyles = makeStyles((theme) => ({
   label: {
     color: theme.palette.labelGray,
@@ -57,10 +55,7 @@ const Field = ({ label, value, isLoading, name, readonly, handleChange }) => {
   );
 };
 
-const FormField = styled(TextField)({
-
-});
-
+const FormField = styled(TextField)({});
 
 Field.defaultProps = {
   readonly: true,

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Grid, Button, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
-import * as yup from 'yup';
+// import * as yup from 'yup'; // TODO validations
 
 import { PassTypeLabel } from '../../../../../common/constants/PassType';
 import { ApprovalStatus, ApprovalStatusLabel } from '../../../../../common/constants';
@@ -16,20 +16,10 @@ import SectionTitle from './SectionTitle';
 import AporType from './AporType';
 import Footer from './Footer';
 
+// TODO add validations. See ChangePassword for example
 // const validationSchema = yup.object({
-//   currentPassword: yup.string().required('Please provide your old password.'),
-//   password: yup
-//     .string()
-//     .required('Please provide your password.')
-//     .min(MIN_LENGTH, `At least ${MIN_LENGTH} characters.`)
-//     .matches(
-//       REGEX_UPPER_LOWER_ALPHANUMERIC,
-//       `Please at least one of each: an uppercase letter, a lowercase letter,  a number, and a symbol.`
-//     ),
-//   confirmPassword: yup.string().when('password', {
-//     is: (val) => val && val.length >= MIN_LENGTH,
-//     then: yup.string().oneOf([yup.ref('password')], 'Please confirm your chosen password.'),
-//   }),
+//   name: yup.string().required('Please provide your old password.'),
+//
 // });
 
 const useStyles = makeStyles((theme) => ({
@@ -57,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     fontSize: 16,
     textTransform: 'uppercase',
-    textDecoration: 'none',
     fontWeight: 400,
     cursor: 'pointer'
   },
@@ -65,7 +54,6 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     fontSize: 16,
     textTransform: 'uppercase',
-    textDecoration: 'none',
     fontWeight: 400
   },
 }));
@@ -86,8 +74,8 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
   const [isEdit, setIsEdit] = useState(false);
   const handleEdit = () => { setIsEdit(true); }
 
-  const { execute, isLoading: isSaving, isSuccess, error } = useUpdateAccessPass();
-  const { handleSubmit, handleChange, values, errors } = useFormik({
+  const { execute, isLoading: isSaving } = useUpdateAccessPass();
+  const { handleSubmit, handleChange, values } = useFormik({
     initialValues: {
       ...details
     },
