@@ -11,7 +11,7 @@ import { useLogout } from './useLogout';
 const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
 export const useUpdateAccessPass = () => {
-  const { execute: put, error, reset, ...rest } = useApiMutation(
+  const { execute: put, error, reset, isLoading, ...rest } = useApiMutation(
     '/v1/registry/access-passes/{{referenceId}}',
     HttpMethod.Put
   );
@@ -46,6 +46,7 @@ export const useUpdateAccessPass = () => {
   return {
     execute,
     isSuccess,
+    isLoading,
     reset,
     error,
     ...rest,

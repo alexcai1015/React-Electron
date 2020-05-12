@@ -22,9 +22,9 @@ export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose, allowEdit,
     onClose();
   };
 
-  const handleSave = () => {
+  const handleSave = (edits) => {
     if (onSave) {
-      onSave();
+      onSave(edits);
     }
     onClose();
   };

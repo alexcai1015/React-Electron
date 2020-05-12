@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Box } from '@material-ui/core';
+import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -14,49 +14,25 @@ const useStyles = makeStyles((theme) => ({
     padding: '16px 40px',
     [theme.breakpoints.down('sm')]: {
       height: 'auto',
-      padding: '12px 24px',
+      padding: '16px 24px',
       fontSize: 18,
     },
-  },
-  edit: {
-    color: theme.palette.linkPurple,
-    textDecoration: 'none',
-    fontSize: 16,
-  },
-  save: {
-    textDecoration: 'none',
-    fontSize: 16,
-  },
+  }
 }));
 
-const Footer = ({ handleSave }) => {
+const Footer = ({ children }) => {
   const classes = useStyles();
-  const [isEdit, setIsEdit] = useState(false);
-  const handleEdit = () => { setIsEdit(true); }
+
   return (
     <Box className={classes.footer}>
       <div className={classes.grow} />
-      {isEdit ? (
-        <Button
-          variant="outlined"
-          color="primary"
-          className={classes.save}
-          href="#"
-          onClick={handleSave}>
-          Save
-        </Button>
-      ) : (
-          <Button className={classes.edit} onClick={handleEdit}>
-            Edit
-          </Button>
-        )
-      }
+      {children}
     </Box>
   );
 }
 
 Footer.propTypes = {
-  handleSave: PropTypes.func,
-};
+  children: PropTypes.node
+}
 
 export default Footer;
