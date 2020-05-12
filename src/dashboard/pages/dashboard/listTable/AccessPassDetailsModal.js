@@ -5,6 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { useGetAccessPass } from '../../../../common/hooks';
 import { AccessPass } from '../../../../common/constants/AccessPass';
+import { PassDetails } from './accessPassDetailsModal/PassDetails';
 
 const useStyles = makeStyles((theme) => ({
   rootStyle: {
