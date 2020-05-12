@@ -14,13 +14,22 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose }) => {
+
+export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose, allowEdit, onSave }) => {
   const classes = useStyles();
   const { data, query, isLoading } = useGetAccessPass();
 
   const handleClose = () => {
     onClose();
   };
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave();
+    }
+    onClose();
+  };
+
 
   useEffect(() => {
     query(value.referenceId);
@@ -40,7 +49,12 @@ export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose }) => {
       }}
       fullWidth
     >
-      <PassDetails details={details} handleClose={handleClose} isLoading={isLoading} />
+      <PassDetails
+        details={details}
+        handleClose={handleClose}
+        isLoading={isLoading}
+        allowEdit={allowEdit}
+        handleSave={handleSave} />
     </Dialog>
   );
 };
@@ -49,8 +63,11 @@ AccessPassDetailsModal.propTypes = {
   isOpen: PropTypes.bool,
   value: PropTypes.shape(AccessPass),
   onClose: PropTypes.func.isRequired,
+  allowEdit: PropTypes.bool,
+  onSave: PropTypes.func,
 };
 
 AccessPassDetailsModal.defaultProps = {
   isOpen: false,
+  allowEdit: false
 };
