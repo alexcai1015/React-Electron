@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   fieldContainer: {
     paddingBottom: 12,
     '& > *': {
-      width: '90%',
+      width: '95%',
     },
   },
 }));
