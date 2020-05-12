@@ -5,7 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import { useGetAccessPass } from '../../../../common/hooks';
 import { AccessPass } from '../../../../common/constants/AccessPass';
-import Footer from './accessPassDetailsModal/Footer';
 
 const useStyles = makeStyles((theme) => ({
   rootStyle: {
@@ -51,9 +50,8 @@ export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose, allowEdit,
         details={details}
         handleClose={handleClose}
         isLoading={isLoading}
-        handleEdits={handleSave} />
-
-      {allowEdit && <Footer handleSave={handleSave} />}
+        handleEdits={handleSave}
+        allowEdit={allowEdit} />
     </Dialog>
   );
 };
