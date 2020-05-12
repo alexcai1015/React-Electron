@@ -34,16 +34,19 @@ import Footer from './Footer';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    height: 620,
+    minHeight: 520,
+    maxHeight: '80vh',
+    overflow: 'hidden',
     [theme.breakpoints.down('sm')]: {
       height: 'auto',
     },
   },
   content: {
     display: 'flex',
-    flexDirection: 'column',
     flexWrap: 'wrap',
     padding: '16px 64px 20px',
+    maxHeight: 620,
+    overflowY: 'scroll',
     [theme.breakpoints.down('sm')]: {
       height: 'auto',
       padding: '16px 24px',
@@ -131,6 +134,8 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
       </>
     );
 
+  const [leftCol, rightCol] = isEdit ? [6, 6] : [4, 8]
+
   return (
     <Box className={classes.container}>
       <Header
@@ -142,10 +147,10 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
         <Box className={classes.content}>
           <AporType aporType={details.aporType} />
           <Grid item xs={12} container>
-            <Grid item xs={4}>
+            <Grid item xs={leftCol}>
               <Field label="Control Code" value={source.controlCode} isLoading={isLoading} />
             </Grid>
-            <Grid item xs={4}>
+            <Grid item xs={rightCol}>
               <Field
                 label="Notified"
                 value={source.notified ? `✅ Yes` : `🚫 No`}
@@ -156,7 +161,7 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
 
           <SectionTitle title="Personal Details" />
           <Grid item xs={12} container>
-            <Grid item xs={6}>
+            <Grid item xs={leftCol}>
               <Field label="Name" readonly={!isEdit} handleChange={handleChange} name="name" value={source.name} />
               <Field label="Email" readonly={!isEdit} handleChange={handleChange} name="email" value={source.email} />
               <Field label={getReferenceIdLabel(details)} value={source.referenceId} />
@@ -164,8 +169,8 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
               <Field label="Id number" readonly={!isEdit} handleChange={handleChange} name="id" value={source.id} />
               <Field label="Company/Institution" readonly={!isEdit} handleChange={handleChange} name="company" value={source.company} />
             </Grid>
-            <Grid item xs={6}>
-              <Field label="Remarks" readonly={!isEdit} handleChange={handleChange} name="remarks" value={source.remarks} />
+            <Grid item xs={rightCol}>
+              <Field label="Remarks" value={source.remarks} />
               {ApprovalStatus.Declined === details.status && (
                 <Field label="⚠️ Reason for Decline" value={source.updates} />
               )}
