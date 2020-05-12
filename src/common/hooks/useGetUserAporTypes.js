@@ -1,16 +1,16 @@
 import { useCallback, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
 import { useApiQuery } from '../api';
 import { maybe, isHttpResponseSuccess } from '../utils';
-import { saveUserAporTypes } from '../../store/slices';
+import { saveUserAporTypes, getUsername } from '../../store/slices';
 
 import { useLogout } from './useLogout';
 
 export const useGetUserAporTypes = () => {
   const dispatch = useDispatch();
+  const username = useSelector(getUsername);
   const { data: aporTypes, error, query: execute, reset, ...others } = useApiQuery(
-    '/v1/users/{{username}}/apor-types'
+    `/v1/users/${username}/apor-types`
   );
   const { execute: executeLogout } = useLogout();
   const httpResponse = maybe({})(others.httpResponse);
