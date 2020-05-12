@@ -55,7 +55,8 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     textTransform: 'uppercase',
     textDecoration: 'none',
-    fontWeight: 400
+    fontWeight: 400,
+    cursor: 'pointer'
   },
   save: {
     textDecoration: 'none',
@@ -121,35 +122,38 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
           <AporType aporType={details.aporType} />
           <Grid item xs={12} container>
             <Grid item xs={4}>
-              <Field label="Control Code" readonly={!isEdit} handleChange={handleChange} name="controlCode" value={source.controlCode} isLoading={isLoading} />
+              <Field label="Control Code" value={source.controlCode} isLoading={isLoading} />
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={4}>
               <Field
                 label="Notified"
-                readonly={!isEdit} handleChange={handleChange} name="notified" value={source.notified ? `✅ Yes` : `🚫 No`}
+                value={source.notified ? `✅ Yes` : `🚫 No`}
                 isLoading={isLoading}
               />
+            </Grid>
+            <Grid item xs={4}>
+              <Field label="Pass type" value={source.passType} />
             </Grid>
           </Grid>
 
           <SectionTitle title="Personal Details" />
           <Grid item xs={12} container>
-            <Grid item xs={4}>
+            <Grid item xs={6}>
               <Field label="Name" readonly={!isEdit} handleChange={handleChange} name="name" value={source.name} />
               <Field label="Email" readonly={!isEdit} handleChange={handleChange} name="email" value={source.email} />
-              <Field label={getReferenceIdLabel(details)} readonly={!isEdit} handleChange={handleChange} name="referenceId" value={source.referenceId} />
+              <Field label={getReferenceIdLabel(details)} value={source.referenceId} />
               <Field label="Id type" readonly={!isEdit} handleChange={handleChange} name="idType" value={source.idType} />
               <Field label="Id number" readonly={!isEdit} handleChange={handleChange} name="id" value={source.id} />
               <Field label="Company/Institution" readonly={!isEdit} handleChange={handleChange} name="company" value={source.company} />
             </Grid>
-            <Grid item xs={8}>
+            <Grid item xs={6}>
+              <Field label="Remarks" readonly={!isEdit} handleChange={handleChange} name="remarks" value={source.remarks} />
+              {ApprovalStatus.Declined === details.status && (
+                <Field label="⚠️ Reason for Decline" value={source.updates} />
+              )}
               <Field label="Address of origin" readonly={!isEdit} handleChange={handleChange} name=" />" value={addressOfOrigin} />
               <Field label="Address of destination" readonly={!isEdit} handleChange={handleChange} name=" />" value={addressOfDestination} />
-              <Field label="Remarks" readonly={!isEdit} handleChange={handleChange} name="remarks" value={source.remarks} />
-              <Field label="Pass type" readonly={!isEdit} handleChange={handleChange} name="passType" value={source.passType} />
-              {ApprovalStatus.Declined === details.status && (
-                <Field label="⚠️ Reason for Decline" readonly={!isEdit} handleChange={handleChange} name="updates" value={source.updates} />
-              )}
+
             </Grid>
           </Grid>
         </Box>

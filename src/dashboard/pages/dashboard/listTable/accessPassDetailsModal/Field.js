@@ -18,31 +18,41 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14,
     fontWeight: '500',
   },
-  fieldContainer: { paddingBottom: 12 },
+  fieldContainer: {
+    paddingBottom: 12,
+    '& > *': {
+      width: '90%',
+    },
+  },
 }));
 
-const Field = ({ readonly, label, name, value, isLoading, handleChange }) => {
+/**
+ * To make editable: supply values to readonly, name, and handleChange
+ */
+const Field = ({ label, value, isLoading, name, readonly, handleChange }) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.fieldContainer}>
-      {readonly && <Typography className={classes.label}>{label}</Typography>}
-      {isLoading ?
-        <Skeleton variant="rect" width={100} height={14} />
-        : readonly ?
-          <Typography className={classes.value}>{value}</Typography>
-          : <FormField
-            name={name}
-            placeholder={label}
-            label={label}
-            variant="outlined"
-            value={value}
-            onChange={handleChange}
-            disabled={isLoading}
-            type="text"
-          />
+      {readonly
+        ? <>
+          <Typography className={classes.label}>{label}</Typography>
+          {isLoading
+            ? <Skeleton variant="rect" width={100} height={14} />
+            : <Typography className={classes.value}>{value}</Typography>
+          }
+        </>
+        : <FormField
+          name={name}
+          placeholder={label.toUpperCase()}
+          variant="filled"
+          label={label}
+          value={value}
+          onChange={handleChange}
+          disabled={isLoading}
+          type="text"
+        />
       }
-
     </Box>
   );
 };
@@ -59,10 +69,10 @@ Field.defaultProps = {
 
 Field.propTypes = {
   value: PropTypes.string,
-  name: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
-  readonly: PropTypes.bool,
   isLoading: PropTypes.bool,
+  readonly: PropTypes.bool,
+  name: PropTypes.string,
   handleChange: PropTypes.func
 };
 
