@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import Box from '@material-ui/core/Box';
-import Grid from '@material-ui/core/Grid';
+import { Box, Grid, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { PassTypeLabel } from '../../../../../common/constants/PassType';
@@ -30,6 +29,14 @@ const useStyles = makeStyles((theme) => ({
       padding: '16px 24px',
     },
   },
+  buttons: {
+    display: 'flex'
+  },
+  edit: {
+    color: theme.palette.linkBlue,
+    textDecoration: 'underline',
+    fontSize: 16,
+  },
 }));
 
 const formatAddress = ({ name, street, city, province }) => {
@@ -43,7 +50,31 @@ const getReferenceIdLabel = (details) => {
   return label ? label.display : '';
 };
 
-export const PassDetails = ({ handleClose, details, isLoading }) => {
+const PassDetailsButtons = ({ handleSave }) => {
+  const classes = useStyles();
+  const [isEdit, setIsEdit] = useState(false);
+  const handleEdit = () => { setIsEdit(true); }
+  return (
+    <Box className={classes.buttons}>
+      {isEdit ? (
+        <Button
+          variant="outlined"
+          color="primary"
+          href="#"
+          onClick={handleSave}>
+          Save
+        </Button>
+      ) : (
+          <Button className={classes.view} onClick={handleEdit}>
+            Edit
+          </Button>
+        )
+      }
+    </Box>
+  );
+}
+
+export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handleSave }) => {
   const classes = useStyles();
   const addressOfDestination = formatAddress({
     name: details.destName,
@@ -101,6 +132,7 @@ export const PassDetails = ({ handleClose, details, isLoading }) => {
           </Grid>
         </Grid>
       </Box>
+      {allowEdit && <PassDetailsButtons handleSave={handleSave} />}
     </Box>
   );
 };
@@ -111,7 +143,9 @@ PassDetails.defaultProps = {
 };
 
 PassDetails.propTypes = {
-  handleClose: PropTypes.func.isRequired,
   details: PropTypes.shape(AccessPass),
   isLoading: PropTypes.bool,
+  handleClose: PropTypes.func.isRequired,
+  handleSave: PropTypes.func,
+  allowEdit: PropTypes.bool,
 };
