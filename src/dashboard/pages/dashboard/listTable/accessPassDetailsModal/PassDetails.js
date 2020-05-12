@@ -152,9 +152,6 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
                 isLoading={isLoading}
               />
             </Grid>
-            <Grid item xs={4}>
-              <Field label="Pass type" value={source.passType} />
-            </Grid>
           </Grid>
 
           <SectionTitle title="Personal Details" />
