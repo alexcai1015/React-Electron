@@ -11,6 +11,7 @@ import Header from './Header';
 import Field from './Field';
 import SectionTitle from './SectionTitle';
 import AporType from './AporType';
+import Footer from './Footer';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -42,7 +43,7 @@ const getReferenceIdLabel = (details) => {
   return label ? label.display : '';
 };
 
-export const PassDetails = ({ handleClose, details, isLoading, isEdit, handleEdits }) => {
+export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handleEdits }) => {
   const classes = useStyles();
   const addressOfDestination = formatAddress({
     name: details.destName,
@@ -101,6 +102,7 @@ export const PassDetails = ({ handleClose, details, isLoading, isEdit, handleEdi
         </Grid>
       </Box>
 
+      {allowEdit && <Footer handleSave={() => handleEdits()} />}
     </Box>
   );
 };
