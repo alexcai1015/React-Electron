@@ -32,7 +32,7 @@ docker-build:
     - docker build --cache-from "$ACR_REGISTRY/$DEVELOP_IMAGE:latest"
                    --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_DEVELOP
                    --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_DEVELOP
-                   --build-arg REACT_APP_ENV=development
+                   --build-arg REACT_APP_ENV=$REACT_APP_ENV_DEV
                    --build-arg REACT_APP_BASE_URL=$DEVELOP_BASE_URL
                    --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
                    --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM_DEVELOP
@@ -57,7 +57,7 @@ docker-test:
     - docker build --cache-from "$ACR_REGISTRY/$TEST_IMAGE:latest"
                     --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_TEST
                     --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_TEST
-                    --build-arg REACT_APP_ENV=test
+                    --build-arg REACT_APP_ENV=$REACT_APP_ENV_TEST
                     --build-arg REACT_APP_BASE_URL=$TEST_BASE_URL
                     --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
                     --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM_TEST
@@ -80,7 +80,7 @@ docker-stage:
     - docker build --cache-from "$ACR_REGISTRY/$STAGE_IMAGE:latest"
                    --build-arg REACT_APP_API_URL=$REACT_APP_API_URL_STAGING
                    --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY_STAGING
-                   --build-arg REACT_APP_ENV=staging
+                   --build-arg REACT_APP_ENV=$REACT_APP_ENV_STAGING
                    --build-arg REACT_APP_BASE_URL=$STAGE_BASE_URL
                    --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
                    --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM_STAGING
@@ -90,7 +90,7 @@ docker-stage:
     - docker push "$ACR_REGISTRY/$STAGE_IMAGE:$CI_BUILD_ID"
   environment:
     name: staging
-    url: STAGE_BASE_URL
+    url: $STAGE_BASE_URL
   only:
     - /^release\/.*$/
 
@@ -106,7 +106,7 @@ docker-deploy:
     - docker build --cache-from "$ACR_REGISTRY/$PROD_IMAGE:latest"
                     --build-arg REACT_APP_API_URL=$REACT_APP_API_URL
                     --build-arg REACT_APP_API_KEY=$REACT_APP_API_KEY
-                    --build-arg REACT_APP_ENV=production
+                    --build-arg REACT_APP_ENV=$REACT_APP_ENV_PROD
                     --build-arg REACT_APP_BASE_URL=$PROD_BASE_URL
                     --build-arg REACT_APP_KEYCLOAK_URL=$KEYCLOAK_SERVER
                     --build-arg REACT_APP_KEYCLOAK_REALM=$REACT_APP_KEYCLOAK_REALM
