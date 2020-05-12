@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, Grid, Button } from '@material-ui/core';
+import { Box, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { PassTypeLabel } from '../../../../../common/constants/PassType';
@@ -28,15 +28,7 @@ const useStyles = makeStyles((theme) => ({
       height: 'auto',
       padding: '16px 24px',
     },
-  },
-  buttons: {
-    display: 'flex'
-  },
-  edit: {
-    color: theme.palette.linkBlue,
-    textDecoration: 'underline',
-    fontSize: 16,
-  },
+  }
 }));
 
 const formatAddress = ({ name, street, city, province }) => {
@@ -50,31 +42,7 @@ const getReferenceIdLabel = (details) => {
   return label ? label.display : '';
 };
 
-const PassDetailsButtons = ({ handleSave }) => {
-  const classes = useStyles();
-  const [isEdit, setIsEdit] = useState(false);
-  const handleEdit = () => { setIsEdit(true); }
-  return (
-    <Box className={classes.buttons}>
-      {isEdit ? (
-        <Button
-          variant="outlined"
-          color="primary"
-          href="#"
-          onClick={handleSave}>
-          Save
-        </Button>
-      ) : (
-          <Button className={classes.view} onClick={handleEdit}>
-            Edit
-          </Button>
-        )
-      }
-    </Box>
-  );
-}
-
-export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handleSave }) => {
+export const PassDetails = ({ handleClose, details, isLoading, isEdit, handleEdits }) => {
   const classes = useStyles();
   const addressOfDestination = formatAddress({
     name: details.destName,
@@ -132,7 +100,7 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
           </Grid>
         </Grid>
       </Box>
-      {allowEdit && <PassDetailsButtons handleSave={handleSave} />}
+
     </Box>
   );
 };
@@ -140,12 +108,13 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
 PassDetails.defaultProps = {
   details: {},
   isLoading: false,
+  isEdit: false
 };
 
 PassDetails.propTypes = {
   details: PropTypes.shape(AccessPass),
   isLoading: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
-  handleSave: PropTypes.func,
-  allowEdit: PropTypes.bool,
+  isEdit: PropTypes.bool,
+  handleEdits: PropTypes.func,
 };

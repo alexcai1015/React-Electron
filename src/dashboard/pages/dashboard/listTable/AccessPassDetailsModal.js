@@ -1,18 +1,66 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Dialog } from '@material-ui/core';
+import { Dialog, Button, Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import { PassDetails } from './accessPassDetailsModal/PassDetails';
 import { useGetAccessPass } from '../../../../common/hooks';
 import { AccessPass } from '../../../../common/constants/AccessPass';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   rootStyle: {
     borderRadius: 8,
   },
+  grow: {
+    flexGrow: 1,
+  },
+  footer: {
+    borderTop: '1px solid #c4c4c4',
+    display: 'flex',
+    alignItems: 'center',
+    padding: '16px 40px',
+    [theme.breakpoints.down('sm')]: {
+      height: 'auto',
+      padding: '12px 24px',
+      fontSize: 18,
+    },
+  },
+  edit: {
+    color: theme.palette.linkPurple,
+    textDecoration: 'none',
+    fontSize: 16,
+  },
+  save: {
+    textDecoration: 'none',
+    fontSize: 16,
+  },
 }));
 
+const Footer = ({ handleSave }) => {
+  const classes = useStyles();
+  const [isEdit, setIsEdit] = useState(false);
+  const handleEdit = () => { setIsEdit(true); }
+  return (
+    <Box className={classes.footer}>
+      <div className={classes.grow} />
+      {isEdit ? (
+        <Button
+          variant="outlined"
+          color="primary"
+          className={classes.save}
+          href="#"
+          onClick={handleSave}>
+          Save
+        </Button>
+      ) : (
+          <Button className={classes.edit} onClick={handleEdit}>
+            Edit
+          </Button>
+        )
+      }
+    </Box>
+  );
+}
 
 export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose, allowEdit, onSave }) => {
   const classes = useStyles();
@@ -52,8 +100,8 @@ export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose, allowEdit,
         details={details}
         handleClose={handleClose}
         isLoading={isLoading}
-        allowEdit={allowEdit}
-        handleSave={handleSave} />
+        handleEdits={handleSave} />
+      {allowEdit && <Footer handleSave={handleSave} />}
     </Dialog>
   );
 };

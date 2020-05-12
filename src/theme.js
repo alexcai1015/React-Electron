@@ -29,6 +29,7 @@ export const theme = createMuiTheme({
     denialRed: '#EB5757',
     denialDarkRed: '#C4495E',
     suspendOrange: '#FF8C00',
+    linkPurple: '#5E35B1',
     linkBlue: '#04AFD4',
     sectionTitleBlue: '#5E35B1',
     rowStripeGray: 'rgb(246,246,246)',
