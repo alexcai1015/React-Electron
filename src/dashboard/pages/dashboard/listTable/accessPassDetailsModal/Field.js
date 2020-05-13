@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { Box, TextField, Typography } from '@material-ui/core';
+import { styled, makeStyles } from '@material-ui/core/styles';
 import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
@@ -17,33 +16,59 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14,
     fontWeight: '500',
   },
-  fieldContainer: { paddingBottom: 12 },
+  fieldContainer: {
+    paddingBottom: 12,
+    '& > *': {
+      width: '95%',
+    },
+  },
 }));
 
-const Field = ({ label, value, isLoading }) => {
+/**
+ * To make editable: supply values to readonly, name, and handleChange
+ */
+const Field = ({ label, value, isLoading, name, readonly, handleChange }) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.fieldContainer}>
-      <Typography className={classes.label}>{label}</Typography>
-      {isLoading ? (
-        <Skeleton variant="rect" width={100} height={14} />
-      ) : (
-        <Typography className={classes.value}>{value}</Typography>
-      )}
+      {readonly
+        ? <>
+          <Typography className={classes.label}>{label}</Typography>
+          {isLoading
+            ? <Skeleton variant="rect" width={100} height={14} />
+            : <Typography className={classes.value}>{value}</Typography>
+          }
+        </>
+        : <FormField
+          name={name}
+          placeholder={label.toUpperCase()}
+          variant="filled"
+          label={label}
+          value={value}
+          onChange={handleChange}
+          disabled={isLoading}
+          type="text"
+        />
+      }
     </Box>
   );
 };
 
+const FormField = styled(TextField)({});
+
 Field.defaultProps = {
-  value: 'N/A',
+  readonly: true,
   isLoading: false,
-};
+}
 
 Field.propTypes = {
-  label: PropTypes.string.isRequired,
   value: PropTypes.string,
+  label: PropTypes.string.isRequired,
   isLoading: PropTypes.bool,
+  readonly: PropTypes.bool,
+  name: PropTypes.string,
+  handleChange: PropTypes.func
 };
 
 export default Field;
