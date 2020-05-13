@@ -196,10 +196,13 @@ export const Dashboard = () => {
     [/* aporTypes, */ getAccessPassesQuery, filterAporTypes]
   );
 
-  const HandleSelectFilterAporType = (selectedAporType) => {
-    if (filterAporTypes.includes(selectedAporType))
+  const handleToggleAporType = (selectedAporType) => {
+    if (filterAporTypes.includes(selectedAporType)) {
       setFilterAporTypes(filterAporTypes.filter((ap) => ap !== selectedAporType));
-    else setFilterAporTypes([...filterAporTypes, selectedAporType]);
+      return;
+    }
+
+    setFilterAporTypes([...filterAporTypes, selectedAporType]);
   };
 
   return (
@@ -251,7 +254,7 @@ export const Dashboard = () => {
                         !filterAporTypes.includes(aporType) ? classes.unselectedAporType : ''
                       }
                       onClick={() => {
-                        HandleSelectFilterAporType(aporType);
+                        handleToggleAporType(aporType);
                       }}
                     >
                       {aporType}
