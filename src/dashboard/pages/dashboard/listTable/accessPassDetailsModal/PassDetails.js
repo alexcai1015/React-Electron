@@ -69,7 +69,7 @@ const getReferenceIdLabel = (details) => {
   return label ? label.display : '';
 };
 
-export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handleEdits }) => {
+export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
   const classes = useStyles();
   const [isEdit, setIsEdit] = useState(false);
   const handleEdit = () => { setIsEdit(true); }
@@ -79,48 +79,42 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
     initialValues: {
       ...details
     },
-    onSubmit: ({ ...fields }) => {
+    onSubmit: ({
+      name,
+      email,
+      company,
+      id,
+      idType,
+      originName,
+      originStreet,
+      originCity,
+      originProvince,
+      destName,
+      destStreet,
+      destCity,
+      destProvince
+    }) => {
       const { referenceId } = details;
-      execute(referenceId, { ...fields });
+      execute(referenceId, {
+        name,
+        email,
+        company,
+        id,
+        idType,
+        originName,
+        originStreet,
+        originCity,
+        originProvince,
+        destName,
+        destStreet,
+        destCity,
+        destProvince
+      });
     },
     // validationSchema,
   });
 
   const source = isEdit ? values : details;
-
-  const AddressOfOrigin = ({ readonly }) => readonly ?
-    <Field label="Address of origin" value={formatAddress({
-      name: details.originName,
-      street: details.originStreet,
-      city: details.originCity,
-      province: details.originProvince,
-    })} />
-    : (
-      <>
-        <SectionTitle title="Origin" />
-        <Field label="Name" readonly={!isEdit} handleChange={handleChange} name="originName" value={source.originName} />
-        <Field label="Street" readonly={!isEdit} handleChange={handleChange} name="originStreet" value={source.originStreet} />
-        <Field label="City" readonly={!isEdit} handleChange={handleChange} name="originCity" value={source.originCity} />
-        <Field label="Province" readonly={!isEdit} handleChange={handleChange} name="originProvince" value={source.originProvince} />
-      </>
-    );
-
-  const AddressOfDestination = ({ readonly }) => readonly ?
-    <Field label="Address of origin" value={formatAddress({
-      name: details.destName,
-      street: details.destStreet,
-      city: details.destCity,
-      province: details.destProvince,
-    })} />
-    : (
-      <>
-        <SectionTitle title="Destination" />
-        <Field label="Name" readonly={!isEdit} handleChange={handleChange} name="destName" value={source.destName} />
-        <Field label="Street" readonly={!isEdit} handleChange={handleChange} name="destStreet" value={source.destStreet} />
-        <Field label="City" readonly={!isEdit} handleChange={handleChange} name="destCity" value={source.destCity} />
-        <Field label="Province" readonly={!isEdit} handleChange={handleChange} name="destProvince" value={source.destProvince} />
-      </>
-    );
 
   const [leftCol, rightCol] = isEdit ? [6, 6] : [4, 8]
 
@@ -162,13 +156,13 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
               {ApprovalStatus.Declined === details.status && (
                 <Field label="⚠️ Reason for Decline" value={source.updates} />
               )}
-              <AddressOfOrigin readonly={!isEdit} />
-              <AddressOfDestination readonly={!isEdit} />
+              <AddressOrigin readonly={!isEdit} handleChange={handleChange} />
+              <AddressDestination readonly={!isEdit} handleChange={handleChange} />
             </Grid>
           </Grid>
         </Box>
 
-        {allowEdit && <Footer>
+        {allowEdit && (<Footer>
           {isEdit ? (
             <Button
               type="submit"
@@ -184,7 +178,7 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
               </Link>
             )
           }
-        </Footer>}
+        </Footer>)}
       </form>
     </Box>
   );
@@ -193,13 +187,53 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit, handle
 PassDetails.defaultProps = {
   details: {},
   isLoading: false,
-  isEdit: false
+  allowEdit: false
 };
 
 PassDetails.propTypes = {
   details: PropTypes.shape(AccessPass),
   isLoading: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
-  isEdit: PropTypes.bool,
-  handleEdits: PropTypes.func,
+  allowEdit: PropTypes.bool
 };
+
+const AddressOrigin = ({ readonly, handleChange, source }) => (
+  readonly ?
+    <Field label="Address of origin" value={formatAddress({
+      name: source.originName,
+      street: source.originStreet,
+      city: source.originCity,
+      province: source.originProvince,
+    })} /> : (<>
+      <SectionTitle title="Origin" />
+      <Field label="Name" readonly={readonly} handleChange={handleChange} name="originName" value={source.originName} />
+      <Field label="Street" readonly={readonly} handleChange={handleChange} name="originStreet" value={source.originStreet} />
+      <Field label="City" readonly={readonly} handleChange={handleChange} name="originCity" value={source.originCity} />
+      <Field label="Province" readonly={readonly} handleChange={handleChange} name="originProvince" value={source.originProvince} />
+    </>
+    )
+);
+
+const AddressDestination = ({ readonly, handleChange, source }) => (readonly ?
+  <Field label="Address of Destination" value={formatAddress({
+    name: source.destName,
+    street: source.destStreet,
+    city: source.destCity,
+    province: source.destProvince,
+  })} /> : (<>
+    <SectionTitle title="Destination" />
+    <Field label="Name" readonly={readonly} handleChange={handleChange} name="destName" value={source.destName} />
+    <Field label="Street" readonly={readonly} handleChange={handleChange} name="destStreet" value={source.destStreet} />
+    <Field label="City" readonly={readonly} handleChange={handleChange} name="destCity" value={source.destCity} />
+    <Field label="Province" readonly={readonly} handleChange={handleChange} name="destProvince" value={source.destProvince} />
+  </>
+  )
+);
+
+const AddressProps = {
+  source: PropTypes.shape(AccessPass),
+  handleChange: PropTypes.func.isRequired,
+  readonly: PropTypes.bool
+}
+AddressOrigin.propTypes = AddressProps;
+AddressDestination.propTypes = AddressProps;
