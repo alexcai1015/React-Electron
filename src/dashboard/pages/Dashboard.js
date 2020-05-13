@@ -8,6 +8,7 @@ import {
   styled,
   Button,
   Typography,
+  makeStyles,
 } from '@material-ui/core';
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import { DebounceInput } from 'react-debounce-input';
@@ -63,6 +64,8 @@ const StatusFilterOptions = [
 export const Dashboard = () => {
   const { queryString, setQueryString } = useQueryString();
   const aporTypes = useSelector(getUserAporTypes);
+
+  const classes = useStyles();
 
   const [searchValue, setSearchValue] = useState('');
   const [filterAporTypes, setFilterAporTypes] = useState([...aporTypes]);
@@ -193,14 +196,10 @@ export const Dashboard = () => {
     [/* aporTypes, */ getAccessPassesQuery, filterAporTypes]
   );
 
-  const HandleSelectFilterAporTypes = (selectedAporType) => {
-    let tmpfilterAporTypes = [...filterAporTypes];
-
-    if (tmpfilterAporTypes.includes(selectedAporType))
-      tmpfilterAporTypes = tmpfilterAporTypes.filter((ap) => ap !== selectedAporType);
-    else tmpfilterAporTypes.push(selectedAporType);
-
-    setFilterAporTypes(tmpfilterAporTypes);
+  const HandleSelectFilterAporType = (selectedAporType) => {
+    if (filterAporTypes.includes(selectedAporType))
+      setFilterAporTypes(filterAporTypes.filter((ap) => ap !== selectedAporType));
+    else setFilterAporTypes([...filterAporTypes, selectedAporType]);
   };
 
   return (
@@ -241,22 +240,18 @@ export const Dashboard = () => {
                 />
               </Grid>
               <Grid container justify="flex-start" item lg={1} md={2} sm={12} xs={12}>
-                <Typography style={{ color: 'rgba(0, 0, 0, 0.54)' }} variant="caption">
-                  Filter by APOR:
-                </Typography>
+                <FilterLabel variant="caption">Filter by APOR:</FilterLabel>
               </Grid>
               <Grid container justify="flex-start" item lg={11} md={10} sm={12} xs={12}>
                 {aporTypes &&
                   aporTypes.map((aporType) => (
                     <AporTypesToggleButton
                       key={aporType}
-                      style={{
-                        ...(!filterAporTypes.includes(aporType) && {
-                          backgroundColor: '#4822a4c7',
-                        }),
-                      }}
+                      className={
+                        !filterAporTypes.includes(aporType) ? classes.unselectedAporType : ''
+                      }
                       onClick={() => {
-                        HandleSelectFilterAporTypes(aporType);
+                        HandleSelectFilterAporType(aporType);
                       }}
                     >
                       {aporType}
@@ -337,5 +332,15 @@ const AporTypesToggleButton = styled(Button)(({ theme }) => ({
   '&:hover': {
     backgroundColor: theme.palette.mainPurple,
     boxShadow: 'none',
+  },
+}));
+
+const FilterLabel = styled(Typography)(({ theme }) => ({
+  color: theme.palette.labelGray,
+}));
+
+const useStyles = makeStyles((theme) => ({
+  unselectedAporType: {
+    backgroundColor: theme.palette.palePurple,
   },
 }));
