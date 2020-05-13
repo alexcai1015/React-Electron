@@ -23,6 +23,7 @@ export const theme = createMuiTheme({
       main: '#2E2E2E',
     },
     mainPurple: 'rgb(72, 34, 164)',
+    palePurple: '#4822a4c7',
     white: '#FFFFFF',
     softBlack: '#444444',
     approvalGreen: '#81C784',

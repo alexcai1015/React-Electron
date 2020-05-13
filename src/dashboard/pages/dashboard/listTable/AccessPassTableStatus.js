@@ -7,6 +7,7 @@ import { Cancel as CancelIcon, CheckCircle as CheckCircleIcon } from '@material-
 // import { theme } from '../../../../theme';
 import { RoleToggle } from '../../../../common/components/RoleBasedComponent';
 import { ApprovalStatus, KeycloakRoles, ApprovalStatusLabel } from '../../../../common/constants';
+
 import { AccessPassTableStatusWrapper } from './accessPassTableStatus/AccessPassTableStatusWrapper';
 
 const StatusDisplay = (status) => {
@@ -35,7 +36,7 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
     case ApprovalStatus.Approved:
       return (
         <>
-          <RoleToggle role={KeycloakRoles.HAS_APPROVE_ACCESS}>
+          <RoleToggle role={KeycloakRoles.HAS_VIEW_RECORD_STATUS}>
             <CheckCircleIcon color="inherit" />
             <Typography variant="body1">{status}</Typography>
             {/* // TODO: Suspend feature rollout
@@ -48,15 +49,19 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
     case ApprovalStatus.Declined:
       return (
         <>
-          <CancelIcon color="inherit" />
-          <Typography variant="body1">{ApprovalStatusLabel[status]}</Typography>
+          <RoleToggle role={KeycloakRoles.HAS_VIEW_RECORD_STATUS}>
+            <CancelIcon color="inherit" />
+            <Typography variant="body1">{ApprovalStatusLabel[status]}</Typography>
+          </RoleToggle>
         </>
       );
     case ApprovalStatus.Suspended:
       return (
         <>
-          <CancelIcon color="inherit" />
-          <Typography variant="body1">{ApprovalStatusLabel[status]}</Typography>
+          <RoleToggle role={KeycloakRoles.HAS_VIEW_RECORD_STATUS}>
+            <CancelIcon color="inherit" />
+            <Typography variant="body1">{ApprovalStatusLabel[status]}</Typography>
+          </RoleToggle>
         </>
       );
     default:
