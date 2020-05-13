@@ -156,8 +156,8 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
               {ApprovalStatus.Declined === details.status && (
                 <Field label="⚠️ Reason for Decline" value={source.updates} />
               )}
-              <AddressOrigin readonly={!isEdit} handleChange={handleChange} />
-              <AddressDestination readonly={!isEdit} handleChange={handleChange} />
+              <AddressOrigin readonly={!isEdit} handleChange={handleChange} source={source} />
+              <AddressDestination readonly={!isEdit} handleChange={handleChange} source={source} />
             </Grid>
           </Grid>
         </Box>
