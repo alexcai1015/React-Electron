@@ -110,6 +110,7 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
         destCity,
         destProvince
       });
+      handleClose();
     },
     // validationSchema,
   });
