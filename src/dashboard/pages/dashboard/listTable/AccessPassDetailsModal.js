@@ -51,7 +51,6 @@ export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose, allowEdit,
         details={details}
         handleClose={handleClose}
         isLoading={isLoading}
-        handleEdits={handleSave}
         allowEdit={allowEdit} />
     </Dialog>
   );
