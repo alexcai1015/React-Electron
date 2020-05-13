@@ -48,8 +48,12 @@
     "build": "cross-env INLINE_RUNTIME_CHUNK=false REACT_APP_VERSION=$npm_package_version react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "version": "auto-changelog -p && git add CHANGELOG.md",
     "start:mock-server": "node mock-server/json-server.js",
-    "version": "auto-changelog -p && git add CHANGELOG.md"
+    "presetup:dev": "(docker-compose down --rmi local -v)",
+    "setup:dev": "(docker-compose up --build -d)",
+    "export:dev": "docker exec -it rapidpass-dashboard_keycloak_1 sh /tmp/export-realm.sh",
+    "start:dev": "(npm run start:mock-server) & (npm start)"
   },
   "eslintConfig": {
     "extends": "react-app"

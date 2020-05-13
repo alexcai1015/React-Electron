@@ -4,22 +4,24 @@ networks:
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:9.0.3
-    restart: always
+    restart: unless-stopped
     ports:
       - '8082:8080'
-    volumes:
-      # Linux
-      - ./rp-keycloak-theme/rapidpass-approver:/opt/jboss/keycloak/themes/rapidpass-approver
-      # Windows
-      # - d:\React\rapidpass-dashboard\rp-keycloak-theme\rapidpass-approver:/opt/jboss/keycloak/themes/rapidpass-approver
     environment:
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
+      KEYCLOAK_IMPORT: /tmp/rapidpass-realm.json
       PROXY_ADDRESS_FORWARDING: 'true'
+    volumes:
+      - ./keycloak/theme/rapidpass-approver:/opt/jboss/keycloak/themes/rapidpass-approver
+      - ./keycloak/import/rapidpass-realm-dev.json:/tmp/rapidpass-realm.json
+      - ./keycloak/exports:/tmp/exports
+      - ./keycloak/export-realm.sh:/tmp/export-realm.sh
     networks:
       main:
         aliases:
           - keycloak
+
   # rapidpass_approver:
   #   build:
   #     dockerfile: Dockerfile
@@ -35,5 +37,4 @@ services:
   #     CSP_SCRIPT_SRC: https://www.googletagmanager.com
   #     CSP_DEFAULT_SRC: https://www.google-analytics.com
   #     ALLOW_ORIGIN: '*'
-  #     REACT_APP_MAINTENANCE: 0
   #     REACT_APP_API_KEY: XXX

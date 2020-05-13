@@ -12,42 +12,55 @@
 npm install
 ```
 
-## Usage
+## Development
 
 Load environment variables
 
 ```sh
-cp .env.example .env
+$ cp .env.example .env
 ```
 
-Initialize keycloak server
-
+### __* Initialize Keycloak server__
+Start up a new Keycloak local instance with Rapidpass defaults.
+```bash
+$ npm run setup:dev
 ```
-docker-compose up
-```
+Will be available at http://localhost:8082/ with a default Rapidpass Realm pre-loaded.
+No users are included by default.
 
-- go to http://localhost:8082/
-- add realm, import file `mock-server/rapidpass-realm.json`
+### __* Create users__
+- Go to http://localhost:8082/auth/admin/
+- Login with default credentials: **admin** / **admin**
+- Select __"Rapidpass"__ realm. Go to Users > Add User > and setup users for each group.
+- Remember to seta password by selecting the new user, going to __Credentials__ tab and setting a password.
+- Assign APORTYPES by assigning comma-separated APORs attribute in the __Attributes__ tab. (example: APORTYPES : MS,UT,GO)
+- Assign privileges by assigning a group in the __Groups__ tab.
 
-Initialize the mock server
+### __* Initialize the mock server__
+For the **account** Client, an initial secret is auto-imported in rapidpass-realm.dev.json: `aa777510-7116-4e8e-a5e8-200fe2374a08`.
 
-- from keycloak, go to the rapidpass realm, select clients, select `account`
+TROUBLESHOOTING: If you need to replace it:
+
+- from Keycloak, go to the Rapidpass realm, select **Clients > `account`**
 - go to the credentials tab, click on `Regenerate secret`
-- go to installation tab, select OIDC JSON
-- create file `mock-server/keycloak.json` with contents from the OIDC JSON
+- Copy the new secret.
+- Edit /mock-server/keycloak-dev.json > credentials.secret with your new value.
 
-Start the application
+### __* Start the application__
+Note: your Keycloack instance should already be up before doing this.
 
-```sh
-npm run start:mock-serrver
-npm run start
+```bash
+$ npm run start:dev
 ```
 
-## Run tests
+- **API**: http://localhost:3001/api
+- **Dashboard**: http://localhost:3000
 
-```sh
-npm run test
-```
+Login with your created user. Start developing as normal!
+
+
+
+_____
 
 ## 🤝 Contributing
 
