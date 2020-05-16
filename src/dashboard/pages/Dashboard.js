@@ -303,7 +303,6 @@ export const Dashboard = () => {
                 isOpen={isAccessPassDetailModalDisplayed}
                 value={selectedAcessPass}
                 onClose={toggleAccessPassDetailModal}
-                allowEdit // TODO: set allowEdit to #126 permissions
               />
             )}
           </Container>

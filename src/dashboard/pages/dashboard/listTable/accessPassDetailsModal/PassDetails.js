@@ -3,10 +3,16 @@ import PropTypes from 'prop-types';
 import { Box, Grid, Button, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
+import { useKeycloak } from '@react-keycloak/web';
+
 // import * as yup from 'yup'; // TODO validations
 
 import { PassTypeLabel } from '../../../../../common/constants/PassType';
-import { ApprovalStatus, ApprovalStatusLabel } from '../../../../../common/constants';
+import {
+  ApprovalStatus,
+  ApprovalStatusLabel,
+  KeycloakRoles,
+} from '../../../../../common/constants';
 import { AccessPass } from '../../../../../common/constants/AccessPass';
 import { useUpdateAccessPass } from '../../../../../common/hooks/useUpdateAccessPass';
 
@@ -25,7 +31,7 @@ import Footer from './Footer';
 const useStyles = makeStyles((theme) => ({
   container: {
     minHeight: 520,
-    maxHeight: '80vh',
+    maxHeight: '85vh',
     overflow: 'hidden',
     [theme.breakpoints.down('sm')]: {
       height: 'auto',
@@ -48,13 +54,13 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 16,
     textTransform: 'uppercase',
     fontWeight: 400,
-    cursor: 'pointer'
+    cursor: 'pointer',
   },
   save: {
     textDecoration: 'none',
     fontSize: 16,
     textTransform: 'uppercase',
-    fontWeight: 400
+    fontWeight: 400,
   },
 }));
 
@@ -69,15 +75,21 @@ const getReferenceIdLabel = (details) => {
   return label ? label.display : '';
 };
 
-export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
+export const PassDetails = ({ handleClose, details, isLoading }) => {
   const classes = useStyles();
   const [isEdit, setIsEdit] = useState(false);
-  const handleEdit = () => { setIsEdit(true); }
+
+  const handleEdit = () => {
+    setIsEdit(true);
+  };
+
+  const { keycloak } = useKeycloak();
+  const allowEdit = keycloak.hasRealmRole(KeycloakRoles.HAS_EDIT_RECORD_ACCESS);
 
   const { execute, isLoading: isSaving } = useUpdateAccessPass();
   const { handleSubmit, handleChange, values } = useFormik({
     initialValues: {
-      ...details
+      ...details,
     },
     onSubmit: ({
       name,
@@ -92,9 +104,10 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
       destName,
       destStreet,
       destCity,
-      destProvince
+      destProvince,
     }) => {
       const { referenceId } = details;
+
       execute(referenceId, {
         name,
         email,
@@ -108,16 +121,18 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
         destName,
         destStreet,
         destCity,
-        destProvince
+        destProvince,
       });
+
       handleClose();
     },
+
     // validationSchema,
   });
 
   const source = isEdit ? values : details;
 
-  const [leftCol, rightCol] = isEdit ? [6, 6] : [4, 8]
+  const [leftCol, rightCol] = isEdit ? [6, 6] : [4, 8];
 
   return (
     <Box className={classes.container}>
@@ -145,12 +160,42 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
           <SectionTitle title="Personal Details" />
           <Grid item xs={12} container>
             <Grid item xs={leftCol}>
-              <Field label="Name" readonly={!isEdit} handleChange={handleChange} name="name" value={source.name} />
-              <Field label="Email" readonly={!isEdit} handleChange={handleChange} name="email" value={source.email} />
+              <Field
+                label="Name"
+                readonly={!isEdit}
+                handleChange={handleChange}
+                name="name"
+                value={source.name}
+              />
+              <Field
+                label="Email"
+                readonly={!isEdit}
+                handleChange={handleChange}
+                name="email"
+                value={source.email}
+              />
               <Field label={getReferenceIdLabel(details)} value={source.referenceId} />
-              <Field label="Id type" readonly={!isEdit} handleChange={handleChange} name="idType" value={source.idType} />
-              <Field label="Id number" readonly={!isEdit} handleChange={handleChange} name="id" value={source.id} />
-              <Field label="Company/Institution" readonly={!isEdit} handleChange={handleChange} name="company" value={source.company} />
+              <Field
+                label="Id type"
+                readonly={!isEdit}
+                handleChange={handleChange}
+                name="idType"
+                value={source.idType}
+              />
+              <Field
+                label="Id number"
+                readonly={!isEdit}
+                handleChange={handleChange}
+                name="id"
+                value={source.id}
+              />
+              <Field
+                label="Company/Institution"
+                readonly={!isEdit}
+                handleChange={handleChange}
+                name="company"
+                value={source.company}
+              />
             </Grid>
             <Grid item xs={rightCol}>
               <Field label="Remarks" value={source.remarks} />
@@ -163,23 +208,25 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
           </Grid>
         </Box>
 
-        {allowEdit && (<Footer>
-          {isEdit ? (
-            <Button
-              type="submit"
-              variant="outlined"
-              color="primary"
-              className={classes.save}
-              disabled={isSaving}>
-              Save
-            </Button>
-          ) : (
-              <Link className={classes.edit} onClick={handleEdit}>
+        {allowEdit && (
+          <Footer>
+            {isEdit ? (
+              <Button
+                type="submit"
+                variant="outlined"
+                color="primary"
+                className={classes.save}
+                disabled={isSaving}
+              >
+                Save
+              </Button>
+            ) : (
+              <Button component={Link} className={classes.edit} onClick={handleEdit}>
                 Edit
-              </Link>
-            )
-          }
-        </Footer>)}
+              </Button>
+            )}
+          </Footer>
+        )}
       </form>
     </Box>
   );
@@ -188,53 +235,108 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
 PassDetails.defaultProps = {
   details: {},
   isLoading: false,
-  allowEdit: false
 };
 
 PassDetails.propTypes = {
   details: PropTypes.shape(AccessPass),
   isLoading: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
-  allowEdit: PropTypes.bool
 };
 
-const AddressOrigin = ({ readonly, handleChange, source }) => (
-  readonly ?
-    <Field label="Address of origin" value={formatAddress({
-      name: source.originName,
-      street: source.originStreet,
-      city: source.originCity,
-      province: source.originProvince,
-    })} /> : (<>
+const AddressOrigin = ({ readonly, handleChange, source }) =>
+  readonly ? (
+    <Field
+      label="Address of origin"
+      value={formatAddress({
+        name: source.originName,
+        street: source.originStreet,
+        city: source.originCity,
+        province: source.originProvince,
+      })}
+    />
+  ) : (
+    <>
       <SectionTitle title="Origin" />
-      <Field label="Name" readonly={readonly} handleChange={handleChange} name="originName" value={source.originName} />
-      <Field label="Street" readonly={readonly} handleChange={handleChange} name="originStreet" value={source.originStreet} />
-      <Field label="City" readonly={readonly} handleChange={handleChange} name="originCity" value={source.originCity} />
-      <Field label="Province" readonly={readonly} handleChange={handleChange} name="originProvince" value={source.originProvince} />
+      <Field
+        label="Name"
+        readonly={readonly}
+        handleChange={handleChange}
+        name="originName"
+        value={source.originName}
+      />
+      <Field
+        label="Street"
+        readonly={readonly}
+        handleChange={handleChange}
+        name="originStreet"
+        value={source.originStreet}
+      />
+      <Field
+        label="City"
+        readonly={readonly}
+        handleChange={handleChange}
+        name="originCity"
+        value={source.originCity}
+      />
+      <Field
+        label="Province"
+        readonly={readonly}
+        handleChange={handleChange}
+        name="originProvince"
+        value={source.originProvince}
+      />
     </>
-    )
-);
+  );
 
-const AddressDestination = ({ readonly, handleChange, source }) => (readonly ?
-  <Field label="Address of Destination" value={formatAddress({
-    name: source.destName,
-    street: source.destStreet,
-    city: source.destCity,
-    province: source.destProvince,
-  })} /> : (<>
-    <SectionTitle title="Destination" />
-    <Field label="Name" readonly={readonly} handleChange={handleChange} name="destName" value={source.destName} />
-    <Field label="Street" readonly={readonly} handleChange={handleChange} name="destStreet" value={source.destStreet} />
-    <Field label="City" readonly={readonly} handleChange={handleChange} name="destCity" value={source.destCity} />
-    <Field label="Province" readonly={readonly} handleChange={handleChange} name="destProvince" value={source.destProvince} />
-  </>
-  )
-);
+const AddressDestination = ({ readonly, handleChange, source }) =>
+  readonly ? (
+    <Field
+      label="Address of Destination"
+      value={formatAddress({
+        name: source.destName,
+        street: source.destStreet,
+        city: source.destCity,
+        province: source.destProvince,
+      })}
+    />
+  ) : (
+    <>
+      <SectionTitle title="Destination" />
+      <Field
+        label="Name"
+        readonly={readonly}
+        handleChange={handleChange}
+        name="destName"
+        value={source.destName}
+      />
+      <Field
+        label="Street"
+        readonly={readonly}
+        handleChange={handleChange}
+        name="destStreet"
+        value={source.destStreet}
+      />
+      <Field
+        label="City"
+        readonly={readonly}
+        handleChange={handleChange}
+        name="destCity"
+        value={source.destCity}
+      />
+      <Field
+        label="Province"
+        readonly={readonly}
+        handleChange={handleChange}
+        name="destProvince"
+        value={source.destProvince}
+      />
+    </>
+  );
 
 const AddressProps = {
   source: PropTypes.shape(AccessPass),
   handleChange: PropTypes.func.isRequired,
-  readonly: PropTypes.bool
-}
+  readonly: PropTypes.bool,
+};
 AddressOrigin.propTypes = AddressProps;
 AddressDestination.propTypes = AddressProps;
