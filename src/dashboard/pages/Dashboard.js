@@ -18,6 +18,7 @@ import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/h
 import { ApprovalStatus, PassType } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
 import { useSuspendAccessPass } from '../../common/hooks/useSuspendAccessPass';
+import { useGetAporTypes } from '../../common/hooks/useGetAporTypes';
 import { useQueryString } from '../../hooks';
 import { getUserAporTypes } from '../../store/slices';
 
@@ -72,6 +73,10 @@ export const Dashboard = () => {
   const [selectedFilterOption, setSelectedFilterOption] = useState(
     (queryString && queryString.status) || StatusFilterOption.ShowAll.value
   );
+
+  const { query, data: aporList } = useGetAporTypes();
+  console.log(aporList, 'aporListaporList');
+
   const [selectedAcessPass, setSelectedAccesPass] = useState(undefined);
   const { on: isDenyAcessPassModalDisplayed, toggle: toggleDenyAccessPassModal } = useToggle();
   const { on: isAccessPassDetailModalDisplayed, toggle: toggleAccessPassDetailModal } = useToggle();
@@ -97,6 +102,10 @@ export const Dashboard = () => {
     execute: executeSuspendAccessPass,
     isLoading: isSuspendedAccessPassLoading,
   } = useSuspendAccessPass(selectedAcessPass);
+
+  useEffect(() => {
+    query();
+  }, [query]);
 
   useEffect(() => {
     if (isSuccessDenyAccessPass) {
