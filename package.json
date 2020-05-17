@@ -24,6 +24,7 @@
     "json-server": "^0.16.1",
     "keycloak-connect": "^10.0.0",
     "keycloak-js": "^9.0.3",
+    "material-table": "^1.57.2",
     "material-ui-dropzone": "^2.4.9",
     "prop-types": "^15.7.2",
     "query-string": "^6.11.1",
