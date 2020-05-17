@@ -36,7 +36,7 @@ export const PROTECTED_ROUTES = [
     title: 'APOR',
     component: AporTypes,
     show: true,
-    role: KeycloakRoles.HAS_CHECK_APPLICATION_STATUS,
+    // role: KeycloakRoles.HAS_CHECK_APPLICATION_STATUS,
   },
   {
     path: '/change-password',

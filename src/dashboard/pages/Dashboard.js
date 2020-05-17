@@ -73,10 +73,7 @@ export const Dashboard = () => {
   const [selectedFilterOption, setSelectedFilterOption] = useState(
     (queryString && queryString.status) || StatusFilterOption.ShowAll.value
   );
-
-  const { query, data: aporList } = useGetAporTypes();
-  console.log(aporList, 'aporListaporList');
-
+  
   const [selectedAcessPass, setSelectedAccesPass] = useState(undefined);
   const { on: isDenyAcessPassModalDisplayed, toggle: toggleDenyAccessPassModal } = useToggle();
   const { on: isAccessPassDetailModalDisplayed, toggle: toggleAccessPassDetailModal } = useToggle();
@@ -102,10 +99,6 @@ export const Dashboard = () => {
     execute: executeSuspendAccessPass,
     isLoading: isSuspendedAccessPassLoading,
   } = useSuspendAccessPass(selectedAcessPass);
-
-  useEffect(() => {
-    query();
-  }, [query]);
 
   useEffect(() => {
     if (isSuccessDenyAccessPass) {

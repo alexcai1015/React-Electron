@@ -21,6 +21,7 @@ import { useSelector } from 'react-redux';
 
 import { getUserAporTypes } from '../store/slices';
 import { useGetAporTypes } from '../common/hooks/useGetAporTypes';
+import { useCreateAporType } from '../common/hooks/useCreateAporType';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -43,6 +44,7 @@ const tableIcons = {
 };
 
 export const AporTypes = () => {
+  const { execute } = useCreateAporType();
   const aporTypes = useSelector(getUserAporTypes);
   const { data: aporList } = useGetAporTypes();
 
@@ -54,7 +56,7 @@ export const AporTypes = () => {
       { title: 'Industry', field: 'description' },
       { title: 'Approving Agency', field: 'approvingAgency' },
     ],
-    dataRows: dataRows
+    dataRows: dataRows,
   });
 
   return (
@@ -78,7 +80,7 @@ export const AporTypes = () => {
             <MaterialTable
               title="APOR TYPES"
               columns={state.columns}
-              data={state.dataRows}  
+              data={state.dataRows}
               icons={tableIcons}
               options={{
                 actionsColumnIndex: -1,
@@ -87,7 +89,6 @@ export const AporTypes = () => {
                 minBodyHeight: '600px',
                 maxBodyHeight: '1000px',
                 headerStyle: { position: 'sticky', top: 0 },
-
               }}
               editable={{
                 onRowAdd: (newData) =>
@@ -97,34 +98,38 @@ export const AporTypes = () => {
                       setState((prevState) => {
                         const dataRows = [...prevState.dataRows];
                         dataRows.push(newData);
+
                         return { ...prevState, dataRows };
                       });
+                      console.log(newData);
+
+                      execute(newData);
                     }, 600);
                   }),
-                onRowUpdate: (newData, oldData) =>
-                  new Promise((resolve) => {
-                    setTimeout(() => {
-                      resolve();
-                      if (oldData) {
-                        setState((prevState) => {
-                          const dataRows = [...prevState.dataRows];
-                          dataRows[dataRows.indexOf(oldData)] = newData;
-                          return { ...prevState, dataRows };
-                        });
-                      }
-                    }, 600);
-                  }),
-                onRowDelete: (oldData) =>
-                  new Promise((resolve) => {
-                    setTimeout(() => {
-                      resolve();
-                      setState((prevState) => {
-                        const dataRows = [...prevState.dataRows];
-                        dataRows.splice(dataRows.indexOf(oldData), 1);
-                        return { ...prevState, dataRows };
-                      });
-                    }, 600);
-                  }),
+                // onRowUpdate: (newData, oldData) =>
+                //   new Promise((resolve) => {
+                //     setTimeout(() => {
+                //       resolve();
+                //       if (oldData) {
+                //         setState((prevState) => {
+                //           const dataRows = [...prevState.dataRows];
+                //           dataRows[dataRows.indexOf(oldData)] = newData;
+                //           return { ...prevState, dataRows };
+                //         });
+                //       }
+                //     }, 600);
+                //   }),
+                // onRowDelete: (oldData) =>
+                //   new Promise((resolve) => {
+                //     setTimeout(() => {
+                //       resolve();
+                //       setState((prevState) => {
+                //         const dataRows = [...prevState.dataRows];
+                //         dataRows.splice(dataRows.indexOf(oldData), 1);
+                //         return { ...prevState, dataRows };
+                //       });
+                //     }, 600);
+                //   }),
               }}
             />
           </Container>
