@@ -4,7 +4,7 @@ import { Box, Grid, Button, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 import { useKeycloak } from '@react-keycloak/web';
-
+import moment from 'moment';
 // import * as yup from 'yup'; // TODO validations
 
 import { PassTypeLabel } from '../../../../../common/constants/PassType';
@@ -139,6 +139,11 @@ export const PassDetails = ({ handleClose, details, isLoading }) => {
       <Header
         handleClose={handleClose}
         text={`Application ${ApprovalStatusLabel[details.status.toLowerCase()]}`}
+        validUntil={
+          details.status == 'approved'
+            ? `Valid Until: ${moment(details.validUntil).format('MMMM D, YYYY')}`
+            : null
+        }
         subText={`Issued By: ${details.issuedBy ? details.issuedBy : 'N/A'}`}
       />
       <form onSubmit={handleSubmit}>
