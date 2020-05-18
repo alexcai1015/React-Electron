@@ -27,6 +27,7 @@
     "keycloak-js": "^9.0.3",
     "material-table": "^1.57.2",
     "material-ui-dropzone": "^2.4.9",
+    "moment": "^2.25.3",
     "prop-types": "^15.7.2",
     "query-string": "^6.11.1",
     "ramda": "^0.27.0",
