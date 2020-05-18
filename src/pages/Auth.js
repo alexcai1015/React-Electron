@@ -23,15 +23,13 @@ export const Auth = () => {
 
     async function loadProfile() {
       const profile = await keycloak.loadUserProfile();
-      const { token } = keycloak;
+      const { token, tokenParsed } = keycloak;
       const xsrfToken = keycloak.sessionId;
-      const { username, attributes } = profile;
+      const { username } = profile;
 
-      if (attributes.APORTYPES) {
-        const [strAportypes] = attributes.APORTYPES;
-        const aporTypes = strAportypes.split(',').map((a) => a.trim());
+      if (tokenParsed.aportypes) {
+        const aporTypes = tokenParsed.aportypes.split(',').map((a) => a.trim());
         dispatch(saveUser({ username, token, xsrfToken, aporTypes }));
-
         // @todo This should redirect to ?next=
         push(queryString.next);
       } else {

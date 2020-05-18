@@ -2,7 +2,7 @@ import { configureStore, combineReducers, getDefaultMiddleware } from '@reduxjs/
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import { userReducer, accessPassReducer } from './slices';
+import { userReducer, accessPassReducer, aporTypesReducer } from './slices';
 
 const persistConfig = {
   key: 'root',
@@ -12,6 +12,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   accessPass: accessPassReducer,
+  aporTypes: aporTypesReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
