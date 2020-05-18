@@ -46,13 +46,14 @@ const useStyles = makeStyles((theme) => ({
   headerContainer: { flex: '1 1' },
 }));
 
-const Header = ({ handleClose, text, subText }) => {
+const Header = ({ handleClose, text, validUntil, subText }) => {
   const classes = useStyles();
 
   return (
     <Box className={classes.header}>
       <Box className={classes.headerContainer}>
         <Typography className={classes.headerText}>{text}</Typography>
+        <Typography className={classes.subHeaderText}>{validUntil}</Typography>
         <Typography className={classes.subHeaderText}>{subText}</Typography>
       </Box>
       <Box className={classes.closeButtonWrapper} onClick={handleClose}>
@@ -66,6 +67,7 @@ Header.propTypes = {
   handleClose: PropTypes.func.isRequired,
   text: PropTypes.string,
   subText: PropTypes.string,
+  validUntil: PropTypes.string,
 };
 
 export default Header;
