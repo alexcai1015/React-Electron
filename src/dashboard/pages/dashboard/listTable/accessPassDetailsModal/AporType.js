@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import { Box, Grid } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import { useSelector } from 'react-redux';
 
-import { AporType as AporTypeMap } from '../../../../../common/constants';
+import { getAporTypesDictionary } from '../../../../../store/slices';
+// import { AporType as AporTypeMap } from '../../../../../common/constants';
 
 const useStyles = makeStyles((theme) => ({
   label: {
@@ -22,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AporType = ({ aporType }) => {
+  const AporTypeMap = useSelector(getAporTypesDictionary);
   const classes = useStyles();
 
   return (
@@ -36,7 +39,7 @@ const AporType = ({ aporType }) => {
         <Box className={classes.aporTypeSection}>
           <Typography className={classes.label}>Apor Type Description</Typography>
           <Typography className={classes.title}>
-            {AporTypeMap[aporType] ? AporTypeMap[aporType].value : aporType}
+            {AporTypeMap[aporType] ? AporTypeMap[aporType].description : aporType}
           </Typography>
         </Box>
       </Grid>

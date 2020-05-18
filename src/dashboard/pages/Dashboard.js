@@ -18,7 +18,6 @@ import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/h
 import { ApprovalStatus, PassType } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
 import { useSuspendAccessPass } from '../../common/hooks/useSuspendAccessPass';
-import { useGetAporTypes } from '../../common/hooks/useGetAporTypes';
 import { useQueryString } from '../../hooks';
 import { getUserAporTypes } from '../../store/slices';
 

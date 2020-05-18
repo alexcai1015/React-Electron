@@ -1,4 +1,4 @@
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
 import { Box, Container, Grid, styled, Typography } from '@material-ui/core';
 import AddBox from '@material-ui/icons/AddBox';
@@ -46,11 +46,15 @@ const tableIcons = {
 export const AporTypes = () => {
   const { execute } = useCreateAporType();
   const aporTypes = useSelector(getUserAporTypes);
-  const { data: aporList } = useGetAporTypes();
+  const { data: aporList, query } = useGetAporTypes();
 
   const dataRows = R.clone(aporList.list);
 
-  const [state, setState] = useState({
+  useEffect(() => {
+    query();
+  }, [query])
+  
+  const [state ] = useState({
     columns: [
       { title: 'APOR Code', field: 'aporCode' },
       { title: 'Industry', field: 'description' },
@@ -95,14 +99,6 @@ export const AporTypes = () => {
                   new Promise((resolve) => {
                     setTimeout(() => {
                       resolve();
-                      setState((prevState) => {
-                        const dataRows = [...prevState.dataRows];
-                        dataRows.push(newData);
-
-                        return { ...prevState, dataRows };
-                      });
-                      console.log(newData);
-
                       execute(newData);
                     }, 600);
                   }),
