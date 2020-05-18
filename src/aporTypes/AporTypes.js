@@ -43,25 +43,20 @@ const tableIcons = {
   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />),
 };
 
+const columns = [
+  { title: 'APOR Code', field: 'aporCode' },
+  { title: 'Industry', field: 'description' },
+  { title: 'Approving Agency', field: 'approvingAgency' },
+]
 export const AporTypes = () => {
   const { execute } = useCreateAporType();
   const aporTypes = useSelector(getUserAporTypes);
   const { data: aporList, query } = useGetAporTypes();
 
-  const dataRows = R.clone(aporList.list);
-
   useEffect(() => {
     query();
   }, [query])
-  
-  const [state ] = useState({
-    columns: [
-      { title: 'APOR Code', field: 'aporCode' },
-      { title: 'Industry', field: 'description' },
-      { title: 'Approving Agency', field: 'approvingAgency' },
-    ],
-    dataRows: dataRows,
-  });
+
 
   return (
     <Box>
@@ -83,8 +78,8 @@ export const AporTypes = () => {
           <Container>
             <MaterialTable
               title="APOR TYPES"
-              columns={state.columns}
-              data={state.dataRows}
+              columns={columns}
+              data={R.clone(aporList.list)}
               icons={tableIcons}
               options={{
                 actionsColumnIndex: -1,

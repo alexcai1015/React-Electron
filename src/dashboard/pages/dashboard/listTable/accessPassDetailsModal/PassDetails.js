@@ -140,7 +140,7 @@ export const PassDetails = ({ handleClose, details, isLoading }) => {
         handleClose={handleClose}
         text={`Application ${ApprovalStatusLabel[details.status.toLowerCase()]}`}
         validUntil={
-          details.status == 'approved'
+          details.status === 'approved'
             ? `Valid Until: ${moment(details.validUntil).format('MMMM D, YYYY')}`
             : null
         }
