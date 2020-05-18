@@ -3,6 +3,7 @@ import { BulkUpload } from '../../../bulkUpload/BulkUpload';
 import { ChangePassword } from '../../../pages/ChangePassword';
 import { CheckApplicationStatus } from '../../../dashboard/pages/CheckApplicationStatus';
 import { KeycloakRoles } from '../../constants';
+import { AporTypes } from '../../../aporTypes/AporTypes';
 
 export const PROTECTED_ROUTES = [
   {
@@ -28,6 +29,14 @@ export const PROTECTED_ROUTES = [
     component: CheckApplicationStatus,
     show: true,
     role: KeycloakRoles.HAS_CHECK_APPLICATION_STATUS,
+  },
+  {
+    path: '/apor-types',
+    exact: true,
+    title: 'APOR',
+    component: AporTypes,
+    show: true,
+    role: KeycloakRoles.HAS_VIEW_APOR_TYPE_ACCESS,
   },
   {
     path: '/change-password',

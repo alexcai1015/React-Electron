@@ -4,12 +4,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Box, Tabs, Tab, Typography, LinearProgress, styled } from '@material-ui/core';
 import { People } from '@material-ui/icons';
 import { DropzoneArea } from 'material-ui-dropzone';
+import { useSelector } from 'react-redux';
 
 import { useUploadFile } from '../common/hooks/useUploadFile';
 import { useSnackbar } from '../hooks';
 
 import { UploadSuccessModal } from './UploadSuccessModal';
 import { UploadWarningModal } from './UploadWarningModal';
+
+import { getUserAporTypes } from '../store/slices';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -68,6 +71,9 @@ export const PassUploadTab = () => {
   const { error, isLoading, response, isCompleted, execute, reset: resetUpload } = useUploadFile(
     '/v1/batch/access-passes'
   );
+
+  const aporTypes = useSelector(getUserAporTypes);
+
   const [value, setValue] = useState(0);
   const { showSnackbar } = useSnackbar();
   const [uploadBoxTextIndividual, setUploadBoxTextIndividual] = useState(UPLOAD_TEXT);
@@ -200,6 +206,11 @@ export const PassUploadTab = () => {
 
       <TabPanel value={value} index={0} className={classes.tabPanel}>
         <h3>Bulk Upload CSV File</h3>
+        <Typography variant="body1">
+          You are only allowed to upload records under these APOR Types: &nbsp;
+          <b>{aporTypes.length && aporTypes.join(', ')}</b>
+        </Typography>
+        <br />
         Please follow the fields format to avoid data error upon uploading.
         <br />
         <Typography>

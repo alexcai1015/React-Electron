@@ -9,5 +9,7 @@ export * from './useDenyAccessPass';
 export * from './useLogout';
 export * from './useGetUserAporTypes';
 export * from './useCheckApplicationStatus';
+export * from './useGetAporTypes';
+export * from './useCreateAporType';
 
 // export * from './useGetRole';

@@ -72,6 +72,7 @@ export const Dashboard = () => {
   const [selectedFilterOption, setSelectedFilterOption] = useState(
     (queryString && queryString.status) || StatusFilterOption.ShowAll.value
   );
+  
   const [selectedAcessPass, setSelectedAccesPass] = useState(undefined);
   const { on: isDenyAcessPassModalDisplayed, toggle: toggleDenyAccessPassModal } = useToggle();
   const { on: isAccessPassDetailModalDisplayed, toggle: toggleAccessPassDetailModal } = useToggle();
