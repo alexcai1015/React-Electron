@@ -72,7 +72,7 @@ export const Dashboard = () => {
 
   const { keycloak } = useKeycloak();
   const allowEdit = keycloak.hasRealmRole(KeycloakRoles.HAS_EDIT_RECORD_ACCESS);
-
+  console.log(keycloak, 'keycloakkeycloak');
   const classes = useStyles();
 
   const [searchValue, setSearchValue] = useState('');
