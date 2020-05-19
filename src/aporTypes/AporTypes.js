@@ -18,10 +18,14 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import * as R from 'ramda';
 import { useSelector } from 'react-redux';
+import { useKeycloak } from '@react-keycloak/web';
+
 
 import { getUserAporTypes } from '../store/slices';
 import { useGetAporTypes } from '../common/hooks/useGetAporTypes';
 import { useCreateAporType } from '../common/hooks/useCreateAporType';
+
+import { KeycloakRoles } from '../common/constants';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -52,11 +56,14 @@ export const AporTypes = () => {
   const { execute } = useCreateAporType();
   const aporTypes = useSelector(getUserAporTypes);
   const { data: aporList, query } = useGetAporTypes();
+  const { keycloak } = useKeycloak();
+  
 
   useEffect(() => {
     query();
   }, [query])
 
+  const hasEditable = keycloak.hasRealmRole(KeycloakRoles.HAS_ADD_APOR_TYPE_ACCESS)
 
   return (
     <Box>
@@ -80,7 +87,7 @@ export const AporTypes = () => {
               title="APOR TYPES"
               columns={columns}
               data={R.clone(aporList.list)}
-              icons={tableIcons}
+              icons={tableIcons}    
               options={{
                 actionsColumnIndex: -1,
                 search: false,
@@ -89,38 +96,14 @@ export const AporTypes = () => {
                 maxBodyHeight: '1000px',
                 headerStyle: { position: 'sticky', top: 0 },
               }}
-              editable={{
-                onRowAdd: (newData) =>
+               editable={{
+                ...(hasEditable && {onRowAdd: (newData) =>
                   new Promise((resolve) => {
                     setTimeout(() => {
                       resolve();
                       execute(newData);
                     }, 600);
-                  }),
-                // onRowUpdate: (newData, oldData) =>
-                //   new Promise((resolve) => {
-                //     setTimeout(() => {
-                //       resolve();
-                //       if (oldData) {
-                //         setState((prevState) => {
-                //           const dataRows = [...prevState.dataRows];
-                //           dataRows[dataRows.indexOf(oldData)] = newData;
-                //           return { ...prevState, dataRows };
-                //         });
-                //       }
-                //     }, 600);
-                //   }),
-                // onRowDelete: (oldData) =>
-                //   new Promise((resolve) => {
-                //     setTimeout(() => {
-                //       resolve();
-                //       setState((prevState) => {
-                //         const dataRows = [...prevState.dataRows];
-                //         dataRows.splice(dataRows.indexOf(oldData), 1);
-                //         return { ...prevState, dataRows };
-                //       });
-                //     }, 600);
-                //   }),
+                  })})
               }}
             />
           </Container>

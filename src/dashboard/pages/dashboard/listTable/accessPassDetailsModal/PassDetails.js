@@ -30,7 +30,7 @@ import Footer from './Footer';
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    minHeight: 520,
+    minHeight: 725,
     maxHeight: '85vh',
     overflow: 'hidden',
     [theme.breakpoints.down('sm')]: {

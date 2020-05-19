@@ -23,7 +23,7 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
     case ApprovalStatus.Pending:
       return (
         <>
-          <RoleToggle role={KeycloakRoles.HAS_APPROVE_ACCESS} deniedContent={StatusDisplay(status)}>
+          <RoleToggle role={KeycloakRoles.HAS_VIEW_RECORD_STATUS} deniedContent={StatusDisplay(status)}>
             <ApproveButton variant="contained" onClick={onApproveClick} disabled={loading}>
               Approve
             </ApproveButton>
@@ -36,7 +36,7 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
     case ApprovalStatus.Approved:
       return (
         <>
-          <RoleToggle role={KeycloakRoles.HAS_VIEW_RECORD_STATUS}>
+          <RoleToggle role={KeycloakRoles.HAS_REVOKE_ACCESS}>
             <CheckCircleIcon color="inherit" />
             <Typography variant="body1">{status}</Typography>
             <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
