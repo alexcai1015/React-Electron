@@ -25,17 +25,17 @@ const useStyles = makeStyles((theme) => ({
   },
   headerText: {
     fontWeight: '600',
-    fontSize: 24,
+    fontSize: 22,
     color: theme.palette.headerTextGray,
     alignItems: 'center',
     textTransform: 'capitalize',
     [theme.breakpoints.down('sm')]: {
-      fontSize: 18,
+      fontSize: 16,
     },
   },
   subHeaderText: {
     fontWeight: '300',
-    fontSize: 18,
+    fontSize: 16,
     color: theme.palette.headerTextGray,
     alignItems: 'center',
     textTransform: 'capitalize',
