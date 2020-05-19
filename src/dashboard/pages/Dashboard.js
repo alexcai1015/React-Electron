@@ -13,17 +13,20 @@ import {
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import { DebounceInput } from 'react-debounce-input';
 import { useSelector } from 'react-redux';
+import { useKeycloak } from '@react-keycloak/web';
 
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
-import { ApprovalStatus, PassType } from '../../common/constants';
+import { ApprovalStatus, PassType, KeycloakRoles, } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
 import { useSuspendAccessPass } from '../../common/hooks/useSuspendAccessPass';
 import { useQueryString } from '../../hooks';
 import { getUserAporTypes } from '../../store/slices';
+import { useGetAporTypes } from '../../common/hooks/useGetAporTypes';
 
 import { ListTable } from './dashboard/ListTable';
 import { AccessPassDenyModal } from './dashboard/listTable/AccessPassDenyModal';
 import { AccessPassDetailsModal } from './dashboard/listTable/AccessPassDetailsModal';
+import AccessPassRevokeModal from './dashboard/listTable/AccessPassRevokeModal';
 
 /** use this to init any new queryparams */
 const DefaultQueryParams = Object.freeze({
@@ -65,6 +68,11 @@ export const Dashboard = () => {
   const { queryString, setQueryString } = useQueryString();
   const aporTypes = useSelector(getUserAporTypes);
 
+  const { query: queryAporTypes } = useGetAporTypes();
+
+  const { keycloak } = useKeycloak();
+  const allowEdit = keycloak.hasRealmRole(KeycloakRoles.HAS_EDIT_RECORD_ACCESS);
+
   const classes = useStyles();
 
   const [searchValue, setSearchValue] = useState('');
@@ -72,10 +80,11 @@ export const Dashboard = () => {
   const [selectedFilterOption, setSelectedFilterOption] = useState(
     (queryString && queryString.status) || StatusFilterOption.ShowAll.value
   );
-  
+
   const [selectedAcessPass, setSelectedAccesPass] = useState(undefined);
   const { on: isDenyAcessPassModalDisplayed, toggle: toggleDenyAccessPassModal } = useToggle();
   const { on: isAccessPassDetailModalDisplayed, toggle: toggleAccessPassDetailModal } = useToggle();
+  const { on: isRevokeAcessPassModalDisplayed, toggle: toggleRevokeAccessPassModal } = useToggle();
 
   const {
     data: { list: accessPasses, totalPages, totalRows },
@@ -96,6 +105,7 @@ export const Dashboard = () => {
 
   const {
     execute: executeSuspendAccessPass,
+    isSuccess: isSuccessRevokeAccessPass,
     isLoading: isSuspendedAccessPassLoading,
   } = useSuspendAccessPass(selectedAcessPass);
 
@@ -104,6 +114,16 @@ export const Dashboard = () => {
       toggleDenyAccessPassModal();
     }
   }, [isSuccessDenyAccessPass, toggleDenyAccessPassModal]);
+
+  useEffect(() => {
+    if (isSuccessRevokeAccessPass) {
+      toggleRevokeAccessPassModal();
+    }
+  }, [isSuccessRevokeAccessPass, toggleRevokeAccessPassModal]);
+
+  useEffect(() => {
+    queryAporTypes();
+  }, [queryAporTypes])
 
   const handleFilterSelectChange = (event) => {
     const nextFilterValue = event.target.value;
@@ -161,19 +181,21 @@ export const Dashboard = () => {
     toggleDenyAccessPassModal();
   };
 
-  const handleSuspendAccessPassClicked = (accessPass) => {
-    const { referenceId } = accessPass;
-    setSelectedAccesPass(accessPass);
-
-    executeSuspendAccessPass(referenceId, {
-      status: ApprovalStatus.Suspended.toUpperCase(),
-    });
-  };
-
   const handleDenyAccessPass = ({ referenceId, remarks } = {}) => {
     executeDenyAccessPass(referenceId, {
       status: ApprovalStatus.Declined.toUpperCase(),
       remarks,
+    });
+  };
+
+  const handleSuspendAccessPassClicked = (accessPass) => {
+    setSelectedAccesPass(accessPass);
+    toggleRevokeAccessPassModal();
+  };
+
+  const handleRevokeAccessPass = ({ referenceId } = {}) => {
+    executeSuspendAccessPass(referenceId, {
+      status: ApprovalStatus.Suspended.toUpperCase(),
     });
   };
 
@@ -304,6 +326,16 @@ export const Dashboard = () => {
                 isOpen={isAccessPassDetailModalDisplayed}
                 value={selectedAcessPass}
                 onClose={toggleAccessPassDetailModal}
+                allowEdit={allowEdit}
+              />
+            )}
+            {isRevokeAcessPassModalDisplayed && (
+              <AccessPassRevokeModal
+                isOpen={isRevokeAcessPassModalDisplayed}
+                value={selectedAcessPass}
+                loading={isSuspendedAccessPassLoading}
+                onClose={toggleRevokeAccessPassModal}
+                onSubmit={handleRevokeAccessPass}
               />
             )}
           </Container>
