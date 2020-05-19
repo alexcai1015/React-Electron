@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
       },
     },
   },
-  denyAction: {
+  revokeAction: {
     backgroundColor: theme.palette.denialDarkRed,
     '&:hover': {
       backgroundColor: theme.palette.denialDarkRed,
@@ -72,7 +72,7 @@ const validationSchema = Yup.object().shape({
   remarks: Yup.string().required('Required'),
 });
 
-export const AccessPassDenyModal = ({ value = {}, loading, isOpen, onClose, onSubmit }) => {
+const AccessPassRevokeModal = ({ value = {}, loading, isOpen, onClose, onSubmit }) => {
   const classes = useStyles();
 
   const handleClose = () => {
@@ -96,12 +96,12 @@ export const AccessPassDenyModal = ({ value = {}, loading, isOpen, onClose, onSu
 
   return (
     <Dialog fullWidth className={classes.dialog} maxWidth="xs" open={isOpen}>
-      <DialogTitle className={classes.modalTitle}>Deny Application?</DialogTitle>
+      <DialogTitle className={classes.modalTitle}>Revoke Application?</DialogTitle>
       <DialogContent>
         <div className={classes.modalPrompt}>
           Are you sure you want to
           <br />
-          DENY APPLICATION?
+          REVOKE APPLICATION?
         </div>
         <InputLabel className={classes.remarksLabel} shrink={false}>
           Remarks
@@ -119,17 +119,19 @@ export const AccessPassDenyModal = ({ value = {}, loading, isOpen, onClose, onSu
           values={formik.values.remarks}
           onChange={handleChange}
           disabled={loading}
-          inputProps={{ maxLength: 131 }}
+          inputProps={{
+            maxLength: 131,
+          }}
         />
       </DialogContent>
       <DialogActions className={classes.actions}>
         <Button
           disabled={!formik.isValid || loading}
           variant="contained"
-          className={classes.denyAction}
+          className={classes.revokeAction}
           onClick={submitForm}
         >
-          YES, DENY
+          YES, REVOKE
         </Button>
         <Button
           variant="contained"
@@ -147,16 +149,16 @@ export const AccessPassDenyModal = ({ value = {}, loading, isOpen, onClose, onSu
   );
 };
 
-AccessPassDenyModal.propTypes = {
+AccessPassRevokeModal.propTypes = {
   isOpen: PropTypes.bool,
   loading: PropTypes.bool,
-
-  // ! TODO - shape this to access pass
   value: PropTypes.shape({}),
   onClose: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
 };
 
-AccessPassDenyModal.defaultProps = {
+AccessPassRevokeModal.defaultProps = {
   isOpen: false,
 };
+
+export default AccessPassRevokeModal;

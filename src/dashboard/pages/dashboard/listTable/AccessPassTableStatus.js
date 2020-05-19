@@ -39,10 +39,9 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
           <RoleToggle role={KeycloakRoles.HAS_VIEW_RECORD_STATUS}>
             <CheckCircleIcon color="inherit" />
             <Typography variant="body1">{status}</Typography>
-            {/* // TODO: Suspend feature rollout
             <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
               Revoke
-            </SuspendButton> */}
+            </SuspendButton>
           </RoleToggle>
         </>
       );
@@ -109,10 +108,9 @@ const DenyButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// TODO: Suspend feature rollout
-// const SuspendButton = styled(Button)({
-//   backgroundColor: theme.palette.suspendOrange,
-//   '&:hover': {
-//     backgroundColor: theme.palette.suspendOrange,
-//   },
-// });
+const SuspendButton = styled(Button)(({ theme }) => ({
+  backgroundColor: theme.palette.suspendOrange,
+  '&:hover': {
+    backgroundColor: theme.palette.suspendOrange,
+  },
+}));
