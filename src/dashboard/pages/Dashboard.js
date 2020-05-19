@@ -13,13 +13,15 @@ import {
 import ClearOutlinedIcon from '@material-ui/icons/ClearOutlined';
 import { DebounceInput } from 'react-debounce-input';
 import { useSelector } from 'react-redux';
+import { useKeycloak } from '@react-keycloak/web';
 
 import { useGetAccessPasses, useToggle, useDenyAccessPass } from '../../common/hooks';
-import { ApprovalStatus, PassType } from '../../common/constants';
+import { ApprovalStatus, PassType, KeycloakRoles, } from '../../common/constants';
 import { useApproveAccessPass } from '../../common/hooks/useApproveAccessPass';
 import { useSuspendAccessPass } from '../../common/hooks/useSuspendAccessPass';
 import { useQueryString } from '../../hooks';
 import { getUserAporTypes } from '../../store/slices';
+import { useGetAporTypes } from '../../common/hooks/useGetAporTypes';
 
 import { ListTable } from './dashboard/ListTable';
 import { AccessPassDenyModal } from './dashboard/listTable/AccessPassDenyModal';
@@ -65,6 +67,11 @@ const StatusFilterOptions = [
 export const Dashboard = () => {
   const { queryString, setQueryString } = useQueryString();
   const aporTypes = useSelector(getUserAporTypes);
+
+  const { query: queryAporTypes } = useGetAporTypes();
+
+  const { keycloak } = useKeycloak();
+  const allowEdit = keycloak.hasRealmRole(KeycloakRoles.HAS_EDIT_RECORD_ACCESS);
 
   const classes = useStyles();
 
@@ -113,6 +120,10 @@ export const Dashboard = () => {
       toggleRevokeAccessPassModal();
     }
   }, [isSuccessRevokeAccessPass, toggleRevokeAccessPassModal]);
+
+  useEffect(() => {
+    queryAporTypes();
+  }, [queryAporTypes])
 
   const handleFilterSelectChange = (event) => {
     const nextFilterValue = event.target.value;
@@ -315,6 +326,7 @@ export const Dashboard = () => {
                 isOpen={isAccessPassDetailModalDisplayed}
                 value={selectedAcessPass}
                 onClose={toggleAccessPassDetailModal}
+                allowEdit={allowEdit}
               />
             )}
             {isRevokeAcessPassModalDisplayed && (

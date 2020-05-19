@@ -22,12 +22,12 @@ export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose, allowEdit,
     onClose();
   };
 
-  const handleSave = (edits) => {
-    if (onSave) {
-      onSave(edits);
-    }
-    onClose();
-  };
+  // const handleSave = (edits) => {
+  //   if (onSave) {
+  //     onSave(edits);
+  //   }
+  //   onClose();
+  // };
 
   useEffect(() => {
     query(value.referenceId);

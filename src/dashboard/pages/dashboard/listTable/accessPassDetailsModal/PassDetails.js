@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Box, Grid, Button, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
-import { useKeycloak } from '@react-keycloak/web';
+// import { useKeycloak } from '@react-keycloak/web';
 import moment from 'moment';
 // import * as yup from 'yup'; // TODO validations
 
@@ -11,7 +11,7 @@ import { PassTypeLabel } from '../../../../../common/constants/PassType';
 import {
   ApprovalStatus,
   ApprovalStatusLabel,
-  KeycloakRoles,
+  // KeycloakRoles,
 } from '../../../../../common/constants';
 import { AccessPass } from '../../../../../common/constants/AccessPass';
 import { useUpdateAccessPass } from '../../../../../common/hooks/useUpdateAccessPass';
@@ -75,7 +75,7 @@ const getReferenceIdLabel = (details) => {
   return label ? label.display : '';
 };
 
-export const PassDetails = ({ handleClose, details, isLoading }) => {
+export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
   const classes = useStyles();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -83,8 +83,8 @@ export const PassDetails = ({ handleClose, details, isLoading }) => {
     setIsEdit(true);
   };
 
-  const { keycloak } = useKeycloak();
-  const allowEdit = keycloak.hasRealmRole(KeycloakRoles.HAS_EDIT_RECORD_ACCESS);
+  // const { keycloak } = useKeycloak();
+  // const allowEdit = keycloak.hasRealmRole(KeycloakRoles.HAS_EDIT_RECORD_ACCESS);
 
   const { execute, isLoading: isSaving } = useUpdateAccessPass();
   const { handleSubmit, handleChange, values } = useFormik({
