@@ -89,6 +89,13 @@
                                 </div>
                             </#if>
                         </div>
+
+                        <div id="forgot-password" class="col-xs-5">
+                        <#if realm.resetPasswordAllowed>
+                            <span><a href="${url.loginResetCredentialsUrl}">${msg("doForgotPassword")}</a></span>
+                        </#if>
+                        </div>
+
                         <div id="kc-form-buttons" class="col-xs-5 ${properties.kcFormButtonsClass!}">
                             <div class="${properties.kcFormButtonsWrapperClass!}">
                                 <button class="mdc-button mdc-button--raised ${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonLargeClass!}" name="login" id="kc-login" type="submit">
@@ -96,9 +103,11 @@
                                 </button>
                             </div>
                             <div class="clearfix"></div>
-                        </div> 
+                        </div>
                     </div>
-                    <#--  <#if (realm.password && realm.registrationAllowed && !usernameEditDisabled??) || realm.resetPasswordAllowed>
+                    <#--
+                    <#if (realm.password && realm.registrationAllowed && !usernameEditDisabled??) || realm.resetPasswordAllowed>
+
                         <div>
                             <div class="col-xs-12">
                                 <hr class="separator" />
@@ -111,6 +120,7 @@
                                 </div>
                             </#if>
                         </div>
+
                         <div>
                             <div class="${properties.kcFormOptionsWrapperClass!} col-xs-12">
                                 <#if realm.resetPasswordAllowed>
@@ -118,7 +128,9 @@
                                 </#if>
                             </div>
                         </div>
-                    </#if>  -->
+
+                    </#if>
+                    -->
                 </div>
             </form>
         </#if>
