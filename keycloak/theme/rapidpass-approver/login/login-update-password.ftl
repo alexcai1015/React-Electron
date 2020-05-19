@@ -5,27 +5,38 @@
         ${msg("updatePasswordTitle")?no_esc}
     <#elseif section = "header">
         <img src="${url.resourcesPath}/img/logo_purple_title.svg"/>
-        ${msg("updatePasswordTitle")?no_esc}
     <#elseif section = "form">
-        <form id="kc-passwd-update-form" class="form update-password ${properties.kcFormClass!}" action="${url.loginAction}" method="post">
+        <form id="kc-form-login" class="form update-password ${properties.kcFormClass!}" action="${url.loginAction}" method="post">
             <input type="text" readonly value="this is not a login form" style="display: none;">
             <input type="password" readonly value="this is not a login form" style="display: none;">
 
-            <div class="update-password-field ${properties.kcFormGroupClass!}">
-                <div class="${properties.kcLabelWrapperClass!}">
-                    <label for="password-new" class="${properties.kcLabelClass!}">${msg("passwordNew")}</label>
-                </div>
-                <div class="${properties.kcInputWrapperClass!}">
-                    <input type="password" id="password-new" name="password-new" class="form-control ${properties.kcInputClass!}" autofocus autocomplete="off" />
-                </div>
+            <div class="${properties.kcInputWrapperClass!}">
+              <div class="mdc-text-field mdc-text-field--outlined ${properties.kcLabelClass!}">
+                    <input type="password" id="password-new" name="password-new" class="mdc-text-field__input  ${properties.kcInputClass!}" autofocus autocomplete="off" />
+                    <div class="mdc-floating-label ${properties.kcLabelWrapperClass!}">
+                      <label for="password-new" class="${properties.kcLabelClass!}">${msg("passwordNew")}</label>
+                    </div>
+                    <div class="mdc-notched-outline">
+                      <svg>
+                          <path class="mdc-notched-outline__path"/>
+                      </svg>
+                    </div>
+                    <div class="mdc-notched-outline__idle"></div>
+              </div>
             </div>
 
-            <div class="update-password-field ${properties.kcFormGroupClass!}">
-                <div class="${properties.kcLabelWrapperClass!}">
-                    <label for="password-confirm" class="${properties.kcLabelClass!}">${msg("passwordConfirm")}</label>
-                </div>
-                <div class="${properties.kcInputWrapperClass!}">
-                    <input type="password" id="password-confirm" name="password-confirm" class="form-control ${properties.kcInputClass!}" autocomplete="off" />
+            <div class="${properties.kcInputWrapperClass!}">
+              <div class="mdc-text-field mdc-text-field--outlined update-password-field ${properties.kcFormGroupClass!}">
+                    <input type="password" id="password-confirm" name="password-confirm" class="mdc-text-field__input  ${properties.kcInputClass!}" autocomplete="off" />
+                    <div class="mdc-floating-label ${properties.kcLabelWrapperClass!}">
+                      <label for="password-confirm" class="${properties.kcLabelClass!}">${msg("passwordConfirm")}</label>
+                    </div>
+                    <div class="mdc-notched-outline">
+                      <svg>
+                          <path class="mdc-notched-outline__path"/>
+                      </svg>
+                    </div>
+                    <div class="mdc-notched-outline__idle"></div>
                 </div>
             </div>
 
@@ -36,7 +47,9 @@
                 </div>
 
                 <div id="kc-form-buttons" class="${properties.kcFormButtonsClass!} col-xs-6 col-sm-4">
-                    <input class="btn btn-primary btn-flat btn-block ${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doSubmit")}"/>
+                    <button id="kc-login" class="mdc-button mdc-button--raised ${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonLargeClass!}" type="submit"/>
+                    ${msg("doSubmit")}
+                    </button>
                 </div>
             </div>
         </form>
