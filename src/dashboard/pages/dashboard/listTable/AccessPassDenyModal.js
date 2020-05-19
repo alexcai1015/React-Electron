@@ -119,9 +119,7 @@ export const AccessPassDenyModal = ({ value = {}, loading, isOpen, onClose, onSu
           values={formik.values.remarks}
           onChange={handleChange}
           disabled={loading}
-          inputProps={{
-            maxLength: 131,
-          }}
+          inputProps={{ maxLength: 131 }}
         />
       </DialogContent>
       <DialogActions className={classes.actions}>
