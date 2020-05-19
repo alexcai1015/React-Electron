@@ -17,7 +17,8 @@ export const Auth = () => {
 
   useEffect(() => {
     async function changePassword() {
-      const redirectLink = `${process.env.REACT_APP_KEYCLOAK_URL}/realms/${process.env.REACT_APP_KEYCLOAK_REALM}/login-actions/reset-credentials?client_id=${process.env.REACT_APP_KEYCLOAK_CLIENTID}`;
+      const redirect_uri = encodeURIComponent(`${process.env.REACT_APP_BASE_URL}/`);
+      const redirectLink = `${process.env.REACT_APP_KEYCLOAK_URL}/realms/${process.env.REACT_APP_KEYCLOAK_REALM}/account/password?referrer_uri=${redirect_uri}&referrer=${process.env.REACT_APP_KEYCLOAK_CLIENTID}`;
       window.location = redirectLink;
     }
 
