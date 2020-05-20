@@ -78,7 +78,6 @@ const getReferenceIdLabel = (details) => {
 export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
   const classes = useStyles();
   const [isEdit, setIsEdit] = useState(false);
-
   const handleEdit = () => {
     setIsEdit(true);
   };
@@ -91,7 +90,7 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
     initialValues: {
       ...details,
     },
-    onSubmit: ({
+    onSubmit: async ({
       name,
       email,
       company,
@@ -106,9 +105,10 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
       destCity,
       destProvince,
     }) => {
-      const { referenceId } = details;
+      const { referenceId, key } = details;
 
-      execute(referenceId, {
+      await execute(referenceId, {
+        key,
         name,
         email,
         company,
@@ -243,7 +243,7 @@ PassDetails.defaultProps = {
 };
 
 PassDetails.propTypes = {
-  details: PropTypes.shape(AccessPass),
+  details: PropTypes.any, //.shape(AccessPass),
   isLoading: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
 };

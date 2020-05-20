@@ -62,10 +62,20 @@ const { actions, reducer } = createSlice({
         byId,
       };
     },
+    update: (state, { payload }) => {
+      const { key } = payload;
+      const accessPass = R.prop([key], state.byId);
+      const byId = { ...state.byId, [key]: { ...accessPass, ...payload } };
+
+      return {
+        ...state,
+        byId,
+      };
+    },
     save: (state, { payload }) => {
       const byId = arrayToDictionary(({ key }) => key)(payload);
       const allIds = payload.map((value) => value.id);
-
+      
       return {
         ...state,
         byId,
@@ -80,6 +90,7 @@ export const getAccessPasses = (state) => dictionaryToArray(state.accessPass.byI
 
 export const {
   save: saveAccessPasses,
+  update: updateAccessPass,
   setCurrent: setCurrentAccessPass,
   clear: clearAccessPass,
   removeById: removeAccessPassById,

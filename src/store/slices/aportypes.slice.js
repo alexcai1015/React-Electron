@@ -13,7 +13,7 @@ const { actions, reducer } = createSlice({
     save: (state, { payload }) => {
       return {
         ...state,
-        list: payload,
+        list: payload.sort(),
       };
     },
     remove: () => initialState,

@@ -33,7 +33,7 @@ export const AccessPassDetailsModal = ({ value = {}, isOpen, onClose, allowEdit,
     query(value.referenceId);
   }, [query, value]);
 
-  const details = isLoading ? value : data;
+  const details = isLoading ? value : { ...data, key: value.key,  };
 
   return (
     <Dialog
