@@ -43,6 +43,16 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 12,
     },
   },
+  subHeaderText: {
+    fontWeight: '300',
+    fontSize: 18,
+    color: theme.palette.headerTextGray,
+    alignItems: 'center',
+    textTransform: 'capitalize',
+    [theme.breakpoints.down('sm')]: {
+      fontSize: 12,
+    },
+  },
   headerContainer: { flex: '1 1' },
 }));
 
