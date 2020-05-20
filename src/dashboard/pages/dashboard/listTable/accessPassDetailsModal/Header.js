@@ -33,16 +33,16 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 16,
     },
   },
-  subHeaderText: {
-    fontWeight: '300',
-    fontSize: 16,
-    color: theme.palette.headerTextGray,
-    alignItems: 'center',
-    textTransform: 'capitalize',
-    [theme.breakpoints.down('sm')]: {
-      fontSize: 12,
-    },
-  },
+  // subHeaderText: {
+  //   fontWeight: '300',
+  //   fontSize: 16,
+  //   color: theme.palette.headerTextGray,
+  //   alignItems: 'center',
+  //   textTransform: 'capitalize',
+  //   [theme.breakpoints.down('sm')]: {
+  //     fontSize: 12,
+  //   },
+  // },
   subHeaderText: {
     fontWeight: '300',
     fontSize: 18,

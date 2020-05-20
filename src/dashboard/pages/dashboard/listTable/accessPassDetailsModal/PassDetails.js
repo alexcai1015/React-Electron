@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
   container: {
     minHeight: 725,
     maxHeight: '85vh',
-    overflow: 'hidden',
     [theme.breakpoints.down('sm')]: {
       height: 'auto',
     },
