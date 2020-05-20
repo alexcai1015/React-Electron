@@ -243,7 +243,7 @@ PassDetails.defaultProps = {
 };
 
 PassDetails.propTypes = {
-  details: PropTypes.any, //.shape(AccessPass),
+  details: PropTypes.shape(AccessPass),
   isLoading: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
 };
