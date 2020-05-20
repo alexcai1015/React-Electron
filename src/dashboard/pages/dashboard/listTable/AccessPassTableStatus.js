@@ -36,9 +36,11 @@ const renderAccessPassOptions = (status, onApproveClick, onDenyClick, onSuspendC
     case ApprovalStatus.Approved:
       return (
         <>
-          <RoleToggle role={KeycloakRoles.HAS_REVOKE_ACCESS}>
+          <RoleToggle role={KeycloakRoles.HAS_VIEW_RECORD_STATUS}>
             <CheckCircleIcon color="inherit" />
             <Typography variant="body1">{status}</Typography>
+          </RoleToggle>
+          <RoleToggle role={KeycloakRoles.HAS_REVOKE_ACCESS}>
             <SuspendButton variant="contained" onClick={onSuspendClick} disabled={loading}>
               Revoke
             </SuspendButton>
