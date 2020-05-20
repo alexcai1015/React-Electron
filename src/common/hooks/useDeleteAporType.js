@@ -11,12 +11,12 @@ import { useLogout } from './useLogout';
 
 const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
-export const useCreateAporType = () => {
+export const useDeleteAporType = () => {
   const dispatch = useDispatch();
 
   const { httpResponse, execute: mutate, error, reset, ...others } = useApiMutation(
-    `/v1/lookup/apor`,
-    HttpMethod.Post
+    `/v1/lookup/apor/{{aporCode}}`,
+    HttpMethod.Delete
   );
 
   const isSuccess = httpResponse ? isRequestSuccess(httpResponse.status) || false : false;
@@ -24,14 +24,13 @@ export const useCreateAporType = () => {
   const { showSnackbar } = useSnackbar();
 
   const execute = useCallback(
-    ({ aporCode, description, approvingAgency }) => {
-      mutate({
-        requestData: {
-          aporCode: aporCode.trim().toUpperCase(),
-          description: description.trim(),
-          approvingAgency: approvingAgency.trim(),
-        },
-      });
+    ({ aporCode }) => {
+      if (aporCode)
+        mutate({
+          urlPathParams: {
+            aporCode,
+          },
+        });
     },
     [mutate]
   );

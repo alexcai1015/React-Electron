@@ -20,11 +20,10 @@ import * as R from 'ramda';
 import { useSelector } from 'react-redux';
 import { useKeycloak } from '@react-keycloak/web';
 
-
 import { getUserAporTypes } from '../store/slices';
 import { useGetAporTypes } from '../common/hooks/useGetAporTypes';
 import { useCreateAporType } from '../common/hooks/useCreateAporType';
-
+import { useDeleteAporType } from '../common/hooks/useDeleteAporType';
 import { KeycloakRoles } from '../common/constants';
 
 const tableIcons = {
@@ -48,22 +47,24 @@ const tableIcons = {
 };
 
 const columns = [
-  { title: 'APOR Code', field: 'aporCode' },
+  { title: 'APOR Code', field: 'aporCode', editable: 'onAdd' },
   { title: 'Industry', field: 'description' },
   { title: 'Approving Agency', field: 'approvingAgency' },
-]
+];
+
 export const AporTypes = () => {
   const { execute } = useCreateAporType();
+  const { execute: deleteAporType } = useDeleteAporType();
+
   const aporTypes = useSelector(getUserAporTypes);
   const { data: aporList, query } = useGetAporTypes();
   const { keycloak } = useKeycloak();
-  
 
   useEffect(() => {
     query();
-  }, [query])
+  }, [query]);
 
-  const hasEditable = keycloak.hasRealmRole(KeycloakRoles.HAS_ADD_APOR_TYPE_ACCESS)
+  const hasEditable = keycloak.hasRealmRole(KeycloakRoles.HAS_ADD_APOR_TYPE_ACCESS);
 
   return (
     <Box>
@@ -86,8 +87,12 @@ export const AporTypes = () => {
             <MaterialTable
               title="APOR TYPES"
               columns={columns}
-              data={R.clone(aporList.list)}
-              icons={tableIcons}    
+              data={R.map(({ aporCode, approvingAgency, description }) => ({
+                aporCode,
+                approvingAgency: approvingAgency || '',
+                description: description || '',
+              }))(aporList.list)}
+              icons={tableIcons}
               options={{
                 actionsColumnIndex: -1,
                 search: false,
@@ -96,14 +101,33 @@ export const AporTypes = () => {
                 maxBodyHeight: '1000px',
                 headerStyle: { position: 'sticky', top: 0 },
               }}
-               editable={{
-                ...(hasEditable && {onRowAdd: (newData) =>
-                  new Promise((resolve) => {
-                    setTimeout(() => {
-                      resolve();
-                      execute(newData);
-                    }, 600);
-                  })})
+              editable={{
+                ...(hasEditable && {
+                  onRowAdd: (newData) =>
+                    new Promise((resolve) => {
+                      setTimeout(() => {
+                        resolve();
+                        execute(newData);
+                      }, 600);
+                    }),
+                  onRowUpdate: (newData, oldData) =>
+                    new Promise((resolve) => {
+                      setTimeout(() => {
+                        if (oldData) {
+                          execute(newData);
+                        }
+
+                        resolve();
+                      }, 600);
+                    }),
+                  onRowDelete: (oldData) =>
+                    new Promise((resolve) => {
+                      setTimeout(() => {
+                        deleteAporType(oldData);
+                        resolve();
+                      }, 600);
+                    }),
+                }),
               }}
             />
           </Container>
