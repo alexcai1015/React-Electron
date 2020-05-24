@@ -1,6 +1,6 @@
 {
   "name": "rapidpass-dashboard",
-  "version": "0.19.13",
+  "version": "1.0.0",
   "private": true,
   "engines": {
     "node": ">=12"
