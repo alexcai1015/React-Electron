@@ -13,7 +13,11 @@ const { actions, reducer } = createSlice({
     save: (state, { payload }) => {
       return {
         ...state,
-        list: payload.sort(),
+        list: (payload && Array.isArray(payload)) ? payload.sort((a,b) => {
+          if (a.aporCode > b.aporCode ) return 1
+          if (a.aporCode < b.aporCode ) return -1
+          return 0;
+        }) : []
       };
     },
     remove: () => initialState,
