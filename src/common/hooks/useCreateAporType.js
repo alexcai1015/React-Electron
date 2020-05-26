@@ -38,7 +38,7 @@ export const useCreateAporType = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(saveAporTypes(httpResponse.data));
+      dispatch(saveAporTypes(httpResponse.data.body));
       reset();
     }
 

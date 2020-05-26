@@ -18,13 +18,11 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import * as R from 'ramda';
 import { useSelector } from 'react-redux';
-import { useKeycloak } from '@react-keycloak/web';
 
 import { getUserAporTypes } from '../store/slices';
 import { useGetAporTypes } from '../common/hooks/useGetAporTypes';
-import { useCreateAporType } from '../common/hooks/useCreateAporType';
-import { useDeleteAporType } from '../common/hooks/useDeleteAporType';
-import { KeycloakRoles } from '../common/constants';
+
+import { AporTypeActions } from './AporTypeAction';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -53,18 +51,12 @@ const columns = [
 ];
 
 export const AporTypes = () => {
-  const { execute } = useCreateAporType();
-  const { execute: deleteAporType } = useDeleteAporType();
-
   const aporTypes = useSelector(getUserAporTypes);
   const { data: aporList, query } = useGetAporTypes();
-  const { keycloak } = useKeycloak();
 
   useEffect(() => {
     query();
   }, [query]);
-
-  const hasEditable = keycloak.hasRealmRole(KeycloakRoles.HAS_ADD_APOR_TYPE_ACCESS);
 
   return (
     <Box>
@@ -101,34 +93,7 @@ export const AporTypes = () => {
                 maxBodyHeight: '1000px',
                 headerStyle: { position: 'sticky', top: 0 },
               }}
-              editable={{
-                ...(hasEditable && {
-                  onRowAdd: (newData) =>
-                    new Promise((resolve) => {
-                      setTimeout(() => {
-                        resolve();
-                        execute(newData);
-                      }, 600);
-                    }),
-                  onRowUpdate: (newData, oldData) =>
-                    new Promise((resolve) => {
-                      setTimeout(() => {
-                        if (oldData) {
-                          execute(newData);
-                        }
-
-                        resolve();
-                      }, 600);
-                    }),
-                  onRowDelete: (oldData) =>
-                    new Promise((resolve) => {
-                      setTimeout(() => {
-                        deleteAporType(oldData);
-                        resolve();
-                      }, 600);
-                    }),
-                }),
-              }}
+              editable={AporTypeActions(aporList.list)}
             />
           </Container>
         </Box>
