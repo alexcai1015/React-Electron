@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { createSlice } from '@reduxjs/toolkit';
 import { arrayToDictionary } from '../../common/utils/arrays';
+import * as R from 'ramda';
 
 const initialState = {
   list: [],
@@ -27,11 +28,8 @@ const { actions, reducer } = createSlice({
   },
 });
 
-export const getAporTypes = (state) => (state.aporTypes.list && Array.isArray(state.aporTypes.list)) ? [...state.aporTypes.list].sort((a,b) => {
-  if (a.aporCode > b.aporCode ) return 1
-  if (a.aporCode < b.aporCode ) return -1
-  return 0;
-}) : [];
+export const getAporTypes = (state) => (state.aporTypes.list && Array.isArray(state.aporTypes.list)) ? R.sortWith([R.ascend(R.prop('aporCode'))], state.aporTypes.list) : []
+
 export const getAporTypesDictionary = (state) => arrayToDictionary(({ aporCode }) => aporCode)(state.aporTypes.list);
 
 export const { save: saveAporTypes, add: addAporTypes } = actions;
