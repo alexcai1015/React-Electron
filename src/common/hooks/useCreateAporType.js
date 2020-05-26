@@ -1,15 +1,15 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useApiMutation, HttpMethod } from '../api';
 
-import { saveAporTypes } from '../../store/slices';
+import { addAporTypes } from '../../store/slices';
 
 const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
 export const useCreateAporType = () => {
   const dispatch = useDispatch();
-
+  const [newApor, setNewApor] = useState(null);
   const { httpResponse, execute: mutate, reset, isLoading, ...others } = useApiMutation(
     `/v1/lookup/apor`,
     HttpMethod.Post
@@ -19,8 +19,10 @@ export const useCreateAporType = () => {
   
   const execute = useCallback(
     ({ aporCode, description, approvingAgency }) => {
+      const tmpNewApor = { aporCode: aporCode.trim().toUpperCase(), description : description.trim(), approvingAgency : approvingAgency.trim() };
+      setNewApor(tmpNewApor);
       mutate({
-        requestData: { aporCode: aporCode.trim().toUpperCase(), description : description.trim(), approvingAgency : approvingAgency.trim() },
+        requestData: tmpNewApor,
       });
     },
     [mutate]
@@ -28,10 +30,10 @@ export const useCreateAporType = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(saveAporTypes(httpResponse.data));
+      dispatch(addAporTypes(newApor));
       reset();
     }
-  }, [dispatch, isSuccess, reset, httpResponse])
+  }, [dispatch, isSuccess, reset, httpResponse, newApor])
 
   return {
     execute,
