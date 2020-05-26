@@ -269,9 +269,9 @@ export const Dashboard = () => {
               </Grid>
               <Grid container justify="flex-start" item lg={11} md={10} sm={12} xs={12}>
                 {aporTypes &&
-                  aporTypes.map((aporType) => (
+                  aporTypes.map((aporType, key) => (
                     <AporTypesToggleButton
-                      key={aporType}
+                      key={key}
                       className={
                         !filterAporTypes.includes(aporType) ? classes.unselectedAporType : ''
                       }
