@@ -1,36 +1,32 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import * as R from 'ramda';
 
 import { useApiMutation, HttpMethod } from '../api';
-import { saveAporTypes } from '../../store/slices';
-import { useSnackbar } from '../../hooks';
-import { isUnauthorized } from '../api/utils';
-
-import { useLogout } from './useLogout';
+import { addAporTypes } from '../../store/slices';
 
 const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
 export const useCreateAporType = () => {
   const dispatch = useDispatch();
-
-  const { httpResponse, execute: mutate, error, reset, ...others } = useApiMutation(
+  const [newApor, setNewApor] = useState(null);
+  const { httpResponse, execute: mutate, reset, isLoading, ...others } = useApiMutation(
     `/v1/lookup/apor`,
     HttpMethod.Post
   );
 
   const isSuccess = httpResponse ? isRequestSuccess(httpResponse.status) || false : false;
-  const { execute: executeLogout } = useLogout();
-  const { showSnackbar } = useSnackbar();
 
   const execute = useCallback(
     ({ aporCode, description, approvingAgency }) => {
+      const tmpNewApor = {
+        aporCode: aporCode.trim().toUpperCase(),
+        description: description.trim(),
+        approvingAgency: approvingAgency.trim(),
+      };
+      setNewApor(tmpNewApor);
+
       mutate({
-        requestData: {
-          aporCode: aporCode.trim().toUpperCase(),
-          description: description.trim(),
-          approvingAgency: approvingAgency.trim(),
-        },
+        requestData: tmpNewApor,
       });
     },
     [mutate]
@@ -38,22 +34,10 @@ export const useCreateAporType = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(saveAporTypes(httpResponse.data.body));
+      dispatch(addAporTypes(newApor));
       reset();
     }
-
-    if (error) {
-      const errorMessage = R.pathOr('Error occurred', ['response', 'data', 'message'], error);
-
-      if (isUnauthorized(error)) {
-        executeLogout();
-        return;
-      }
-
-      showSnackbar({ message: errorMessage, severity: 'error' });
-      reset();
-    }
-  }, [error, dispatch, isSuccess, reset, httpResponse, executeLogout, showSnackbar]);
+  }, [dispatch, isSuccess, reset, httpResponse, newApor])
 
   return {
     execute,

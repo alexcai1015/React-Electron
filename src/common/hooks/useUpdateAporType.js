@@ -2,39 +2,37 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useApiMutation, HttpMethod } from '../api';
-import { removeAporType } from '../../store/slices';
+import { updateAporType } from '../../store/slices';
 
 const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
 
-export const useDeleteAporType = () => {
+export const useUpdateAporType = () => {
   const dispatch = useDispatch();
-  const [deleteAporCode, setDeleteAporCode] = useState(null);
-
+  const [aporType, setAporType] = useState(null);
   const { httpResponse, execute: mutate, reset, isLoading, ...others } = useApiMutation(
-    `/v1/lookup/apor/{{aporCode}}`,
-    HttpMethod.Delete
+    `/v1/lookup/apor`,
+    HttpMethod.Post
   );
 
   const isSuccess = httpResponse ? isRequestSuccess(httpResponse.status) || false : false;
-  const execute = useCallback(
-    ({ aporCode }) => {
-      mutate({
-        urlPathParams: {
-          aporCode,
-        },
-      });
 
-      setDeleteAporCode(aporCode);
+  const execute = useCallback(
+    (data) => {
+      setAporType(data);
+
+      mutate({
+        requestData: data,
+      });
     },
-    [mutate]
+    [mutate, setAporType]
   );
 
   useEffect(() => {
     if (isSuccess) {
-      dispatch(removeAporType(deleteAporCode));
+      dispatch(updateAporType(aporType));
       reset();
     }
-  }, [dispatch, isSuccess, reset, deleteAporCode]);
+  }, [dispatch, isSuccess, reset, httpResponse, aporType]);
 
   return {
     execute,

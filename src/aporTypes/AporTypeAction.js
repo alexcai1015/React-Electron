@@ -1,12 +1,14 @@
 import { useKeycloak } from '@react-keycloak/web';
 
 import { useCreateAporType } from '../common/hooks/useCreateAporType';
+import { useUpdateAporType } from '../common/hooks/useUpdateAporType';
 import { useDeleteAporType } from '../common/hooks/useDeleteAporType';
 import { KeycloakRoles } from '../common/constants';
 import { useSnackbar } from '../hooks';
 
 export const AporTypeActions = (aporList) => {
-  const { execute } = useCreateAporType();
+  const { execute: createAporType } = useCreateAporType();
+  const { execute: updateAporType } = useUpdateAporType();
   const { showSnackbar } = useSnackbar();
   const { execute: deleteAporType } = useDeleteAporType();
 
@@ -31,7 +33,7 @@ export const AporTypeActions = (aporList) => {
             }
 
             if (validateAporCode(newData)) {
-              execute(newData);
+              createAporType(newData);
               resolve();
             } else {
               showSnackbar({ message: 'Invalid APOR Code', severity: 'error' });
@@ -45,7 +47,7 @@ export const AporTypeActions = (aporList) => {
         new Promise((resolve) => {
           setTimeout(() => {
             resolve();
-            execute(newData);
+            updateAporType(newData);
           }, 600);
         }),
     }),
