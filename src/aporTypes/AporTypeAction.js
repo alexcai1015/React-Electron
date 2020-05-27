@@ -18,7 +18,7 @@ export const AporTypeActions = (aporList) => {
   const allowUpdate = keycloak.hasRealmRole(KeycloakRoles.HAS_UPDATE_APOR_TYPE_ACCESS);
   const allowDelete = keycloak.hasRealmRole(KeycloakRoles.HAS_DELETE_APOR_TYPE_ACCESS);
 
-  const validateAporCode = ({ aporCode }) => /^[A-Z]{1,3}$/.test(aporCode);
+  const validateAporCode = ({ aporCode }) => /^[A-Z]{2,3}$/.test(aporCode);
 
   return {
     ...(allowAddition && {
