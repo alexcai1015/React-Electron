@@ -12,25 +12,51 @@ const { actions, reducer } = createSlice({
   initialState,
   reducers: {
     add: (state, { payload }) => {
-      const list = [...state.list, payload]
+      const list = [...state.list, payload];
       return {
         ...state,
-        list
+        list,
+      };
+    },
+    update: (state, { payload }) => {
+      const list = R.map(({ aporCode, ...others }) =>
+        aporCode === payload.aporCode ? payload : { aporCode, ...others }
+      )(state.list);
+
+      return {
+        ...state,
+        list,
+      };
+    },
+    remove: (state, { payload }) => {
+      const list = R.filter(({ aporCode }) => aporCode !== payload, state.list);
+
+      return {
+        ...state,
+        list,
       };
     },
     save: (state, { payload }) => {
       return {
         ...state,
-        list: payload
+        list: payload,
       };
     },
-    remove: () => initialState,
   },
 });
 
-export const getAporTypes = (state) => (state.aporTypes.list && Array.isArray(state.aporTypes.list)) ? R.sortWith([R.ascend(R.prop('aporCode'))], state.aporTypes.list) : []
+export const getAporTypes = (state) =>
+  state.aporTypes.list && Array.isArray(state.aporTypes.list)
+    ? R.sortWith([R.ascend(R.prop('aporCode'))], state.aporTypes.list)
+    : [];
 
-export const getAporTypesDictionary = (state) => arrayToDictionary(({ aporCode }) => aporCode)(state.aporTypes.list);
+export const getAporTypesDictionary = (state) =>
+  arrayToDictionary(({ aporCode }) => aporCode)(state.aporTypes.list);
 
-export const { save: saveAporTypes, add: addAporTypes } = actions;
+export const {
+  save: saveAporTypes,
+  add: addAporTypes,
+  update: updateAporType,
+  remove: removeAporType,
+} = actions;
 export { reducer as aporTypesReducer };
