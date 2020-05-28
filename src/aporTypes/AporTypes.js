@@ -23,6 +23,7 @@ import { getUserAporTypes } from '../store/slices';
 import { useGetAporTypes } from '../common/hooks/useGetAporTypes';
 
 import { AporTypeActions } from './AporTypeAction';
+import { AddAporForm } from './addAporForm/AddAporForm';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -58,6 +59,7 @@ export const AporTypes = () => {
     query();
   }, [query]);
 
+
   return (
     <Box>
       <Box component="main">
@@ -76,6 +78,7 @@ export const AporTypes = () => {
 
         <Box py={3}>
           <Container>
+            <AddAporForm aporList={aporList.list} />
             <MaterialTable
               title="APOR TYPES"
               columns={columns}
@@ -93,7 +96,7 @@ export const AporTypes = () => {
                 maxBodyHeight: '1000px',
                 headerStyle: { position: 'sticky', top: 0 },
               }}
-              editable={AporTypeActions(aporList.list)}
+              editable={AporTypeActions()}
             />
           </Container>
         </Box>
