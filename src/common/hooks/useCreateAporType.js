@@ -9,7 +9,7 @@ const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 
 export const useCreateAporType = () => {
   const dispatch = useDispatch();
   const [newApor, setNewApor] = useState(null);
-  const [ createAporIsSuccessResponse, setCreateAporIsSuccessResponse ] = useState(null);
+  const [ createAporStatusResponse, setCreateAporStatusResponse ] = useState(null);
   const { httpResponse, execute: mutate, reset, isLoading, ...others } = useApiMutation(
     `/v1/lookup/apor`,
     HttpMethod.Post
@@ -34,27 +34,28 @@ export const useCreateAporType = () => {
   );
 
   useEffect(() => {
+    if (httpResponse && httpResponse.status > 400) {
+      setCreateAporStatusResponse(httpResponse.status)
+    }
+  } , [httpResponse])
+
+  useEffect(() => {
     if (isSuccess) {
       dispatch(addAporTypes(newApor));
-      setCreateAporIsSuccessResponse(200)
+      setCreateAporStatusResponse(200)
       reset();
     }
   }, [dispatch, isSuccess, reset, newApor])
   
-  useEffect(() => {
-    if (httpResponse && !(httpResponse.status >= 200 && httpResponse.status < 400)) {
-      setCreateAporIsSuccessResponse(httpResponse.status)
-    }
-  } , [httpResponse])
-  const resetCreateAporIsSuccessResponse = () => {
-    setCreateAporIsSuccessResponse(null);
+  const resetCreateAporStatusResponse = () => {
+    setCreateAporStatusResponse(null);
   }
 
   return {
     execute,
     httpResponse,
-    createAporIsSuccessResponse,
-    resetCreateAporIsSuccessResponse,
+    createAporStatusResponse,
+    resetCreateAporStatusResponse,
     ...others,
   };
 };

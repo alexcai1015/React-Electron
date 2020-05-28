@@ -25,8 +25,8 @@ const validationSchema = Yup.object().shape({
 export function AddAporForm({ aporList }) {
   const {
     execute: createAporType,
-    createAporIsSuccessResponse,
-    resetCreateAporIsSuccessResponse,
+    createAporStatusResponse,
+    resetCreateAporStatusResponse,
   } = useCreateAporType();
   const { on: showAddApoForm, toggle: toggleAddAporForm } = useToggle();
   const { showSnackbar } = useSnackbar();
@@ -57,14 +57,14 @@ export function AddAporForm({ aporList }) {
   }, [values.aporCode, aporCodeExists, aporList]);
 
   useEffect(() => {
-    if (createAporIsSuccessResponse && createAporIsSuccessResponse === 200) {
+    if (createAporStatusResponse && createAporStatusResponse === 200) {
       resetForm();
-      resetCreateAporIsSuccessResponse();
+      resetCreateAporStatusResponse();
       showSnackbar({ message: 'APOR was successfully added', severity: 'success' });
-    } else if (createAporIsSuccessResponse && !(createAporIsSuccessResponse >= 200 && createAporIsSuccessResponse < 400)) {
+    } else if (createAporStatusResponse && createAporStatusResponse > 400) {
       showSnackbar({ message: 'Something went wrong!', severity: 'error' });
     }
-  }, [createAporIsSuccessResponse, resetCreateAporIsSuccessResponse, resetForm, showSnackbar]);
+  }, [createAporStatusResponse, resetCreateAporStatusResponse, resetForm, showSnackbar]);
 
   const handleCancelButtonClicked = () => {
     resetForm();
@@ -74,7 +74,7 @@ export function AddAporForm({ aporList }) {
   const allowAddition = keycloak.hasRealmRole(KeycloakRoles.HAS_ADD_APOR_TYPE_ACCESS);
   if (!allowAddition) return <></>
   return (
-    <StyledAddAporGrid container direction="row" justify="space-between" alignItems="flex-start">
+    <StyledAddAporGrid container direction="row" justify="flex-end" alignItems="flex-start">
       <Grid>
         {showAddApoForm && (
           <form onSubmit={handleSubmit}>
