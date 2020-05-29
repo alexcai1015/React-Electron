@@ -77,6 +77,7 @@ const getReferenceIdLabel = (details) => {
 export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
   const classes = useStyles();
   const [isEdit, setIsEdit] = useState(false);
+
   const handleEdit = () => {
     setIsEdit(true);
   };
@@ -84,7 +85,7 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
   // const { keycloak } = useKeycloak();
   // const allowEdit = keycloak.hasRealmRole(KeycloakRoles.HAS_EDIT_RECORD_ACCESS);
 
-  const { execute, isLoading: isSaving } = useUpdateAccessPass();
+  const { execute, isLoading: isSaving, error } = useUpdateAccessPass();
   const { handleSubmit, handleChange, values } = useFormik({
     initialValues: {
       ...details,
@@ -103,6 +104,8 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
       destStreet,
       destCity,
       destProvince,
+      aporType,
+      referenceId: newReferenceId,
     }) => {
       const { referenceId, key } = details;
 
@@ -121,6 +124,8 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
         destStreet,
         destCity,
         destProvince,
+        aporType,
+        referenceId: newReferenceId,
       });
 
       handleClose();
@@ -130,7 +135,6 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
   });
 
   const source = isEdit ? values : details;
-
   const [leftCol, rightCol] = isEdit ? [6, 6] : [4, 8];
 
   return (
@@ -147,7 +151,7 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
       />
       <form onSubmit={handleSubmit}>
         <Box className={classes.content}>
-          <AporType aporType={details.aporType} />
+          <AporType aporType={source.aporType} readonly={!isEdit} handleChange={handleChange} />
           <Grid item xs={12} container>
             <Grid item xs={leftCol}>
               <Field label="Control Code" value={source.controlCode} isLoading={isLoading} />
@@ -178,7 +182,15 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
                 name="email"
                 value={source.email}
               />
-              <Field label={getReferenceIdLabel(details)} value={source.referenceId} />
+              <Field
+                label={getReferenceIdLabel(details)}
+                readonly={!isEdit}
+                handleChange={handleChange}
+                name="referenceId"
+                value={source.referenceId}
+                error={error}
+                helperText={error}
+              />
               <Field
                 label="Id type"
                 readonly={!isEdit}
@@ -245,6 +257,7 @@ PassDetails.propTypes = {
   details: PropTypes.shape(AccessPass),
   isLoading: PropTypes.bool,
   handleClose: PropTypes.func.isRequired,
+  allowEdit: PropTypes.bool,
 };
 
 const AddressOrigin = ({ readonly, handleChange, source }) =>
