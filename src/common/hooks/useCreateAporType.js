@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { useApiMutation, HttpMethod } from '../api';
-
 import { addAporTypes } from '../../store/slices';
 
 const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 400);
@@ -10,18 +9,24 @@ const isRequestSuccess = (status) => status === 0 || (status >= 200 && status < 
 export const useCreateAporType = () => {
   const dispatch = useDispatch();
   const [newApor, setNewApor] = useState(null);
+  const [ createAporStatusResponse, setCreateAporStatusResponse ] = useState(null);
   const { httpResponse, execute: mutate, reset, isLoading, ...others } = useApiMutation(
     `/v1/lookup/apor`,
     HttpMethod.Post
   );
 
   const isSuccess = httpResponse ? isRequestSuccess(httpResponse.status) || false : false;
-  
+
   const execute = useCallback(
-    ({ aporCode, description, approvingAgency }) => {
-      const tmpNewApor = { aporCode: aporCode.trim().toUpperCase(), description : description.trim(), approvingAgency : approvingAgency.trim() };
+    async ({ aporCode, description, approvingAgency }) => {
+      const tmpNewApor = {
+        aporCode: aporCode.trim().toUpperCase(),
+        description: description.trim(),
+        approvingAgency: approvingAgency.trim(),
+      };
       setNewApor(tmpNewApor);
-      mutate({
+
+      await mutate({
         requestData: tmpNewApor,
       });
     },
@@ -29,16 +34,28 @@ export const useCreateAporType = () => {
   );
 
   useEffect(() => {
+    if (httpResponse && httpResponse.status > 400) {
+      setCreateAporStatusResponse(httpResponse.status)
+    }
+  } , [httpResponse])
+
+  useEffect(() => {
     if (isSuccess) {
       dispatch(addAporTypes(newApor));
+      setCreateAporStatusResponse(200)
       reset();
     }
-  }, [dispatch, isSuccess, reset, httpResponse, newApor])
+  }, [dispatch, isSuccess, reset, newApor])
+  
+  const resetCreateAporStatusResponse = () => {
+    setCreateAporStatusResponse(null);
+  }
 
   return {
     execute,
-    isLoading,
     httpResponse,
+    createAporStatusResponse,
+    resetCreateAporStatusResponse,
     ...others,
   };
 };
