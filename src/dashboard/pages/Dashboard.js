@@ -38,10 +38,6 @@ const StatusFilterOption = {
     value: 'show_all',
     label: 'Show All',
   },
-  Pending: {
-    value: ApprovalStatus.Pending,
-    label: 'Pending',
-  },
   Approved: {
     value: ApprovalStatus.Approved,
     label: 'Approved',
