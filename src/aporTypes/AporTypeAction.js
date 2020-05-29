@@ -17,6 +17,7 @@ export const AporTypeActions = () => {
   // const allowAddition = keycloak.hasRealmRole(KeycloakRoles.HAS_ADD_APOR_TYPE_ACCESS);
   const allowUpdate = keycloak.hasRealmRole(KeycloakRoles.HAS_UPDATE_APOR_TYPE_ACCESS);
   const allowDelete = keycloak.hasRealmRole(KeycloakRoles.HAS_DELETE_APOR_TYPE_ACCESS);
+  const allowMultiDestinationUpdate = keycloak.hasRealmRole(KeycloakRoles.ADMINISTRATOR);
 
   // const validateAporCode = ({ aporCode }) => /^[A-Z]{2,3}$/.test(aporCode);
 
@@ -46,8 +47,11 @@ export const AporTypeActions = () => {
       onRowUpdate: (newData) =>
         new Promise((resolve) => {
           setTimeout(() => {
-            resolve();
+            if (allowMultiDestinationUpdate === false) {
+              delete newData.multiDestination;
+            }
             updateAporType(newData);
+            resolve();
           }, 600);
         }),
     }),
