@@ -52,13 +52,12 @@ const StatusFilterOption = {
   },
   Suspended: {
     value: ApprovalStatus.Suspended,
-    label: 'Suspended',
+    label: 'Revoked',
   },
 };
 
 const StatusFilterOptions = [
   StatusFilterOption.ShowAll,
-  StatusFilterOption.Pending,
   StatusFilterOption.Approved,
   StatusFilterOption.Declined,
   StatusFilterOption.Suspended,
