@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid, TextField, MenuItem } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { styled, makeStyles } from '@material-ui/core/styles';
 import { useSelector } from 'react-redux';
+import * as R from 'ramda';
 
 import { getAporTypesDictionary } from '../../../../../store/slices';
-// import { AporType as AporTypeMap } from '../../../../../common/constants';
 
 const useStyles = makeStyles((theme) => ({
   label: {
@@ -21,25 +21,59 @@ const useStyles = makeStyles((theme) => ({
   aporTypeSection: {
     marginBottom: 20,
   },
+  fieldContainer: {
+    paddingBottom: 12,
+    '& > *': {
+      width: '95%',
+    },
+  },
 }));
 
-const AporType = ({ aporType }) => {
+const AporType = ({ aporType, readonly, handleChange }) => {
   const AporTypeMap = useSelector(getAporTypesDictionary);
+  const [newAporCode, setNewAporCode] = useState(aporType);
   const classes = useStyles();
+
+  useEffect(() => {
+    setNewAporCode(aporType);
+  }, [aporType]);
 
   return (
     <Grid item xs={12} container>
       <Grid item xs={4}>
         <Box className={classes.aporTypeSection}>
-          <Typography className={classes.label}>Apor Type</Typography>
-          <Typography className={classes.title}>{aporType}</Typography>
+          {readonly ? (
+            <>
+              <Typography className={classes.label}>Apor Type</Typography>
+              <Typography className={classes.title}>{aporType}</Typography>
+            </>
+          ) : (
+            <Box className={classes.fieldContainer}>
+              <SelectFormField
+                label="Apor Type"
+                name="aporType"
+                value={aporType}
+                variant="filled"
+                placeholder="APOR TYPE"
+                type="select"
+                select
+                onChange={handleChange}
+              >
+                {R.map((aporCode) => (
+                  <MenuItem key={aporCode} value={aporCode}>
+                    {aporCode}
+                  </MenuItem>
+                ))(Object.keys(AporTypeMap))}
+              </SelectFormField>
+            </Box>
+          )}
         </Box>
       </Grid>
       <Grid item xs={8}>
         <Box className={classes.aporTypeSection}>
           <Typography className={classes.label}>Apor Type Description</Typography>
           <Typography className={classes.title}>
-            {AporTypeMap[aporType] ? AporTypeMap[aporType].description : aporType}
+            {AporTypeMap[newAporCode] ? AporTypeMap[newAporCode].description : aporType}
           </Typography>
         </Box>
       </Grid>
@@ -47,12 +81,16 @@ const AporType = ({ aporType }) => {
   );
 };
 
+const SelectFormField = styled(TextField)({});
+
 AporType.defaultProps = {
   aporType: 'N/A',
 };
 
 AporType.propTypes = {
   aporType: PropTypes.string,
+  readonly: PropTypes.bool,
+  handleChange: PropTypes.func,
 };
 
 export default AporType;
