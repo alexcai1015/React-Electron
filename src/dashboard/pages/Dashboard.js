@@ -38,10 +38,6 @@ const StatusFilterOption = {
     value: 'show_all',
     label: 'Show All',
   },
-  Pending: {
-    value: ApprovalStatus.Pending,
-    label: 'Pending',
-  },
   Approved: {
     value: ApprovalStatus.Approved,
     label: 'Approved',
@@ -52,13 +48,12 @@ const StatusFilterOption = {
   },
   Suspended: {
     value: ApprovalStatus.Suspended,
-    label: 'Suspended',
+    label: 'Revoked',
   },
 };
 
 const StatusFilterOptions = [
   StatusFilterOption.ShowAll,
-  StatusFilterOption.Pending,
   StatusFilterOption.Approved,
   StatusFilterOption.Declined,
   StatusFilterOption.Suspended,
