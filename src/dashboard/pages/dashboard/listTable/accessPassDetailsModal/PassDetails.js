@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Grid, Button, Link } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useFormik } from 'formik';
 // import { useKeycloak } from '@react-keycloak/web';
 import moment from 'moment';
-// import * as yup from 'yup'; // TODO validations
+import * as Yup from 'yup';
 
 import { PassTypeLabel } from '../../../../../common/constants/PassType';
 import {
@@ -22,11 +22,11 @@ import SectionTitle from './SectionTitle';
 import AporType from './AporType';
 import Footer from './Footer';
 
-// TODO add validations. See ChangePassword for example
-// const validationSchema = yup.object({
-//   name: yup.string().required('Please provide your old password.'),
-//
-// });
+const validationSchema = Yup.object().shape({
+  referenceId: Yup.string()
+    .required('Contact Number is required')
+    .matches(/^09[0-9]{9}$/, 'Phone number is not valid'),
+});
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -85,8 +85,8 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
   // const { keycloak } = useKeycloak();
   // const allowEdit = keycloak.hasRealmRole(KeycloakRoles.HAS_EDIT_RECORD_ACCESS);
 
-  const { execute, isLoading: isSaving, error } = useUpdateAccessPass();
-  const { handleSubmit, handleChange, values } = useFormik({
+  const { execute, isLoading: isSaving, error, isSuccess, reset } = useUpdateAccessPass();
+  const { handleSubmit, handleChange, values, errors, touched, handleBlur } = useFormik({
     initialValues: {
       ...details,
     },
@@ -127,12 +127,17 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
         aporType,
         referenceId: newReferenceId,
       });
-
-      handleClose();
     },
 
-    // validationSchema,
+    validationSchema,
   });
+
+  useEffect(() => {
+    if (isSuccess) {
+      reset();
+      handleClose();
+    }
+  }, [isSuccess, reset, handleClose]);
 
   const source = isEdit ? values : details;
   const [leftCol, rightCol] = isEdit ? [6, 6] : [4, 8];
@@ -186,10 +191,16 @@ export const PassDetails = ({ handleClose, details, isLoading, allowEdit }) => {
                 label={getReferenceIdLabel(details)}
                 readonly={!isEdit}
                 handleChange={handleChange}
+                handleBlur={handleBlur}
                 name="referenceId"
                 value={source.referenceId}
-                error={error}
-                helperText={error}
+                error={
+                  (touched.referenceId && errors.referenceId) || (error && error.response.data)
+                }
+                helperText={
+                  (error && error.response.data && error.response.data.message) ||
+                  (touched.referenceId && errors.referenceId)
+                }
               />
               <Field
                 label="Id type"
