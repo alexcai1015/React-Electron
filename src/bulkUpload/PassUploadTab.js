@@ -213,6 +213,12 @@ export const PassUploadTab = () => {
         <br />
         Please follow the fields format to avoid data error upon uploading.
         <br />
+        <Typography color="error" variant="caption">
+          *
+        </Typography>
+        Required fields for the bulk upload: 1-Pass Type, 2-Nature of Work (APOR Code), 3-First
+        Name, 4-Last Name, 5-Mobile Number, 6-Destination City.
+        <br />
         <Typography>
           Most updated forms for individual registration and attestation may be downloaded from
           &nbsp;
