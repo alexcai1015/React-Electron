@@ -31,8 +31,12 @@ export const Auth = () => {
       if (tokenParsed.aportypes) {
         const aporTypes = tokenParsed.aportypes.split(',').map((a) => a.trim());
         dispatch(saveUser({ username, token, xsrfToken, aporTypes }));
+        if (keycloak.realmAccess.roles.includes("INSPECTOR")) {
+          push('/checkpoint-devices');
+        } else {
+          push(queryString.next);
+        }
         // @todo This should redirect to ?next=
-        push(queryString.next);
       } else {
         push('/login', {
           error: true,
