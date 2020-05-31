@@ -24,45 +24,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Field = ({
-  label,
-  value,
-  isLoading,
-  name,
-  readonly,
-  handleChange,
-  error,
-  helperText,
-  handleBlur,
-}) => {
+/**
+ * To make editable: supply values to readonly, name, and handleChange
+ */
+const Field = ({ id, label, value, isLoading, name, readonly, onChange, onBlur, error = '', touched = false }) => {
   const classes = useStyles();
-
   return (
     <Box className={classes.fieldContainer}>
-      {readonly ? (
-        <>
+      {readonly
+        ? <>
           <Typography className={classes.label}>{label}</Typography>
-          {isLoading ? (
-            <Skeleton variant="rect" width={100} height={14} />
-          ) : (
-            <Typography className={classes.value}>{value}</Typography>
-          )}
+          {isLoading
+            ? <Skeleton variant="rect" width={100} height={14} />
+            : <Typography className={classes.value}>{value} &nbsp;</Typography>
+          }
         </>
-      ) : (
-        <FormField
+        : <FormField
+          id={id}
           name={name}
           placeholder={label.toUpperCase()}
           variant="filled"
           label={label}
           value={value}
-          onChange={handleChange}
+          onChange={onChange}
           disabled={isLoading}
           type="text"
-          error={error}
-          onBlur={handleBlur}
-          helperText={helperText}
+          onBlur={onBlur}
+          helperText={
+            touched && error ? error : ' '
+          }
+          error={touched && error ? true : false}
         />
-      )}
+      }
     </Box>
   );
 };
@@ -72,7 +65,7 @@ const FormField = styled(TextField)({});
 Field.defaultProps = {
   readonly: true,
   isLoading: false,
-};
+}
 
 Field.propTypes = {
   value: PropTypes.string,
@@ -80,10 +73,7 @@ Field.propTypes = {
   isLoading: PropTypes.bool,
   readonly: PropTypes.bool,
   name: PropTypes.string,
-  handleChange: PropTypes.func,
-  error: PropTypes.bool,
-  helperText: PropTypes.string,
-  handleBlur: PropTypes.func,
+  handleChange: PropTypes.func
 };
 
 export default Field;
