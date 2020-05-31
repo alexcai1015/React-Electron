@@ -11,5 +11,9 @@ export * from './useGetUserAporTypes';
 export * from './useCheckApplicationStatus';
 export * from './useGetAporTypes';
 export * from './useCreateAporType';
+export * from './useCreateDevice';
+export * from './useEditDevice';
+export * from './useDeleteDevice';
+export * from './useGetDevices';
 
 // export * from './useGetRole';

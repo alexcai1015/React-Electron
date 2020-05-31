@@ -4,6 +4,7 @@ import { ChangePassword } from '../../../pages/ChangePassword';
 import { CheckApplicationStatus } from '../../../dashboard/pages/CheckApplicationStatus';
 import { KeycloakRoles } from '../../constants';
 import { AporTypes } from '../../../aporTypes/AporTypes';
+import { CheckpointDevices } from '../../../pages/CheckpointDevices';
 
 export const PROTECTED_ROUTES = [
   {
@@ -12,7 +13,7 @@ export const PROTECTED_ROUTES = [
     title: 'Applications',
     component: Dashboard,
     show: true,
-    role: KeycloakRoles.HAS_VIEW_DETAILS_ACCESS, // permission
+    role: KeycloakRoles.HAS_VIEW_DETAILS_ACCESS,
   },
   {
     path: '/bulk-upload',
@@ -45,5 +46,13 @@ export const PROTECTED_ROUTES = [
     component: ChangePassword,
     show: false,
     role: KeycloakRoles.HAS_VIEW_DETAILS_ACCESS,
+  },
+  {
+    path: '/checkpoint-devices',
+    exact: true,
+    title: 'Checkpoint Devices',
+    component: CheckpointDevices,
+    show: true,
+    role: KeycloakRoles.HAS_ADD_DEVICE_RECORD_ACCESS,
   },
 ];

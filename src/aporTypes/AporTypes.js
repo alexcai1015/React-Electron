@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect } from 'react';
 import MaterialTable from 'material-table';
-import { Box, Container, Grid, styled, Typography } from '@material-ui/core';
+import { Box, Container, Grid, styled, Typography, Tooltip } from '@material-ui/core';
 import AddBox from '@material-ui/icons/AddBox';
 import DeleteOutline from '@material-ui/icons/DeleteOutline';
 import Edit from '@material-ui/icons/Edit';
@@ -16,6 +16,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import InfoIcon from '@material-ui/icons/Info';
 import * as R from 'ramda';
 import { useSelector } from 'react-redux';
 import { getUserAporTypes } from '../store/slices';
@@ -49,7 +50,17 @@ const columns = [
   { title: 'Industry', field: 'description' },
   { title: 'Approving Agency', field: 'approvingAgency' },
   {
-    title: 'Multi-Destination',
+    title: (
+      <>
+        Multi-Destination &nbsp;
+        <Tooltip
+          title="Can enter in multiple destination. APOR records' destination city will be automatically set to Multi City which will be printed in the QR."
+          placement="bottom"
+        >
+          <InfoIcon color="primary" fontSize="small" />
+        </Tooltip>
+      </>
+    ),
     field: 'multiDestination',
     type: 'boolean',
     hidden: true,
