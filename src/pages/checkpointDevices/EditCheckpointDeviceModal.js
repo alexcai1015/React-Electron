@@ -37,12 +37,12 @@ export const EditCheckpointDeviceModal = ({
     },
     onSubmit: async ({ mobileNumber, brand, model, imei, status }) => {
       await executeEditDevice(deviceDetails.id, {
-        id: deviceDetails.id,
-        ...(mobileNumber && { mobileNumber }),
-        ...(brand && { brand }),
-        ...(model && { model }),
-        ...(imei && { imei }),
-        ...(status && { status }),
+        id: deviceDetails.id.toUpperCase(),
+        ...(mobileNumber && { mobileNumber: mobileNumber.trim() }),
+        ...(brand && { brand: brand.trim() }),
+        ...(model && { model: model.trim() }),
+        ...(imei && { imei: imei.trim() }),
+        ...(status && { status: status.trim() }),
       });
     },
     validationSchema,

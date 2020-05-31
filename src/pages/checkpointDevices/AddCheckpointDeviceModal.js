@@ -40,12 +40,12 @@ export const AddCheckpointDeviceModal = () => {
     },
     onSubmit: async ({ id, mobileNumber, brand, model, imei, status }) => {
       await executeCreateDevice({
-        id,
-        ...(mobileNumber && { mobileNumber }),
-        ...(brand && { brand }),
-        ...(model && { model }),
-        ...(imei && { imei }),
-        ...(status && { status }),
+        id: id.toUpperCase().trim(),
+        ...(mobileNumber && { mobileNumber: mobileNumber.trim() }),
+        ...(brand && { brand: brand.trim() }),
+        ...(model && { model: model.trim() }),
+        ...(imei && { imei: imei.trim() }),
+        ...(status && { status: status.trim() }),
       });
     },
     validationSchema,
@@ -129,9 +129,9 @@ export const AddCheckpointDeviceModal = () => {
                   label="Mobile Brand"
                   value={values.brand}
                   onChange={handleChange}
-                  // onBlur={handleBlur}
-                  // helperText={touched.brand && errors.brand ? errors.brand : ' '}
-                  // error={touched.brand && errors.brand ? true : false}
+                  onBlur={handleBlur}
+                  helperText={touched.brand && errors.brand ? errors.brand : ' '}
+                  error={touched.brand && errors.brand ? true : false}
                   fullWidth
                 />
               </Grid>
@@ -141,9 +141,9 @@ export const AddCheckpointDeviceModal = () => {
                   label="Mobile Model"
                   value={values.model}
                   onChange={handleChange}
-                  // onBlur={handleBlur}
-                  // helperText={touched.model && errors.model ? errors.model : ' '}
-                  // error={touched.model && errors.model ? true : false}
+                  onBlur={handleBlur}
+                  helperText={touched.model && errors.model ? errors.model : ' '}
+                  error={touched.model && errors.model ? true : false}
                   fullWidth
                 />
               </Grid>
